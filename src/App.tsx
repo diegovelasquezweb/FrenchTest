@@ -6,7 +6,7 @@ import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 
-const QUESTION_COUNT = 10;
+const QUESTION_COUNT = VERBS.length;
 
 export default function App() {
   const { state, startQuiz, selectAnswer, nextQuestion, restartQuiz, currentQuestion, progress } =
@@ -104,7 +104,7 @@ export default function App() {
             <QuizCard
               question={currentQuestion}
               answerState={state.answerState}
-              selectedIndex={state.selectedIndex}
+              triedIndices={state.triedIndices}
               onSelect={selectAnswer}
               onNext={nextQuestion}
               questionNumber={progress.index + 1}

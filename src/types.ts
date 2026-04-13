@@ -12,9 +12,12 @@ export interface Verb {
   infinitive: string;
   participle: string;
   translation: string;
+  translationEs: string;
   ending: ParticipleEnding;
   auxiliary: "avoir" | "être";
   irregular: boolean;
+  /** Three confusing conjugations from other tenses (présent, imparfait, futur) */
+  confusers: readonly [string, string, string];
 }
 
 export interface QuizQuestion {
@@ -50,4 +53,5 @@ export interface QuizState {
   selectedIndex: number | null;
   answerState: AnswerState;
   history: HistoryEntry[];
+  triedIndices: number[];
 }

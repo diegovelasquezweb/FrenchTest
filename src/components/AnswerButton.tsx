@@ -13,12 +13,12 @@ interface AnswerButtonProps {
 
 const stateClasses: Record<ButtonState, string> = {
   default:
-    "border-black/10 bg-white hover:bg-(--color-surface) text-(--color-ink)",
+    "border-(--color-brand)/30 bg-(--color-surface) hover:brightness-95 text-(--color-ink)",
   correct:
     "border-(--color-correct) bg-[color-mix(in_oklch,var(--color-correct)_12%,transparent)] text-(--color-correct)",
   wrong:
     "border-(--color-wrong) bg-[color-mix(in_oklch,var(--color-wrong)_12%,transparent)] text-(--color-wrong)",
-  dimmed: "border-black/10 bg-white text-(--color-ink) opacity-60",
+  dimmed: "border-black/10 bg-(--color-surface) text-(--color-ink) opacity-60",
 };
 
 function StateIcon({ buttonState }: { buttonState: ButtonState }) {
@@ -57,7 +57,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         data-index={index}
         aria-label={`Option ${shortcut}: ${label}${suffix}`}
         className={[
-          "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left",
+          "flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left",
           "min-h-11 transition-colors duration-150",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
           "disabled:cursor-not-allowed",
@@ -65,7 +65,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         ].join(" ")}
       >
         <span
-          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-surface) text-xs font-semibold text-(--color-muted)"
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/8 text-xs font-semibold text-(--color-muted)"
           aria-hidden="true"
         >
           {shortcut}

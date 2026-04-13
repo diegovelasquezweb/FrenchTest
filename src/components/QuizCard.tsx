@@ -2,13 +2,14 @@ import { useRef, useEffect } from "react";
 import type { QuizQuestion } from "../types";
 import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
+import { PasseComposeTable } from "./PasseComposeTable";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
 interface QuizCardProps {
   question: QuizQuestion;
   answerState: AnswerState;
-  selectedIndex: number | null;
+  triedIndices: number[];
   onSelect(i: number): void;
   onNext(): void;
   questionNumber: number;
@@ -18,19 +19,25 @@ interface QuizCardProps {
 function deriveButtonState(
   optionIndex: number,
   correctIndex: number,
-  selectedIndex: number | null,
-  answerState: AnswerState
+  _selectedIndex: number | null,
+  answerState: AnswerState,
+  triedIndices: number[]
 ): ButtonState {
-  if (answerState === AnswerState.Idle) return "default";
-  if (optionIndex === correctIndex) return "correct";
-  if (optionIndex === selectedIndex) return "wrong";
-  return "dimmed";
+  // Feedback phase (correct answer found)
+  if (answerState === AnswerState.Correct) {
+    if (optionIndex === correctIndex) return "correct";
+    if (triedIndices.includes(optionIndex)) return "wrong";
+    return "dimmed";
+  }
+  // Answering phase — mark tried options as wrong, rest default
+  if (triedIndices.includes(optionIndex)) return "wrong";
+  return "default";
 }
 
 export function QuizCard({
   question,
   answerState,
-  selectedIndex,
+  triedIndices,
   onSelect,
   onNext,
   questionNumber,
@@ -60,8 +67,10 @@ export function QuizCard({
         >
           {question.verb.infinitive}
         </p>
-        <p className="mt-1 text-sm text-(--color-muted)" lang="en">
-          {question.verb.translation}
+        <p className="mt-1 text-sm text-(--color-muted)">
+          <span lang="en">{question.verb.translation}</span>
+          <span className="mx-2 opacity-40">·</span>
+          <span lang="es">{question.verb.translationEs}</span>
         </p>
       </div>
 
@@ -70,16 +79,18 @@ export function QuizCard({
           const btnState = deriveButtonState(
             i,
             question.correctIndex,
-            selectedIndex,
-            answerState
+            null,
+            answerState,
+            triedIndices
           );
+          const isTried = triedIndices.includes(i);
           return (
             <AnswerButton
               key={option}
               label={option}
               index={i}
               state={btnState}
-              disabled={isRevealed}
+              disabled={isRevealed || isTried}
               onClick={() => onSelect(i)}
               shortcut={i + 1}
               ref={i === 0 ? firstButtonRef : undefined}
@@ -87,6 +98,10 @@ export function QuizCard({
           );
         })}
       </div>
+
+      {isRevealed && answerState === AnswerState.Correct && (
+        <PasseComposeTable verb={question.verb} />
+      )}
 
       {isRevealed && (
         <div className="mt-6 flex justify-center">

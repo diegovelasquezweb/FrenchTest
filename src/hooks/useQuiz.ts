@@ -33,6 +33,7 @@ const initialState: QuizState = {
   selectedIndex: null,
   answerState: AnswerState.Idle,
   history: [],
+  triedIndices: [],
 };
 
 function makeReducer(verbs: Verb[], questionCount: number) {
@@ -51,18 +52,29 @@ function makeReducer(verbs: Verb[], questionCount: number) {
         const question = state.questions[state.currentIndex];
         if (!question) return state;
         const isCorrect = action.payload === question.correctIndex;
+
+        if (!isCorrect) {
+          // Stay alive — mark this option as tried and keep answering
+          return {
+            ...state,
+            triedIndices: [...state.triedIndices, action.payload],
+          };
+        }
+
+        // Correct — only award point if first attempt
+        const firstTry = state.triedIndices.length === 0;
         return {
           ...state,
           phase: QuizPhase.Feedback,
           selectedIndex: action.payload,
-          answerState: isCorrect ? AnswerState.Correct : AnswerState.Wrong,
-          score: isCorrect ? state.score + 1 : state.score,
+          answerState: AnswerState.Correct,
+          score: firstTry ? state.score + 1 : state.score,
           history: [
             ...state.history,
             {
               verb: question.verb,
               picked: question.options[action.payload] ?? "",
-              correct: isCorrect,
+              correct: firstTry,
             },
           ],
         };
@@ -79,6 +91,7 @@ function makeReducer(verbs: Verb[], questionCount: number) {
           currentIndex: nextIndex,
           selectedIndex: null,
           answerState: AnswerState.Idle,
+          triedIndices: [],
         };
       }
     }
