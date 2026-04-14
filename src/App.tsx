@@ -766,7 +766,7 @@ export default function App() {
 
           {/* QUIZ / FLASHCARD SCREENS */}
           {appMode !== "home" && (
-            <div className="flex min-h-full items-start justify-center px-3 py-4 md:items-center md:px-4 md:py-8">
+            <div className="w-full px-3 py-4 md:flex md:min-h-full md:items-center md:justify-center md:px-4 md:py-8">
 
               {/* PARTICIPE */}
               {appMode === "participe" && (
