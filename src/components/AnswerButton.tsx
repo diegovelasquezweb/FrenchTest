@@ -13,40 +13,23 @@ interface AnswerButtonProps {
 
 const stateClasses: Record<ButtonState, string> = {
   default:
-    "border-(--color-brand)/30 bg-(--color-surface) hover:brightness-95 text-(--color-ink)",
+    "border-(--color-btn-border) bg-(--color-btn-bg) text-(--color-ink) hover:border-(--color-brand)/60 hover:bg-[color-mix(in_oklch,var(--color-brand)_6%,transparent)] active:scale-[0.98]",
   correct:
     "border-(--color-correct) bg-[color-mix(in_oklch,var(--color-correct)_12%,transparent)] text-(--color-correct)",
   wrong:
     "border-(--color-wrong) bg-[color-mix(in_oklch,var(--color-wrong)_12%,transparent)] text-(--color-wrong)",
-  dimmed: "border-black/10 bg-(--color-surface) text-(--color-ink) opacity-60",
+  dimmed:
+    "border-(--color-btn-border) bg-(--color-btn-bg) text-(--color-muted)",
 };
-
-function StateIcon({ buttonState }: { buttonState: ButtonState }) {
-  if (buttonState === "correct") {
-    return (
-      <span aria-hidden="true" className="shrink-0 text-lg font-bold leading-none">
-        ✓
-      </span>
-    );
-  }
-  if (buttonState === "wrong") {
-    return (
-      <span aria-hidden="true" className="shrink-0 text-lg font-bold leading-none">
-        ✗
-      </span>
-    );
-  }
-  return null;
-}
 
 export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
   function AnswerButton({ label, index, state, disabled, onClick, shortcut }, ref) {
-    const suffix =
+    const ariaLabel =
       state === "correct"
-        ? " — correct"
+        ? `Option ${shortcut} : ${label} — correcte`
         : state === "wrong"
-          ? " — incorrect"
-          : "";
+          ? `Option ${shortcut} : ${label} — incorrecte`
+          : `Option ${shortcut} : ${label}`;
 
     return (
       <button
@@ -55,23 +38,19 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         disabled={disabled}
         onClick={onClick}
         data-index={index}
-        aria-label={`Option ${shortcut}: ${label}${suffix}`}
+        aria-label={ariaLabel}
         className={[
-          "flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left",
-          "min-h-11 transition-colors duration-150",
+          "flex w-full items-center justify-between gap-3 px-4 py-3.5",
+          "min-h-12 rounded-(--radius-button) border-2",
+          "text-left font-medium transition-all duration-150",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
-          "disabled:cursor-not-allowed",
           stateClasses[state],
         ].join(" ")}
       >
-        <span
-          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/8 text-xs font-semibold text-(--color-muted)"
-          aria-hidden="true"
-        >
-          {shortcut}
+        <span lang="fr">{label}</span>
+        <span className="shrink-0 text-xs font-semibold tabular-nums opacity-40" aria-hidden="true">
+          {state === "correct" ? "✓" : state === "wrong" ? "✗" : shortcut}
         </span>
-        <span className="flex-1 font-medium">{label}</span>
-        <StateIcon buttonState={state} />
       </button>
     );
   }

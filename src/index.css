@@ -2,24 +2,38 @@
 
 @layer base {
   :root {
-    --color-bg: oklch(0.99 0 0);
-    --color-surface: oklch(0.97 0.01 250);
-    --color-ink: oklch(0.22 0.03 260);
-    --color-muted: oklch(0.55 0.02 260);
-    --color-brand: oklch(0.58 0.16 265);
-    --color-correct: oklch(0.62 0.17 150);
-    --color-wrong: oklch(0.6 0.2 25);
-    --color-ring: oklch(0.7 0.15 265);
-    --radius-card: 1rem;
+    --color-bg: oklch(0.97 0.006 260);
+    --color-surface: oklch(1 0 0);
+    --color-ink: oklch(0.2 0.03 260);
+    --color-muted: oklch(0.52 0.02 260);
+    --color-brand: oklch(0.52 0.19 265);
+    --color-correct: oklch(0.56 0.17 150);
+    --color-wrong: oklch(0.56 0.2 25);
+    --color-ring: oklch(0.68 0.16 265);
+    --color-btn-bg: oklch(1 0 0);
+    --color-btn-border: oklch(0 0 0 / 0.13);
+    --radius-card: 1.25rem;
+    --radius-button: 0.875rem;
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
-      --color-bg: oklch(0.18 0.02 260);
-      --color-surface: oklch(0.24 0.02 260);
-      --color-ink: oklch(0.96 0 0);
-      --color-muted: oklch(0.72 0.02 260);
+    :root:not([data-theme="light"]) {
+      --color-bg: oklch(0.15 0.02 265);
+      --color-surface: oklch(0.21 0.025 265);
+      --color-ink: oklch(0.97 0 0);
+      --color-muted: oklch(0.62 0.02 260);
+      --color-btn-bg: oklch(0.38 0.03 265);
+      --color-btn-border: oklch(1 0 0 / 0.32);
     }
+  }
+
+  :root[data-theme="dark"] {
+    --color-bg: oklch(0.15 0.02 265);
+    --color-surface: oklch(0.21 0.025 265);
+    --color-ink: oklch(0.97 0 0);
+    --color-muted: oklch(0.62 0.02 260);
+    --color-btn-bg: oklch(0.38 0.03 265);
+    --color-btn-border: oklch(1 0 0 / 0.32);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -40,5 +54,7 @@
   body {
     background-color: var(--color-bg);
     color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

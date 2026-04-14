@@ -19,18 +19,12 @@ interface ImparfaitQuizCardProps {
 
 function deriveButtonState(
   optionIndex: number,
-  correctIndex: number,
   answerState: AnswerState,
   selectedIndex: number | null
 ): ButtonState {
-  if (answerState === AnswerState.Correct) {
-    if (optionIndex === selectedIndex) {
-      return optionIndex === correctIndex ? "correct" : "wrong";
-    }
-    return "dimmed";
-  }
-  if (optionIndex === selectedIndex) return "wrong";
-  return "default";
+  if (optionIndex !== selectedIndex) return "default";
+  if (answerState === AnswerState.Correct) return "correct";
+  return "wrong";
 }
 
 export function ImparfaitQuizCard({
@@ -86,12 +80,7 @@ export function ImparfaitQuizCard({
 
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {question.options.map((option, i) => {
-          const btnState = deriveButtonState(
-            i,
-            question.correctIndex,
-            answerState,
-            selectedIndex
-          );
+          const btnState = deriveButtonState(i, answerState, selectedIndex);
           return (
             <AnswerButton
               key={`${option}-${i}`}

@@ -10,27 +10,23 @@ export function ScoreBoard({ score, index, total }: ScoreBoardProps) {
   return (
     <section
       aria-label="Progression du quiz"
-      className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+      className="mx-auto mt-3 flex w-full max-w-xl items-center gap-3 px-1"
     >
-      <p className="text-sm text-(--color-muted)">
-        Question{" "}
-        <strong className="text-(--color-ink)">{questionNumber}</strong> sur{" "}
-        <strong className="text-(--color-ink)">{total}</strong>
-      </p>
-      <p
-        className="text-sm font-semibold text-(--color-brand)"
-        aria-label={`Score: ${score} out of ${total}`}
-      >
-        {score} / {total} correct{score <= 1 ? "e" : "s"}
-      </p>
+      <span className="shrink-0 text-xs font-semibold tabular-nums text-(--color-muted)">
+        {questionNumber} / {total}
+      </span>
       <progress
         max={total}
         value={questionNumber}
-        aria-label={`Progress: question ${questionNumber} of ${total}`}
-        className="h-2 w-full rounded-full sm:w-40 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-(--color-surface) [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-(--color-brand)"
+        aria-label={`Question ${questionNumber} sur ${total}`}
+        className="h-1.5 flex-1 rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-(--color-ink)/10 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-(--color-brand) [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-300"
+      />
+      <span
+        className="shrink-0 text-xs font-semibold tabular-nums text-(--color-brand)"
+        aria-label={`Score : ${score} correct${score > 1 ? "s" : ""}`}
       >
-        {questionNumber} of {total}
-      </progress>
+        ✓ {score}
+      </span>
     </section>
   );
 }
