@@ -126,6 +126,68 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     explanation: "\"leur\" = pronom COI invariable (je leur ai envoyé). On ne met pas de \"s\" au pronom.",
   },
 
+  // ── lui / leur (pronom COI singulier vs pluriel) ───────────────────────
+  {
+    sentence: "Les clients étaient mécontents ; je ___ ai expliqué la situation calmement.",
+    options: ["leur", "lui", "les", "le"],
+    correctIndex: 0,
+    explanation: "\"leur\" = pronom COI pluriel (à eux/à elles). \"lui\" = COI singulier (à lui/à elle). \"les clients\" est pluriel → \"leur\".",
+  },
+  {
+    sentence: "Mon collègue n'avait pas compris ; je ___ ai tout réexpliqué.",
+    options: ["lui", "leur", "le", "les"],
+    correctIndex: 0,
+    explanation: "\"lui\" = COI singulier (à lui/à elle). \"leur\" = COI pluriel. \"mon collègue\" est singulier → \"lui\".",
+  },
+  {
+    sentence: "J'ai rencontré tes sœurs hier ; je ___ ai transmis ton message.",
+    options: ["leur", "lui", "les", "la"],
+    correctIndex: 0,
+    explanation: "\"leur\" = COI pluriel (transmettre à elles). \"lui\" = COI singulier. \"tes sœurs\" est pluriel → \"leur\".",
+  },
+
+  // ── les (COD) vs leur (COI) ─────────────────────────────────────────────
+  {
+    sentence: "Elle avait oublié ses clés ; son mari ___ a apportées au bureau.",
+    options: ["les", "leur", "lui", "la"],
+    correctIndex: 0,
+    explanation: "\"les\" = COD pluriel (apporter quoi ? les clés). \"leur\" = COI pluriel (à eux). Ici le verbe \"apporter\" a un COD → \"les\".",
+  },
+  {
+    sentence: "Nous avons reçu les nouveaux stagiaires et nous ___ avons présenté l'équipe.",
+    options: ["leur", "les", "lui", "y"],
+    correctIndex: 0,
+    explanation: "\"présenter à qqn\" → COI → \"leur\" (à eux). \"les\" serait le COD si on présentait les stagiaires à quelqu'un d'autre.",
+  },
+
+  // ── le / la (COD) vs lui (COI) ──────────────────────────────────────────
+  {
+    sentence: "Le directeur avait une annonce ; il ___ a faite devant toute l'équipe.",
+    options: ["l'", "lui", "leur", "les"],
+    correctIndex: 0,
+    explanation: "\"l'\" (= la) = COD féminin (faire quoi ? l'annonce). On ne dit pas \"lui a faite\" : \"faire\" appelle un COD ici, pas un COI.",
+  },
+  {
+    sentence: "Je n'avais pas vu mon chef ; je ___ ai croisé dans le couloir.",
+    options: ["l'", "lui", "leur", "les"],
+    correctIndex: 0,
+    explanation: "\"l'\" (= le) = COD masculin (croiser qui ? lui). \"croiser\" appelle un COD → \"le/l'\", pas un COI.",
+  },
+
+  // ── leur / leurs (possessif) ─────────────────────────────────────────────
+  {
+    sentence: "Les deux associés ont signé ___ contrat ce matin.",
+    options: ["leur", "leurs", "lures", "leurres"],
+    correctIndex: 0,
+    explanation: "\"leur\" = possessif singulier (un seul contrat partagé). \"leurs\" = pluriel. Un contrat commun → \"leur contrat\".",
+  },
+  {
+    sentence: "Les enfants rangeaient ___ affaires avant de partir à l'école.",
+    options: ["leurs", "leur", "lures", "leurres"],
+    correctIndex: 0,
+    explanation: "\"leurs\" = possessif pluriel (plusieurs affaires). \"leur\" = singulier. Plusieurs objets → \"leurs affaires\".",
+  },
+
   // ── -er / -é / -ez ──────────────────────────────────────────────────────
   {
     sentence: "Vous devez ___ ce formulaire avant vendredi.",
