@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import * as Select from "@radix-ui/react-select";
+import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { VERBS } from "./data/verbs";
 import { useQuiz } from "./hooks/useQuiz";
@@ -53,7 +53,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
 export default function App() {
   const { theme, toggle: toggleTheme } = useTheme();
   const [appMode, setAppMode] = useState<AppMode>("home");
-  const DEFAULT_FAVORITES = ["Participe passé", "Patterns — Tout"];
+  const DEFAULT_FAVORITES = ["Participe passé"];
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem("tef-favorites");
@@ -589,86 +589,107 @@ export default function App() {
                 <p className="text-sm text-(--color-muted)">Sélectionnez un exercice dans le menu à gauche.</p>
               </div>
 
-              {/* Mobile: select */}
-              <div className="md:hidden flex flex-col items-center justify-center h-full gap-8 px-6">
-                <div className="text-center">
-                  <p className="text-sm text-(--color-muted)">Préparez votre TEF. Bonne chance.</p>
+              {/* Mobile: accordion */}
+              <div className="md:hidden flex flex-col items-center justify-center h-full gap-6 px-6 py-8">
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <span className="text-5xl">🎯</span>
+                  <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
+                  <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
                 </div>
-                <Select.Root
-                  onValueChange={(val) => {
-                    const map: Record<string, () => void> = {
-                      conditionnel: handleStartConditionnel,
-                      futur: handleStartFutur,
-                      orthographe: handleStartOrthographe,
-                      imparfait: handleStartImparfait,
-                      participe: handleStartParticipe,
-                      présent: handleStartPresent,
-                      phrases: handleStartPhrases,
-                      écrit: handleStartEcrit,
-                      oral: handleStartOral,
-                      patterns: handleStartPatterns,
-                      touriste: handleStartTouriste,
-                      vocabulaire: handleStartVocabulaire,
-                    };
-                    map[val]?.();
-                  }}
-                >
-                  <Select.Trigger className="flex w-full items-center justify-between gap-2 rounded-2xl border border-(--color-ink)/12 bg-(--color-surface) px-4 py-3.5 text-sm text-(--color-ink) shadow-sm focus:outline-none focus:ring-2 focus:ring-(--color-brand)/30 data-[placeholder]:text-(--color-muted)">
-                    <Select.Value placeholder="Choisir un exercice…" />
-                    <Select.Icon className="text-(--color-muted)">▾</Select.Icon>
-                  </Select.Trigger>
-                  <Select.Portal>
-                    <Select.Content
-                      position="popper"
-                      sideOffset={6}
-                      className="z-50 w-[var(--radix-select-trigger-width)] overflow-hidden rounded-2xl border border-(--color-ink)/10 bg-(--color-surface) shadow-lg"
-                    >
-                      <Select.Viewport className="p-1">
-                        <Select.Group>
-                          <Select.Label className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-(--color-muted)">Conjugaison & Grammaire</Select.Label>
-                          {[
-                            { value: "conditionnel", label: "Conditionnel" },
-                            { value: "futur",        label: "Futur simple" },
-                            { value: "orthographe",  label: "Grammaire" },
-                            { value: "imparfait",    label: "Imparfait" },
-                            { value: "participe",    label: "Participe passé" },
-                            { value: "présent",      label: "Présent" },
-                          ].map(({ value, label }) => (
-                            <Select.Item key={value} value={value} className="flex cursor-pointer select-none items-center rounded-lg px-3 py-2 text-sm text-(--color-ink) outline-none data-[highlighted]:bg-(--color-brand)/10 data-[highlighted]:text-(--color-brand)">
-                              <Select.ItemText>{label}</Select.ItemText>
-                            </Select.Item>
-                          ))}
-                        </Select.Group>
-                        <Select.Separator className="my-1 h-px bg-(--color-ink)/8" />
-                        <Select.Group>
-                          <Select.Label className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-(--color-muted)">Préparation TEF</Select.Label>
-                          {[
-                            { value: "phrases", label: "Connecteurs" },
-                            { value: "écrit",   label: "Écrit formel" },
-                            { value: "oral",    label: "Expression orale" },
-                          ].map(({ value, label }) => (
-                            <Select.Item key={value} value={value} className="flex cursor-pointer select-none items-center rounded-lg px-3 py-2 text-sm text-(--color-ink) outline-none data-[highlighted]:bg-(--color-brand)/10 data-[highlighted]:text-(--color-brand)">
-                              <Select.ItemText>{label}</Select.ItemText>
-                            </Select.Item>
-                          ))}
-                        </Select.Group>
-                        <Select.Separator className="my-1 h-px bg-(--color-ink)/8" />
-                        <Select.Group>
-                          <Select.Label className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-(--color-muted)">Flashcards</Select.Label>
-                          {[
-                            { value: "patterns",    label: "Patterns" },
-                            { value: "touriste",    label: "Touriste" },
-                            { value: "vocabulaire", label: "Vocabulaire" },
-                          ].map(({ value, label }) => (
-                            <Select.Item key={value} value={value} className="flex cursor-pointer select-none items-center rounded-lg px-3 py-2 text-sm text-(--color-ink) outline-none data-[highlighted]:bg-(--color-brand)/10 data-[highlighted]:text-(--color-brand)">
-                              <Select.ItemText>{label}</Select.ItemText>
-                            </Select.Item>
-                          ))}
-                        </Select.Group>
-                      </Select.Viewport>
-                    </Select.Content>
-                  </Select.Portal>
-                </Select.Root>
+
+                {/* Favoris mobile */}
+                {favorites.length > 0 && (
+                  <div className="w-full">
+                    <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-widest text-(--color-muted)">Favoris</p>
+                    <div className="rounded-2xl overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                      {favorites.map(label => {
+                        const item = SIDEBAR_LOOKUP[label];
+                        if (!item) return null;
+                        return (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={item.onClick}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15 border-t border-(--color-ink)/8 first:border-t-0"
+                          >
+                            <span className="grayscale opacity-50">{item.icon}</span>
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <Accordion.Root type="multiple" className="w-full rounded-2xl overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  {([
+                    {
+                      id: "conjugaison",
+                      label: "Conjugaison & Grammaire",
+                      items: [
+                        { label: "Conditionnel",    onClick: handleStartConditionnel },
+                        { label: "Futur simple",    onClick: handleStartFutur },
+                        { label: "Grammaire",       onClick: handleStartOrthographe },
+                        { label: "Imparfait",       onClick: handleStartImparfait },
+                        { label: "Participe passé", onClick: handleStartParticipe },
+                        { label: "Présent",         onClick: handleStartPresent },
+                      ],
+                    },
+                    {
+                      id: "tef",
+                      label: "Préparation TEF",
+                      items: [
+                        { label: "Connecteurs",      onClick: handleStartPhrases },
+                        { label: "Écrit formel",     onClick: handleStartEcrit },
+                        { label: "Expression orale", onClick: handleStartOral },
+                      ],
+                    },
+                    {
+                      id: "flashcards",
+                      label: "Flashcards",
+                      items: [
+                        { label: "Patterns — Tout", onClick: handleStartPatterns },
+                        { label: "Touriste",        onClick: handleStartTouriste },
+                        { label: "Vocabulaire",     onClick: handleStartVocabulaire },
+                      ],
+                    },
+                  ]).map((section, si) => (
+                    <Accordion.Item key={section.id} value={section.id} className={si > 0 ? "border-t border-(--color-ink)/8" : ""}>
+                      <Accordion.Header>
+                        <Accordion.Trigger className="group flex w-full items-center justify-between px-4 py-3.5 text-left text-xs font-bold uppercase tracking-widest text-(--color-muted) transition-colors hover:text-(--color-ink) data-[state=open]:text-(--color-ink)">
+                          {section.label}
+                          <ChevronDown size={15} className="text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="overflow-hidden data-[state=open]:animate-none">
+                        <div className="flex flex-col pb-2">
+                          {section.items.map(({ label, onClick }) => {
+                            const isFav = favorites.includes(label);
+                            return (
+                              <div key={label} className="relative">
+                                <button
+                                  type="button"
+                                  onClick={onClick}
+                                  className="w-full px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                                >
+                                  {label}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => toggleFavorite(label, e)}
+                                  aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
+                                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 text-base transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}
+                                >
+                                  {isFav ? "⭐" : "☆"}
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                  ))}
+                </Accordion.Root>
               </div>
             </>
           )}
