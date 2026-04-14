@@ -43,6 +43,22 @@ export interface ImparfaitQuestion {
   imparfait3sg: string;
 }
 
+export interface OrthographeQuestion {
+  sentence: string;
+  options: [string, string, string, string];
+  correctIndex: 0 | 1 | 2 | 3;
+  explanation: string;
+}
+
+export interface FuturQuestion {
+  verb: Verb;
+  options: string[];
+  correctIndex: number;
+  targetSubject: string;
+  optionSubjects: string[];
+  futur3sg: string;
+}
+
 export interface ConditionnelQuestion {
   verb: Verb;
   /** Raw conjugated forms without subject pronoun (e.g. "parlerions") */
