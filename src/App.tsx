@@ -953,12 +953,65 @@ export default function App() {
               {/* DIFFICILES — mixed quiz from bookmarked weak verbs */}
               {appMode === "difficiles" && (
                 <>
-                  {weakVerbList.length < 3 && difficiles.state.phase === QuizPhase.Idle && (
-                    <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm p-8 text-center flex flex-col gap-4">
-                      <Bookmark size={32} className="mx-auto text-(--color-muted)" />
-                      <p className="text-base font-semibold text-(--color-ink)">Pas encore assez de verbes difficiles</p>
-                      <p className="text-sm text-(--color-muted)">Marquez au moins 3 verbes avec <span className="font-medium text-amber-500">Marquer</span> pendant vos exercices pour créer votre liste personnalisée.</p>
-                      <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-card) bg-(--color-brand) px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">Retour</button>
+                  {difficiles.state.phase === QuizPhase.Idle && (
+                    <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
+                      <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
+                        <div className="flex items-center gap-2">
+                          <Bookmark size={16} className="text-amber-500" fill="currentColor" />
+                          <span className="text-sm font-semibold text-(--color-ink)">Mes difficiles</span>
+                        </div>
+                        {weakVerbList.length > 0 && (
+                          <span className="rounded-full bg-amber-100 dark:bg-amber-900/30 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                            {weakVerbList.length}
+                          </span>
+                        )}
+                      </div>
+
+                      {weakVerbList.length === 0 ? (
+                        <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+                          <p className="text-sm font-medium text-(--color-ink)">Aucun verbe marqué</p>
+                          <p className="text-xs text-(--color-muted) max-w-xs">
+                            Pendant tes exercices, clique sur <span className="font-medium text-amber-500">Marquer</span> pour ajouter un verbe ici.
+                          </p>
+                          <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">
+                            Commencer un exercice
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <ul className="divide-y divide-(--color-ink)/6 max-h-[60vh] overflow-y-auto">
+                            {weakVerbList.map(verb => (
+                              <li key={verb.infinitive} className="flex items-center justify-between px-6 py-3 gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <span className="font-semibold text-(--color-ink)" lang="fr">{verb.infinitive}</span>
+                                  <span className="ml-2 text-xs text-(--color-muted)" lang="en">{verb.translation}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleWeak(verb.infinitive)}
+                                  aria-label={`Retirer ${verb.infinitive}`}
+                                  className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
+                                >
+                                  <Bookmark size={14} fill="currentColor" className="text-amber-400 hover:text-amber-300 transition-colors duration-150" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="px-6 py-4 border-t border-(--color-ink)/8 flex items-center justify-between gap-3">
+                            <p className="text-xs text-(--color-muted)">
+                              {weakVerbList.length < 2 ? "Ajoute au moins 2 verbes pour commencer" : `${weakVerbList.length} verbe${weakVerbList.length > 1 ? "s" : ""} · quiz mixte`}
+                            </p>
+                            <button
+                              type="button"
+                              disabled={weakVerbList.length < 2}
+                              onClick={() => difficiles.startQuiz(weakVerbList)}
+                              className="rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                              Commencer
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
                   {(difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) && difficiles.currentQuestion && (() => {
