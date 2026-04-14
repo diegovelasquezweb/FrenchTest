@@ -53,7 +53,9 @@ function reducer(state: PresentQuizState, action: PresentAction): PresentQuizSta
     case "RESTART":
       return { ...initialState, phase: QuizPhase.Answering, questions: buildQuestions(10) };
     case "SELECT": {
-      if (state.phase === QuizPhase.Feedback) return state;
+      if (state.phase === QuizPhase.Feedback) {
+        return { ...state, selectedIndex: action.payload };
+      }
       if (state.phase !== QuizPhase.Answering) return state;
       const question = state.questions[state.currentIndex];
       if (!question) return state;

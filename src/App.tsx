@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
   ChevronDown, ChevronRight, Star,
-  GamepadDirectional, FlaskConical, BookCheck,
+  Gamepad2, FlaskConical, BookCheck,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -385,8 +385,8 @@ export default function App() {
     "Test connecteurs":  { mode: "phrases",      onClick: handleStartPhrases,      icon: FlaskConical },
     "Test écrit":        { mode: "écrit",        onClick: handleStartEcrit,        icon: FlaskConical },
     "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
-    "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: GamepadDirectional },
-    "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: GamepadDirectional },
+    "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
+    "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
     "Interaction":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
@@ -435,14 +435,14 @@ export default function App() {
               label: "Marathon",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "patterns" as const, onClick: handleStartMarathon, icon: GamepadDirectional as LucideIcon },
+              action: { mode: "patterns" as const, onClick: handleStartMarathon, icon: Gamepad2 as LucideIcon },
             },
             {
               id: "paires",
               label: "Paires",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "vocabulaire" as const, onClick: handleStartVocabulaire, icon: GamepadDirectional as LucideIcon },
+              action: { mode: "vocabulaire" as const, onClick: handleStartVocabulaire, icon: Gamepad2 as LucideIcon },
             },
             {
               id: "favoris",
@@ -714,8 +714,8 @@ export default function App() {
                 {/* Marathon & Paires — direct buttons, no accordion. Already pinned, not favoritable. */}
                 <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {[
-                    { label: "Marathon", Icon: GamepadDirectional, onClick: handleStartMarathon },
-                    { label: "Paires",   Icon: GamepadDirectional, onClick: handleStartVocabulaire },
+                    { label: "Marathon", Icon: Gamepad2, onClick: handleStartMarathon },
+                    { label: "Paires",   Icon: Gamepad2, onClick: handleStartVocabulaire },
                   ].map(({ label, Icon, onClick }, i) => {
                     // const isFav = favorites.includes(label); // favorite disabled for Marathon/Paires
                     return (
