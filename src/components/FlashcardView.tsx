@@ -125,7 +125,7 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
       <div className="mt-4 grid grid-cols-4 gap-1 text-center md:hidden">
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-base">←</span>
-          <span className="text-[10px] text-emerald-500">Savais</span>
+          <span className="text-[10px] text-red-500">No savais</span>
         </div>
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-base">↑</span>
@@ -133,7 +133,7 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         </div>
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-base">→</span>
-          <span className="text-[10px] text-red-500">No savais</span>
+          <span className="text-[10px] text-emerald-500">Savais</span>
         </div>
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-base">↓</span>
