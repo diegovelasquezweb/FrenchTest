@@ -77,7 +77,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
       if (e.key === "ArrowRight" || e.key === "3") { e.preventDefault(); triggerRate(2); }
       if (e.key === "ArrowLeft"  || e.key === "1") { e.preventDefault(); triggerRate(0); }
       if (e.key === "ArrowUp"    || e.key === "2") { e.preventDefault(); triggerRate(1); }
-      if (e.key === "ArrowDown"  || e.key === " ") { e.preventDefault(); triggerSkip(); }
+      if (e.key === "ArrowDown"  || e.key === " " || e.key === "4") { e.preventDefault(); triggerSkip(); }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -86,70 +86,52 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
   return (
     <div className="mx-auto w-full max-w-xl">
       {/* Progress + nav */}
-      <div className="mb-4 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => triggerRate(0)}
-          aria-label="Ne savais pas"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink)"
-        >
-          ←
-        </button>
-        <div className="flex items-center gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
-            {index + 1} / {total}
-          </p>
-          <Popover.Root>
-            <Popover.Trigger asChild>
-              <button
-                type="button"
-                aria-label="Aide"
-                className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-              >
-                <HelpCircle size={13} />
-              </button>
-            </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Content
-                side="bottom"
-                align="center"
-                sideOffset={10}
-                className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-3 shadow-xl shadow-(--color-ink)/8"
-              >
-                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-(--color-muted)/60">Raccourcis</p>
-                <ul className="flex flex-col gap-1.5">
-                  {([
-                    { gesture: "←", keys: ["←", "1"], label: "Ne savais pas", color: "text-red-500 dark:text-red-400",    bg: "bg-red-500/8"     },
-                    { gesture: "→", keys: ["→", "3"], label: "Savais",         color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/8" },
-                    { gesture: "↑", keys: ["↑", "2"], label: "Hésité",         color: "text-yellow-600 dark:text-yellow-400",  bg: "bg-yellow-500/8"  },
-                    { gesture: "↓", keys: ["↓", "␣"], label: "Passer",         color: "text-(--color-muted)",             bg: "bg-(--color-ink)/5"  },
-                  ] as const).map(({ gesture, keys, label, color, bg }) => (
-                    <li key={label} className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className={`inline-flex h-5 w-5 items-center justify-center rounded text-[11px] font-bold ${bg} ${color}`}>{gesture}</span>
-                        <span className={`text-xs font-medium ${color}`}>{label}</span>
-                      </div>
-                      <div className="hidden md:flex items-center gap-1">
-                        {keys.map(k => (
-                          <kbd key={k} className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-(--color-ink)/12 bg-(--color-ink)/5 px-1 text-[10px] font-medium text-(--color-muted)">{k}</kbd>
-                        ))}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <Popover.Arrow className="fill-(--color-surface)" />
-              </Popover.Content>
-            </Popover.Portal>
-          </Popover.Root>
-        </div>
-        <button
-          type="button"
-          onClick={() => triggerRate(2)}
-          aria-label="Savais"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink)"
-        >
-          →
-        </button>
+      <div className="mb-4 flex items-center justify-center gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+          {index + 1} / {total}
+        </p>
+        <Popover.Root>
+          <Popover.Trigger asChild>
+            <button
+              type="button"
+              aria-label="Aide"
+              className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            >
+              <HelpCircle size={13} />
+            </button>
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Content
+              side="bottom"
+              align="center"
+              sideOffset={10}
+              className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-3 shadow-xl shadow-(--color-ink)/8"
+            >
+              <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-(--color-muted)/60">Raccourcis</p>
+              <ul className="flex flex-col gap-1.5">
+                {([
+                  { gesture: "←", keys: ["←", "1"], label: "Ne savais pas", color: "text-red-500 dark:text-red-400",          bg: "bg-red-500/8"     },
+                  { gesture: "→", keys: ["→", "3"], label: "Savais",         color: "text-emerald-600 dark:text-emerald-400",  bg: "bg-emerald-500/8" },
+                  { gesture: "↑", keys: ["↑", "2"], label: "Hésité",         color: "text-yellow-600 dark:text-yellow-400",    bg: "bg-yellow-500/8"  },
+                  { gesture: "↓", keys: ["↓", "␣"], label: "Passer",         color: "text-(--color-muted)",                   bg: "bg-(--color-ink)/5" },
+                ] as const).map(({ gesture, keys, label, color, bg }) => (
+                  <li key={label} className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`inline-flex h-5 w-5 items-center justify-center rounded text-[11px] font-bold ${bg} ${color}`}>{gesture}</span>
+                      <span className={`text-xs font-medium ${color}`}>{label}</span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-1">
+                      {keys.map(k => (
+                        <kbd key={k} className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-(--color-ink)/12 bg-(--color-ink)/5 px-1 text-[10px] font-medium text-(--color-muted)">{k}</kbd>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <Popover.Arrow className="fill-(--color-surface)" />
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       </div>
 
       {/* Hidden focus trap — receives focus on card change without scrolling or activating a button */}

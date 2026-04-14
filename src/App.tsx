@@ -39,6 +39,7 @@ import { PresentQuizCard } from "./components/PresentQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
 import { EssentialVerbsGuide } from "./components/EssentialVerbsGuide";
+import { MrsVandertrampGuide } from "./components/MrsVandertrampGuide";
 import type { PatternsCategory } from "./components/PatternsCategoryPicker";
 import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
@@ -50,7 +51,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "être-cards" | "être-quiz";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "être-cards" | "être-quiz" | "être-guide";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -71,6 +72,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "mes-patterns": "Mes patterns",
   "être-cards": "Être / avoir",
   "être-quiz": "Test être / avoir",
+  "être-guide": "List verbs",
 };
 
 export default function App() {
@@ -300,6 +302,7 @@ export default function App() {
   function handleStartVerbes()       { setAppMode("verbes"); }
   function handleStartEtreCards()    { pEtreAvoir.startSession(); setAppMode("être-cards"); }
   function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
+  function handleStartEtreGuide()    { setAppMode("être-guide"); }
   function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
   function handleStartVocabulaire()  { vocabulaire.startSession(); setAppMode("vocabulaire"); }
 
@@ -417,8 +420,9 @@ export default function App() {
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
     "Argumentatif":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: BookCheck },
     "Connecteurs":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: BookCheck },
-    "Être / avoir":      { mode: "être-cards",   onClick: handleStartEtreCards,  icon: BookCheck },
-    "Test être / avoir": { mode: "être-quiz",    onClick: handleStartEtreQuiz,   icon: FlaskConical },
+    "Être / avoir":        { mode: "être-cards",   onClick: handleStartEtreCards,  icon: BookCheck },
+    "Test être / avoir":   { mode: "être-quiz",    onClick: handleStartEtreQuiz,   icon: FlaskConical },
+    "List verbs": { mode: "être-guide", onClick: handleStartEtreGuide,  icon: Columns3 },
     "Restaurant":        { mode: "touriste",     onClick: () => handleSelectVoyageCategory("restaurant"),           icon: UtensilsCrossed },
     "Transport":         { mode: "touriste",     onClick: () => handleSelectVoyageCategory("transport"),            icon: Bus },
     "Hébergement":       { mode: "touriste",     onClick: () => handleSelectVoyageCategory("hebergement"),          icon: BedDouble },
@@ -538,8 +542,9 @@ export default function App() {
               id: "être-avoir",
               label: "MRS VANDERTRAMP",
               items: [
-                { label: "Être / avoir",      mode: "être-cards" as const, onClick: handleStartEtreCards },
-                { label: "Test être / avoir", mode: "être-quiz"  as const, onClick: handleStartEtreQuiz },
+                { label: "Être / avoir",        mode: "être-cards" as const, onClick: handleStartEtreCards },
+                { label: "Test être / avoir",   mode: "être-quiz"  as const, onClick: handleStartEtreQuiz },
+                { label: "List verbs", mode: "être-guide" as const, onClick: handleStartEtreGuide },
               ],
             },
             {
@@ -930,8 +935,9 @@ export default function App() {
                       id: "être-avoir",
                       label: "MRS VANDERTRAMP",
                       items: [
-                        { label: "Être / avoir",      onClick: handleStartEtreCards },
-                        { label: "Test être / avoir", onClick: handleStartEtreQuiz },
+                        { label: "Être / avoir",          onClick: handleStartEtreCards },
+                        { label: "Test être / avoir",     onClick: handleStartEtreQuiz },
+                        { label: "List verbs", onClick: handleStartEtreGuide },
                       ],
                     },
                     {
@@ -1246,6 +1252,9 @@ export default function App() {
                   )}
                 </>
               )}
+
+              {/* LISTE MRS VANDERTRAMP */}
+              {appMode === "être-guide" && <MrsVandertrampGuide />}
 
               {/* VERBES ESSENTIELS */}
               {appMode === "verbes" && <EssentialVerbsGuide />}
