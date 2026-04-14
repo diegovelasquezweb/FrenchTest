@@ -50,6 +50,15 @@ export interface OrthographeQuestion {
   explanation: string;
 }
 
+export interface PresentQuestion {
+  verb: Verb;
+  options: string[];
+  correctIndex: number;
+  targetSubject: string;
+  optionSubjects: string[];
+  present3sg: string;
+}
+
 export interface FuturQuestion {
   verb: Verb;
   options: string[];

@@ -6,6 +6,7 @@ import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
+import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
 import { ScoreBoard } from "./components/ScoreBoard";
@@ -16,11 +17,12 @@ import { FuturQuizCard } from "./components/FuturQuizCard";
 import { OrthographeQuizCard } from "./components/OrthographeQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
+import { PresentQuizCard } from "./components/PresentQuizCard";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -29,6 +31,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   futur: "Futur simple",
   orthographe: "Orthographe",
   phrases: "Expressions du discours",
+  présent: "Présent",
 };
 
 export default function App() {
@@ -41,6 +44,7 @@ export default function App() {
   const futur = useFuturQuiz();
   const orthographe = useOrthographeQuiz();
   const phrases = usePhrasesQuiz();
+  const présent = usePresentQuiz();
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -108,10 +112,20 @@ export default function App() {
           phrases.nextQuestion();
         }
       }
+
+      if (appMode === "présent") {
+        if (présent.state.phase === QuizPhase.Answering) {
+          const digit = parseInt(e.key, 10);
+          if (digit >= 1 && digit <= 4) présent.selectAnswer(digit - 1);
+        }
+        if (présent.state.phase === QuizPhase.Feedback && e.key === "Enter") {
+          présent.nextQuestion();
+        }
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, présent]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -132,6 +146,9 @@ export default function App() {
     } else if (appMode === "phrases" && phrases.state.phase === QuizPhase.Feedback && phrases.currentQuestion) {
       const correct = phrases.currentQuestion.options[phrases.currentQuestion.correctIndex] ?? "";
       setAnnouncement(phrases.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "présent" && présent.state.phase === QuizPhase.Feedback && présent.currentQuestion) {
+      const correct = présent.currentQuestion.options[présent.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(présent.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else {
       setAnnouncement("");
     }
@@ -143,6 +160,7 @@ export default function App() {
     futur.state.phase, futur.state.answerState, futur.currentQuestion,
     orthographe.state.phase, orthographe.state.answerState, orthographe.currentQuestion,
     phrases.state.phase, phrases.state.answerState, phrases.currentQuestion,
+    présent.state.phase, présent.state.answerState, présent.currentQuestion,
   ]);
 
   function handleGoHome() {
@@ -152,6 +170,7 @@ export default function App() {
     if (appMode === "futur") futur.goHome();
     if (appMode === "orthographe") orthographe.goHome();
     if (appMode === "phrases") phrases.goHome();
+    if (appMode === "présent") présent.goHome();
     setAppMode("home");
   }
 
@@ -185,13 +204,20 @@ export default function App() {
     setAppMode("phrases");
   }
 
+  function handleStartPresent() {
+    présent.startQuiz();
+    setAppMode("présent");
+  }
+
   const activePhase =
     appMode === "participe" ? participe.state.phase
     : appMode === "imparfait" ? imparfait.state.phase
     : appMode === "conditionnel" ? conditionnel.state.phase
     : appMode === "futur" ? futur.state.phase
     : appMode === "orthographe" ? orthographe.state.phase
-    : phrases.state.phase;
+    : appMode === "phrases" ? phrases.state.phase
+    : appMode === "présent" ? présent.state.phase
+    : QuizPhase.Idle;
 
   const activeProgress =
     appMode === "participe" ? participe.progress
@@ -199,7 +225,9 @@ export default function App() {
     : appMode === "conditionnel" ? conditionnel.progress
     : appMode === "futur" ? futur.progress
     : appMode === "orthographe" ? orthographe.progress
-    : phrases.progress;
+    : appMode === "phrases" ? phrases.progress
+    : appMode === "présent" ? présent.progress
+    : { index: 0, total: 0 };
 
   const activeScore =
     appMode === "participe" ? participe.state.score
@@ -207,7 +235,8 @@ export default function App() {
     : appMode === "conditionnel" ? conditionnel.state.score
     : appMode === "futur" ? futur.state.score
     : appMode === "orthographe" ? orthographe.state.score
-    : phrases.state.score;
+    : appMode === "phrases" ? phrases.state.score
+    : présent.state.score;
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
@@ -248,7 +277,7 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         {/* ── HOME ── */}
         {appMode === "home" && (
-          <div className="mx-auto w-full max-w-sm grid grid-cols-2 gap-3">
+          <div className="mx-auto w-full max-w-lg grid grid-cols-3 gap-3">
             {(
               [
                 { label: "Participe passé", sub: "Identifier la forme",  onClick: handleStartParticipe },
@@ -257,6 +286,7 @@ export default function App() {
                 { label: "Futur simple",    sub: "Conjuguer par sujet",  onClick: handleStartFutur },
                 { label: "Orthographe",     sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
                 { label: "Connecteurs",     sub: "Expressions du TEF",   onClick: handleStartPhrases },
+                { label: "Présent",         sub: "Conjuguer par sujet",  onClick: handleStartPresent },
               ] as const
             ).map(({ label, sub, onClick }) => (
               <button
@@ -406,6 +436,37 @@ export default function App() {
                 score={orthographe.state.score}
                 total={orthographe.progress.total}
                 onRestart={orthographe.restartQuiz}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── PRÉSENT QUIZ ── */}
+        {appMode === "présent" && (
+          <>
+            {(présent.state.phase === QuizPhase.Answering || présent.state.phase === QuizPhase.Feedback) &&
+              présent.currentQuestion && (
+                <PresentQuizCard
+                  question={présent.currentQuestion}
+                  answerState={présent.state.answerState}
+                  selectedIndex={présent.state.selectedIndex}
+                  onSelect={présent.selectAnswer}
+                  onNext={présent.nextQuestion}
+                  questionNumber={présent.progress.index + 1}
+                  total={présent.progress.total}
+                />
+              )}
+            {présent.state.phase === QuizPhase.Complete && (
+              <ResultScreen
+                history={présent.state.history.map((e) => ({
+                  verb: e.question.verb,
+                  picked: e.picked,
+                  correct: e.correct,
+                }))}
+                score={présent.state.score}
+                total={présent.progress.total}
+                onRestart={présent.restartQuiz}
                 onHome={handleGoHome}
               />
             )}
