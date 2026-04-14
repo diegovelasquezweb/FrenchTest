@@ -13,7 +13,7 @@ export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
       aria-checked={isDark}
       aria-label={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
       onClick={onToggle}
-      className="fixed right-4 top-3 z-50 flex h-7 w-12 items-center rounded-full border border-(--color-btn-border) bg-(--color-btn-bg) p-0.5 shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+      className="flex h-7 w-12 items-center rounded-full border border-(--color-btn-border) bg-(--color-btn-bg) p-0.5 shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
     >
       <span
         aria-hidden="true"
