@@ -82,7 +82,6 @@ export default function App() {
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
   const flashcards = useFlashcards(FLASHCARDS, "tef-flashcard-progress");
-  const pArgumenter        = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"),       "tef-p-argumenter");
   const pConnecteurs       = useFlashcards(FLASHCARDS.filter(c => c.category === "connecteurs"),         "tef-p-connecteurs");
   const pOralInteraction   = useFlashcards(FLASHCARDS.filter(c => c.category === "oral"),                "tef-p-oral-interaction");
   const pOralMonologue     = useFlashcards(FLASHCARDS.filter(c => c.category === "oral-persuasion"),     "tef-p-oral-monologue");
@@ -96,7 +95,6 @@ export default function App() {
   const [openItems, setOpenItems] = useState<string[]>([]);
 
   const activeDeck =
-    patternsCategory === "argumenter"         ? pArgumenter        :
     patternsCategory === "connecteurs"        ? pConnecteurs        :
     patternsCategory === "oral-interaction"   ? pOralInteraction    :
     patternsCategory === "oral-monologue"     ? pOralMonologue      :
@@ -249,7 +247,6 @@ export default function App() {
     setPatternsCategory(cat);
     setAppMode("patterns");
     const deck =
-      cat === "argumenter"         ? pArgumenter         :
       cat === "connecteurs"        ? pConnecteurs         :
       cat === "oral-interaction"   ? pOralInteraction     :
       cat === "oral-monologue"     ? pOralMonologue       :
@@ -331,7 +328,6 @@ export default function App() {
     "Présent":          { mode: "présent",       onClick: handleStartPresent,      icon: "📝" },
     "Vocabulaire":            { mode: "vocabulaire", onClick: handleStartVocabulaire,                                   icon: "🃏" },
     "Touriste":               { mode: "touriste",    onClick: handleStartTouriste,                                      icon: "🃏" },
-    "Patterns — Argumenter":             { mode: "patterns", onClick: () => handleSelectPatternsCategory("argumenter"),         icon: "🃏" },
     "Patterns — Connecteurs":            { mode: "patterns", onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: "🃏" },
     "Patterns — Oral — Interaction":     { mode: "patterns", onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: "🃏" },
     "Patterns — Oral — Persuasion":      { mode: "patterns", onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: "🃏" },
@@ -487,7 +483,6 @@ export default function App() {
                               { label: "Oral — Persuasion",        cat: "oral-monologue"     },
                               { label: "Écrit — Faits divers",     cat: "ecrit-faits-divers" },
                               { label: "Écrit — Argumentatif",     cat: "ecrit-argumentatif" },
-                              { label: "Argumenter",               cat: "argumenter"         },
                               { label: "Connecteurs",              cat: "connecteurs"        },
                               { label: "Tout",                     cat: "all"                },
                             ] as const).map(({ label, cat }) => {
@@ -739,7 +734,6 @@ export default function App() {
                                       { label: "Oral — Persuasion",      cat: "oral-monologue"     as const },
                                       { label: "Écrit — Faits divers",   cat: "ecrit-faits-divers" as const },
                                       { label: "Écrit — Argumentatif",   cat: "ecrit-argumentatif" as const },
-                                      { label: "Argumenter",             cat: "argumenter"         as const },
                                       { label: "Connecteurs",            cat: "connecteurs"        as const },
                                       { label: "Tout",                   cat: "all"                as const },
                                     ]).map(({ label, cat }) => {

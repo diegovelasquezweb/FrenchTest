@@ -1,6 +1,5 @@
 export type PatternsCategory =
   | "all"
-  | "argumenter"
   | "connecteurs"
   | "oral-interaction"
   | "oral-monologue"
