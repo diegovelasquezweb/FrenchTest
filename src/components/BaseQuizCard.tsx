@@ -70,31 +70,34 @@ export function BaseQuizCard({
     }
   }, [isRevealed, questionNumber]);
 
+  const nextLabel = questionNumber >= total ? "Voir les résultats" : "Suivant →";
+
   return (
-    <SwipeCard
-      className={`mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
-      aria-label={`Question ${questionNumber} sur ${total}`}
-      resetKey={questionNumber}
-      onSwipeLeft={isRevealed ? onNext : undefined}
-    >
-      {onToggleWeak !== undefined && (
-        <div className="flex justify-end mb-3">
-          <button
-            type="button"
-            aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
-            className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
-              isWeak
-                ? "text-(--color-ink) font-semibold"
-                : "text-(--color-muted) hover:text-(--color-ink)"
-            }`}
-            onClick={onToggleWeak}
-          >
-            <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
-            {isWeak ? "Difficile" : "Marquer"}
-          </button>
-        </div>
-      )}
-      {header}
+    <>
+      <SwipeCard
+        className={`mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
+        aria-label={`Question ${questionNumber} sur ${total}`}
+        resetKey={questionNumber}
+        onSwipeLeft={isRevealed ? onNext : undefined}
+      >
+        {onToggleWeak !== undefined && (
+          <div className="flex justify-end mb-3">
+            <button
+              type="button"
+              aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
+              className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
+                isWeak
+                  ? "text-(--color-ink) font-semibold"
+                  : "text-(--color-muted) hover:text-(--color-ink)"
+              }`}
+              onClick={onToggleWeak}
+            >
+              <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
+              {isWeak ? "Difficile" : "Marquer"}
+            </button>
+          </div>
+        )}
+        {header}
 
         <div className={optionsGridClassName}>
           {question.options.map((option, i) => (
@@ -113,18 +116,33 @@ export function BaseQuizCard({
 
         {feedback}
 
+        {/* Desktop: button inside card */}
         {isRevealed && (
-          <div className={`${nextButtonSpacing} flex justify-center`}>
+          <div className={`${nextButtonSpacing} hidden md:flex justify-center`}>
             <button
-              ref={nextButtonRef}
               type="button"
               onClick={onNext}
               className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
             >
-              {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
+              {nextLabel}
             </button>
           </div>
         )}
-    </SwipeCard>
+      </SwipeCard>
+
+      {/* Mobile: sticky bar pinned to bottom of viewport */}
+      {isRevealed && (
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-(--color-ink)/8 bg-(--color-bg)/90 px-4 py-3 backdrop-blur-sm">
+          <button
+            ref={nextButtonRef}
+            type="button"
+            onClick={onNext}
+            className="w-full min-h-12 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          >
+            {nextLabel}
+          </button>
+        </div>
+      )}
+    </>
   );
 }

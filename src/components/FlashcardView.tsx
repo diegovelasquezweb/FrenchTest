@@ -22,6 +22,7 @@ const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   argumentation: "Argumentation",
   vocabulaire: "Vocabulaire",
   touriste: "Touriste",
+  "être-avoir": "MRS VANDERTRAMP",
 };
 
 const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
@@ -32,6 +33,7 @@ const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
   argumentation: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
   vocabulaire: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
   touriste: "bg-pink-500/10 text-pink-600 dark:text-pink-400",
+  "être-avoir": "bg-teal-500/10 text-teal-600 dark:text-teal-400",
 };
 
 interface FlashcardViewProps {
@@ -45,12 +47,12 @@ interface FlashcardViewProps {
 }
 
 export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, onToggleFavorite }: FlashcardViewProps) {
-  const firstRatingRef = useRef<HTMLButtonElement>(null);
+  const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const pending = useRef(false);
 
   useEffect(() => {
-    firstRatingRef.current?.focus();
+    focusTrapRef.current?.focus({ preventScroll: true });
   }, [index]);
 
   // Clear flash overlay whenever a new card renders.
@@ -150,6 +152,9 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
         </button>
       </div>
 
+      {/* Hidden focus trap — receives focus on card change without scrolling or activating a button */}
+      <input ref={focusTrapRef} type="text" readOnly tabIndex={-1} className="sr-only" aria-hidden="true" />
+
       <SwipeCard
         className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
         resetKey={card.id}
@@ -190,13 +195,13 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
 
           <div className="mt-5 grid grid-cols-3 gap-2">
             <button
-              ref={firstRatingRef}
               type="button"
               onClick={() => triggerRate(0)}
               className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
             >
               <span className="inline-block h-3 w-3 rounded-full bg-red-500" aria-hidden="true" />
               <span className="leading-tight">Pas du tout</span>
+              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">1</span>
             </button>
             <button
               type="button"
@@ -205,6 +210,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
             >
               <span className="inline-block h-3 w-3 rounded-full bg-yellow-400" aria-hidden="true" />
               <span className="leading-tight">Hésité</span>
+              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">2</span>
             </button>
             <button
               type="button"
@@ -213,6 +219,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
             >
               <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" aria-hidden="true" />
               <span className="leading-tight">Savais</span>
+              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">3</span>
             </button>
           </div>
 

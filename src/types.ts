@@ -102,7 +102,7 @@ export interface Flashcard {
   translationEn: string;
   translationEs: string;
   usage: string;
-  category: "oral" | "oral-persuasion" | "écrit-faits-divers" | "connecteurs" | "argumentation" | "vocabulaire" | "touriste";
+  category: "oral" | "oral-persuasion" | "écrit-faits-divers" | "connecteurs" | "argumentation" | "vocabulaire" | "touriste" | "être-avoir";
   subCategory?: string;
 }
 

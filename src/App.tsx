@@ -17,6 +17,7 @@ import { useDifficultesQuiz } from "./hooks/useDifficultesQuiz";
 import { useWeakVerbs } from "./hooks/useWeakVerbs";
 import { useFavoriteCards } from "./hooks/useFavoriteCards";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
+import { useEtreQuiz } from "./hooks/useEtreQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
@@ -49,7 +50,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "être-cards" | "être-quiz";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -68,6 +69,8 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   difficiles: "Mes difficiles",
   verbes: "Verbes essentiels",
   "mes-patterns": "Mes patterns",
+  "être-cards": "Être / avoir",
+  "être-quiz": "Test être / avoir",
 };
 
 export default function App() {
@@ -107,6 +110,9 @@ export default function App() {
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
   const flashcards = useFlashcards(FLASHCARDS, "tef-flashcard-progress");
+  const etreQuiz   = useEtreQuiz();
+  const pEtreAvoir = useFlashcards(FLASHCARDS.filter(c => c.category === "être-avoir"), "tef-p-etre-avoir");
+
   const pConnecteurs       = useFlashcards(FLASHCARDS.filter(c => c.category === "connecteurs"),         "tef-p-connecteurs");
   const pOralInteraction   = useFlashcards(FLASHCARDS.filter(c => c.category === "oral"),                "tef-p-oral-interaction");
   const pOralMonologue     = useFlashcards(FLASHCARDS.filter(c => c.category === "oral-persuasion"),     "tef-p-oral-monologue");
@@ -189,6 +195,10 @@ export default function App() {
         if (phrases.state.phase === QuizPhase.Answering || phrases.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) phrases.selectAnswer(d - 1); }
         if (phrases.state.phase === QuizPhase.Feedback && e.key === "Enter") phrases.nextQuestion();
       }
+      if (appMode === "être-quiz") {
+        if (etreQuiz.state.phase === QuizPhase.Answering || etreQuiz.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) etreQuiz.selectAnswer(d - 1); }
+        if (etreQuiz.state.phase === QuizPhase.Feedback && e.key === "Enter") etreQuiz.nextQuestion();
+      }
       if (appMode === "présent") {
         if (présent.state.phase === QuizPhase.Answering || présent.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) présent.selectAnswer(d - 1); }
         if (présent.state.phase === QuizPhase.Feedback && e.key === "Enter") présent.nextQuestion();
@@ -204,7 +214,7 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, présent, écrit, oral]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, écrit, oral]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -234,6 +244,9 @@ export default function App() {
     } else if (appMode === "oral" && oral.state.phase === QuizPhase.Feedback && oral.currentQuestion) {
       const correct = oral.currentQuestion.options[oral.currentQuestion.correctIndex] ?? "";
       setAnnouncement(oral.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "être-quiz" && etreQuiz.state.phase === QuizPhase.Feedback && etreQuiz.currentQuestion) {
+      const correct = etreQuiz.currentQuestion.options[etreQuiz.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(etreQuiz.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else {
       setAnnouncement("");
     }
@@ -248,6 +261,7 @@ export default function App() {
     présent.state.phase, présent.state.answerState, présent.currentQuestion,
     écrit.state.phase, écrit.state.answerState, écrit.currentQuestion,
     oral.state.phase, oral.state.answerState, oral.currentQuestion,
+    etreQuiz.state.phase, etreQuiz.state.answerState, etreQuiz.currentQuestion,
   ]);
 
   function handleGoHome() {
@@ -266,6 +280,8 @@ export default function App() {
     if (appMode === "vocabulaire") vocabulaire.goHome();
     if (appMode === "touriste") { activeTouristeDeck.goHome(); setVoyageCategory(null); }
     if (appMode === "mes-patterns") mesPatterns.goHome();
+    if (appMode === "être-cards") pEtreAvoir.goHome();
+    if (appMode === "être-quiz") etreQuiz.goHome();
     setAppMode("home");
   }
 
@@ -282,6 +298,8 @@ export default function App() {
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
   function handleStartVerbes()       { setAppMode("verbes"); }
+  function handleStartEtreCards()    { pEtreAvoir.startSession(); setAppMode("être-cards"); }
+  function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
   function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
   function handleStartVocabulaire()  { vocabulaire.startSession(); setAppMode("vocabulaire"); }
 
@@ -323,6 +341,7 @@ export default function App() {
     : appMode === "présent"       ? présent.state.phase
     : appMode === "écrit"         ? écrit.state.phase
     : appMode === "oral"          ? oral.state.phase
+    : appMode === "être-quiz"     ? etreQuiz.state.phase
     : QuizPhase.Idle;
 
   const activeProgress =
@@ -337,6 +356,7 @@ export default function App() {
     : appMode === "présent"       ? présent.progress
     : appMode === "écrit"         ? écrit.progress
     : appMode === "oral"          ? oral.progress
+    : appMode === "être-quiz"     ? etreQuiz.progress
     : { index: 0, total: 0 };
 
   const activeScore =
@@ -350,7 +370,8 @@ export default function App() {
     : appMode === "phrases"       ? phrases.state.score
     : appMode === "présent"       ? présent.state.score
     : appMode === "écrit"         ? écrit.state.score
-    : oral.state.score;
+    : appMode === "oral"      ? oral.state.score
+    : etreQuiz.state.score;
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
@@ -396,6 +417,8 @@ export default function App() {
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
     "Argumentatif":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: BookCheck },
     "Connecteurs":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: BookCheck },
+    "Être / avoir":      { mode: "être-cards",   onClick: handleStartEtreCards,  icon: BookCheck },
+    "Test être / avoir": { mode: "être-quiz",    onClick: handleStartEtreQuiz,   icon: FlaskConical },
     "Restaurant":        { mode: "touriste",     onClick: () => handleSelectVoyageCategory("restaurant"),           icon: UtensilsCrossed },
     "Transport":         { mode: "touriste",     onClick: () => handleSelectVoyageCategory("transport"),            icon: Bus },
     "Hébergement":       { mode: "touriste",     onClick: () => handleSelectVoyageCategory("hebergement"),          icon: BedDouble },
@@ -410,6 +433,7 @@ export default function App() {
       appMode === "patterns"      ? activeDeck      :
       appMode === "vocabulaire"   ? vocabulaire      :
       appMode === "mes-patterns"  ? mesPatterns      :
+      appMode === "être-cards"    ? pEtreAvoir       :
       activeTouristeDeck;
     if (appMode === "patterns" && patternsCategory === null) return null;
     if (appMode === "touriste" && voyageCategory === null) return null;
@@ -425,7 +449,7 @@ export default function App() {
     );
   }
 
-  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns";
+  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns" || appMode === "être-cards";
 
   return (
     <div className="flex h-dvh overflow-hidden bg-(--color-bg)">
@@ -508,6 +532,14 @@ export default function App() {
               items: [
                 { label: "Connecteurs",      mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("connecteurs") },
                 { label: "Test connecteurs", mode: "phrases" as const, onClick: handleStartPhrases },
+              ],
+            },
+            {
+              id: "être-avoir",
+              label: "MRS VANDERTRAMP",
+              items: [
+                { label: "Être / avoir",      mode: "être-cards" as const, onClick: handleStartEtreCards },
+                { label: "Test être / avoir", mode: "être-quiz"  as const, onClick: handleStartEtreQuiz },
               ],
             },
             {
@@ -895,6 +927,14 @@ export default function App() {
                       ],
                     },
                     {
+                      id: "être-avoir",
+                      label: "MRS VANDERTRAMP",
+                      items: [
+                        { label: "Être / avoir",      onClick: handleStartEtreCards },
+                        { label: "Test être / avoir", onClick: handleStartEtreQuiz },
+                      ],
+                    },
+                    {
                       id: "voyage",
                       label: "Voyage",
                       items: [
@@ -1179,6 +1219,30 @@ export default function App() {
                   )}
                   {phrases.state.phase === QuizPhase.Complete && (
                     <OrthographeResultScreen history={phrases.state.history} score={phrases.state.score} total={phrases.progress.total} onRestart={phrases.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* ÊTRE / AVOIR — CARDS */}
+              {appMode === "être-cards" && (
+                <>
+                  {pEtreAvoir.state.phase === "session" && pEtreAvoir.currentCard && (
+                    <FlashcardView card={pEtreAvoir.currentCard} index={pEtreAvoir.progress.index} total={pEtreAvoir.progress.total} onRate={pEtreAvoir.rate} onSkip={pEtreAvoir.skip} />
+                  )}
+                  {pEtreAvoir.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={pEtreAvoir.state.sessionResults} masteredCount={pEtreAvoir.masteredCount} totalCards={pEtreAvoir.totalCards} cards={pEtreAvoir.state.deck} onRestart={pEtreAvoir.restart} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* ÊTRE / AVOIR — QUIZ */}
+              {appMode === "être-quiz" && (
+                <>
+                  {(etreQuiz.state.phase === QuizPhase.Answering || etreQuiz.state.phase === QuizPhase.Feedback) && etreQuiz.currentQuestion && (
+                    <OrthographeQuizCard question={etreQuiz.currentQuestion} answerState={etreQuiz.state.answerState} selectedIndex={etreQuiz.state.selectedIndex} onSelect={etreQuiz.selectAnswer} onNext={etreQuiz.nextQuestion} questionNumber={etreQuiz.progress.index + 1} total={etreQuiz.progress.total} label="Choisissez l'auxiliaire correct" />
+                  )}
+                  {etreQuiz.state.phase === QuizPhase.Complete && (
+                    <OrthographeResultScreen history={etreQuiz.state.history} score={etreQuiz.state.score} total={etreQuiz.progress.total} onRestart={etreQuiz.restartQuiz} onHome={handleGoHome} />
                   )}
                 </>
               )}
