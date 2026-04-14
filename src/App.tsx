@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
-  Bookmark, ChevronDown, ChevronRight, Heart, Star, Target,
+  Bookmark, ChevronDown, ChevronRight, Heart, Target,
   Gamepad2, FlaskConical, BookCheck, Columns3,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
@@ -196,34 +196,6 @@ export default function App() {
       if (appMode === "écrit") {
         if (écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
         if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") écrit.nextQuestion();
-      }
-      if (appMode === "patterns" && activeDeck.state.phase === "session") {
-        if (e.key === "1") activeDeck.rate(0);
-        if (e.key === "2") activeDeck.rate(1);
-        if (e.key === "3") activeDeck.rate(2);
-        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); activeDeck.skip(); }
-        if (e.key === "ArrowLeft") activeDeck.back();
-      }
-      if (appMode === "vocabulaire" && vocabulaire.state.phase === "session") {
-        if (e.key === "1") vocabulaire.rate(0);
-        if (e.key === "2") vocabulaire.rate(1);
-        if (e.key === "3") vocabulaire.rate(2);
-        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); vocabulaire.skip(); }
-        if (e.key === "ArrowLeft") vocabulaire.back();
-      }
-      if (appMode === "touriste" && activeTouristeDeck.state.phase === "session") {
-        if (e.key === "1") activeTouristeDeck.rate(0);
-        if (e.key === "2") activeTouristeDeck.rate(1);
-        if (e.key === "3") activeTouristeDeck.rate(2);
-        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); activeTouristeDeck.skip(); }
-        if (e.key === "ArrowLeft") activeTouristeDeck.back();
-      }
-      if (appMode === "mes-patterns" && mesPatterns.state.phase === "session") {
-        if (e.key === "1") mesPatterns.rate(0);
-        if (e.key === "2") mesPatterns.rate(1);
-        if (e.key === "3") mesPatterns.rate(2);
-        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); mesPatterns.skip(); }
-        if (e.key === "ArrowLeft") mesPatterns.back();
       }
       if (appMode === "oral") {
         if (oral.state.phase === QuizPhase.Answering || oral.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) oral.selectAnswer(d - 1); }
@@ -482,7 +454,7 @@ export default function App() {
             },
             {
               id: "favoris",
-              label: "Favoris",
+              label: "Leçons favorites",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "favoris" as const,
             },
@@ -498,7 +470,7 @@ export default function App() {
               label: "Mes patterns",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "mes-patterns" as const, onClick: handleStartMesPatterns, icon: Heart as LucideIcon },
+              action: { mode: "mes-patterns" as const, onClick: handleStartMesPatterns, icon: Bookmark as LucideIcon },
             },
             {
               id: "oral",
@@ -603,7 +575,7 @@ export default function App() {
                     type="button"
                     onClick={(e) => toggleFavorite(group.label, e)}
                     aria-label={isFav ? `Retirer ${group.label} des favoris` : `Ajouter ${group.label} aux favoris`}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-(--color-muted)" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
                   >
                     <Star size={13} fill={isFav ? "currentColor" : "none"} />
                   </button>
@@ -620,7 +592,10 @@ export default function App() {
                   onClick={toggleGroup}
                   className="w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-(--color-ink)/5 group"
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-(--color-ink) transition-colors">{group.label}</span>
+                  <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-(--color-ink) transition-colors">
+                    {group.id === "favoris" && <Heart size={12} className="shrink-0" />}
+                    {group.label}
+                  </span>
                   {isOpen ? <ChevronDown size={16} className="text-(--color-ink) transition-transform duration-200" /> : <ChevronRight size={16} className="text-(--color-ink) transition-transform duration-200" />}
                 </button>
 
@@ -648,9 +623,9 @@ export default function App() {
                             type="button"
                             onClick={(e) => toggleFavorite(label, e)}
                             aria-label={`Retirer ${label} des favoris`}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-amber-400"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-(--color-muted)"
                           >
-                            <Star size={13} fill="currentColor" />
+                            <Heart size={13} fill="currentColor" />
                           </button>
                         </div>
                       );
@@ -694,9 +669,9 @@ export default function App() {
                             type="button"
                             onClick={(e) => toggleFavorite(label, e)}
                             aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                            className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-(--color-muted)" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
                           >
-                            <Star size={13} fill={isFav ? "currentColor" : "none"} />
+                            <Heart size={13} fill={isFav ? "currentColor" : "none"} />
                           </button>
                         </div>
                       );
@@ -799,8 +774,8 @@ export default function App() {
                           {label}
                         </button>
                         {/* Favorite star disabled — uncomment to re-enable
-                        <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
-                          <Star size={14} fill={isFav ? "currentColor" : "none"} />
+                        <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-(--color-muted)" : "text-(--color-muted)"}`}>
+                          <Heart size={14} fill={isFav ? "currentColor" : "none"} />
                         </button>
                         */}
                       </div>
@@ -831,7 +806,7 @@ export default function App() {
                     onClick={handleStartMesPatterns}
                     className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
                   >
-                    <Heart size={16} className="shrink-0" />
+                    <Bookmark size={16} className="shrink-0" />
                     Mes patterns
                     <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
                   </button>
@@ -841,7 +816,10 @@ export default function App() {
                 {/* Favoris mobile */}
                 {favorites.length > 0 && (
                   <div className="w-full">
-                    <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-widest text-(--color-muted)">Favoris</p>
+                    <p className="mb-2 px-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-(--color-muted)">
+                      <Heart size={12} className="shrink-0" />
+                      Leçons favorites
+                    </p>
                     <div className="rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                       {favorites.map(label => {
                         const item = SIDEBAR_LOOKUP[label];
@@ -860,9 +838,9 @@ export default function App() {
                               type="button"
                               onClick={(e) => toggleFavorite(label, e)}
                               aria-label={`Retirer ${label} des favoris`}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-amber-400"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-(--color-muted)"
                             >
-                              <Star size={14} fill="currentColor" />
+                              <Heart size={14} fill="currentColor" />
                             </button>
                           </div>
                         );
@@ -940,8 +918,8 @@ export default function App() {
                                 <button type="button" onClick={onClick} className="w-full px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
                                   {displayLabel(label)}
                                 </button>
-                                <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
-                                  <Star size={14} fill={isFav ? "currentColor" : "none"} />
+                                <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-(--color-muted)" : "text-(--color-muted)"}`}>
+                                  <Heart size={14} fill={isFav ? "currentColor" : "none"} />
                                 </button>
                               </div>
                             );
@@ -1206,7 +1184,7 @@ export default function App() {
               {appMode === "patterns" && (
                 <>
                   {patternsCategory !== null && activeDeck.state.phase === "session" && activeDeck.currentCard && (
-                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} canGoBack={activeDeck.progress.index > 0} onRate={activeDeck.rate} onBack={activeDeck.back} onSkip={activeDeck.skip} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
+                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} onRate={activeDeck.rate} onSkip={activeDeck.skip} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
                   )}
                   {patternsCategory !== null && activeDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeDeck.state.sessionResults} masteredCount={activeDeck.masteredCount} totalCards={activeDeck.totalCards} onRestart={activeDeck.restart} onHome={handleGoHome} />
@@ -1275,7 +1253,7 @@ export default function App() {
                     </div>
                   )}
                   {mesPatterns.state.phase === "session" && mesPatterns.currentCard && (
-                    <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} canGoBack={mesPatterns.progress.index > 0} onRate={mesPatterns.rate} onBack={mesPatterns.back} onSkip={mesPatterns.skip} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
+                    <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} onRate={mesPatterns.rate} onSkip={mesPatterns.skip} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
                   )}
                   {mesPatterns.state.phase === "complete" && (
                     <FlashcardResults sessionResults={mesPatterns.state.sessionResults} masteredCount={mesPatterns.masteredCount} totalCards={mesPatterns.totalCards} onRestart={mesPatterns.restart} onHome={handleGoHome} />
@@ -1287,7 +1265,7 @@ export default function App() {
               {appMode === "vocabulaire" && (
                 <>
                   {vocabulaire.state.phase === "session" && vocabulaire.currentCard && (
-                    <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} canGoBack={vocabulaire.progress.index > 0} onRate={vocabulaire.rate} onBack={vocabulaire.back} onSkip={vocabulaire.skip} />
+                    <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} onRate={vocabulaire.rate} onSkip={vocabulaire.skip} />
                   )}
                   {vocabulaire.state.phase === "complete" && (
                     <FlashcardResults sessionResults={vocabulaire.state.sessionResults} masteredCount={vocabulaire.masteredCount} totalCards={vocabulaire.totalCards} onRestart={vocabulaire.restart} onHome={handleGoHome} />
@@ -1299,7 +1277,7 @@ export default function App() {
               {appMode === "touriste" && (
                 <>
                   {activeTouristeDeck.state.phase === "session" && activeTouristeDeck.currentCard && (
-                    <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} canGoBack={activeTouristeDeck.progress.index > 0} onRate={activeTouristeDeck.rate} onBack={activeTouristeDeck.back} onSkip={activeTouristeDeck.skip} />
+                    <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} onRate={activeTouristeDeck.rate} onSkip={activeTouristeDeck.skip} />
                   )}
                   {activeTouristeDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeTouristeDeck.state.sessionResults} masteredCount={activeTouristeDeck.masteredCount} totalCards={activeTouristeDeck.totalCards} onRestart={activeTouristeDeck.restart} onHome={handleGoHome} />

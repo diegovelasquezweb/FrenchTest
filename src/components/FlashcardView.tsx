@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { Heart, HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../types";
@@ -38,15 +38,13 @@ interface FlashcardViewProps {
   card: Flashcard;
   index: number;
   total: number;
-  canGoBack: boolean;
   onRate(r: FlashcardRating): void;
-  onBack(): void;
   onSkip(): void;
   isFavorite?: boolean;
   onToggleFavorite?(): void;
 }
 
-export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, onSkip, isFavorite, onToggleFavorite }: FlashcardViewProps) {
+export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, onToggleFavorite }: FlashcardViewProps) {
   const firstRatingRef = useRef<HTMLButtonElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const pending = useRef(false);
@@ -58,18 +56,30 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
   // Clear flash overlay whenever a new card renders.
   useEffect(() => { setFlash(null); pending.current = false; }, [card.id]);
 
-  function triggerRate(r: FlashcardRating) {
+  const triggerRate = useCallback((r: FlashcardRating) => {
     if (pending.current) return;
     pending.current = true;
     setFlash(r === 2 ? "emerald" : r === 0 ? "red" : "yellow");
     window.setTimeout(() => onRate(r), FLASH_DURATION_MS);
-  }
+  }, [onRate]);
 
-  function triggerSkip() {
+  const triggerSkip = useCallback(() => {
     if (pending.current) return;
     pending.current = true;
     window.setTimeout(onSkip, 80);
-  }
+  }, [onSkip]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowRight" || e.key === "3") { e.preventDefault(); triggerRate(2); }
+      if (e.key === "ArrowLeft"  || e.key === "1") { e.preventDefault(); triggerRate(0); }
+      if (e.key === "ArrowUp"    || e.key === "2") { e.preventDefault(); triggerRate(1); }
+      if (e.key === "ArrowDown"  || e.key === " ") { e.preventDefault(); triggerSkip(); }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [triggerRate, triggerSkip]);
 
   return (
     <div className="mx-auto w-full max-w-xl">
@@ -77,10 +87,9 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
       <div className="mb-4 flex items-center justify-between">
         <button
           type="button"
-          onClick={onBack}
-          disabled={!canGoBack}
-          aria-label="Carte précédente"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink) disabled:opacity-20 disabled:cursor-not-allowed"
+          onClick={() => triggerRate(0)}
+          aria-label="Ne savais pas"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink)"
         >
           ←
         </button>
@@ -107,12 +116,12 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
               >
                 <ul className="flex flex-col gap-2 text-xs">
                   <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 font-semibold text-emerald-600 dark:text-emerald-400">←</span>
-                    <span className="font-medium text-emerald-600 dark:text-emerald-400">Savais</span>
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 font-semibold text-red-600 dark:text-red-400">←</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">Ne savais pas</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 font-semibold text-red-600 dark:text-red-400">→</span>
-                    <span className="font-medium text-red-600 dark:text-red-400">Ne savais pas</span>
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 font-semibold text-emerald-600 dark:text-emerald-400">→</span>
+                    <span className="font-medium text-emerald-600 dark:text-emerald-400">Savais</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10 font-semibold text-yellow-600 dark:text-yellow-400">↑</span>
@@ -130,8 +139,8 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         </div>
         <button
           type="button"
-          onClick={onSkip}
-          aria-label="Passer"
+          onClick={() => triggerRate(2)}
+          aria-label="Savais"
           className="flex h-8 w-8 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink)"
         >
           →
@@ -141,8 +150,8 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
       <SwipeCard
         className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
         resetKey={card.id}
-        onSwipeRight={() => triggerRate(0)}
-        onSwipeLeft={() => triggerRate(2)}
+        onSwipeRight={() => triggerRate(2)}
+        onSwipeLeft={() => triggerRate(0)}
         onSwipeDown={triggerSkip}
         onSwipeUp={() => triggerRate(1)}
       >
