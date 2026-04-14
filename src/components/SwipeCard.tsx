@@ -11,7 +11,7 @@ interface SwipeCardProps {
   onSwipeDown?: () => void;
 }
 
-const MIN_DISTANCE = 45;
+const MIN_DISTANCE = 40;
 const MAX_TIME_MS = 600;
 
 export function SwipeCard({
@@ -25,11 +25,20 @@ export function SwipeCard({
 }: SwipeCardProps) {
   const start = useRef<{ x: number; y: number; t: number } | null>(null);
 
+  const hasCallbacks = !!(onSwipeRight || onSwipeLeft || onSwipeUp || onSwipeDown);
+  const touchAction = !hasCallbacks
+    ? "auto"
+    : onSwipeUp ?? onSwipeDown
+      ? "none"
+      : "pan-y";
+
   return (
     <div
       className={className}
       aria-label={ariaLabel}
+      style={{ touchAction }}
       onTouchStart={(e) => {
+        if (!hasCallbacks) return;
         const t = e.touches[0];
         if (!t) return;
         start.current = { x: t.clientX, y: t.clientY, t: Date.now() };

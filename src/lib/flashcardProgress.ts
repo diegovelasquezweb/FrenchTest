@@ -28,7 +28,7 @@ export function applyRating(
 
   if (rating === 2) {
     consecutiveCorrect += 1;
-    score = consecutiveCorrect >= 2 ? 2 : Math.min(score + 1, 1) as 0 | 1;
+    score = 2;
   } else if (rating === 1) {
     consecutiveCorrect = 0;
     score = 1;
