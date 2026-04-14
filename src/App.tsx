@@ -378,7 +378,7 @@ export default function App() {
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: GamepadDirectional },
     "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: GamepadDirectional },
     "Interaction":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
-    "Monologue":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
+    "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
     "Argumentatif":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: BookCheck },
     "Connecteurs":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: BookCheck },
@@ -421,12 +421,6 @@ export default function App() {
         <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-1" aria-label="Navigation">
           {([
             {
-              id: "favoris",
-              label: "Favoris",
-              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
-              special: "favoris" as const,
-            },
-            {
               id: "marathon",
               label: "Marathon",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
@@ -441,11 +435,17 @@ export default function App() {
               action: { mode: "vocabulaire" as const, onClick: handleStartVocabulaire, icon: GamepadDirectional as LucideIcon },
             },
             {
+              id: "favoris",
+              label: "Favoris",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "favoris" as const,
+            },
+            {
               id: "oral",
               label: "Oral",
               items: [
                 { label: "Interaction", mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-interaction") },
-                { label: "Monologue",   mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-monologue") },
+                { label: "Persuasion",   mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-monologue") },
                 { label: "Test oral",   mode: "oral"     as const, onClick: handleStartOral },
               ],
             },
@@ -500,19 +500,21 @@ export default function App() {
             // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
               const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
-              const isFav = favorites.includes(group.label);
+              // Marathon & Paires are already pinned at top of sidebar — no need to favorite them.
+              // const isFav = favorites.includes(group.label);
               return (
                 <div key={group.id} className="group/item relative">
                   <button
                     type="button"
                     onClick={group.action.onClick}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-left text-sm font-semibold transition-colors duration-150 ${
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-semibold transition-colors duration-150 ${
                       isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-ink) hover:bg-(--color-ink)/6"
                     }`}
                   >
                     <group.action.icon size={16} className="shrink-0" />
                     {group.label}
                   </button>
+                  {/* Favorite star disabled — uncomment to re-enable
                   <button
                     type="button"
                     onClick={(e) => toggleFavorite(group.label, e)}
@@ -521,6 +523,7 @@ export default function App() {
                   >
                     <Star size={13} fill={isFav ? "currentColor" : "none"} />
                   </button>
+                  */}
                 </div>
               );
             }
@@ -574,7 +577,7 @@ export default function App() {
                       const isActive = appMode === mode && (
                         mode !== "patterns" || patternsCategory === (
                           label === "Interaction" ? "oral-interaction" :
-                          label === "Monologue"   ? "oral-monologue"   :
+                          label === "Persuasion"   ? "oral-monologue"   :
                           label === "Faits divers" ? "ecrit-faits-divers" :
                           label === "Argumentatif" ? "ecrit-argumentatif" :
                           label === "Connecteurs" ? "connecteurs" : null
@@ -698,6 +701,29 @@ export default function App() {
                   <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
                 </div>
 
+                {/* Marathon & Paires — direct buttons, no accordion. Already pinned, not favoritable. */}
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  {[
+                    { label: "Marathon", Icon: GamepadDirectional, onClick: handleStartMarathon },
+                    { label: "Paires",   Icon: GamepadDirectional, onClick: handleStartVocabulaire },
+                  ].map(({ label, Icon, onClick }, i) => {
+                    // const isFav = favorites.includes(label); // favorite disabled for Marathon/Paires
+                    return (
+                      <div key={label} className={`relative ${i > 0 ? "border-t border-(--color-ink)/8" : ""}`}>
+                        <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
+                          <Icon size={16} className="shrink-0" />
+                          {label}
+                        </button>
+                        {/* Favorite star disabled — uncomment to re-enable
+                        <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
+                          <Star size={14} fill={isFav ? "currentColor" : "none"} />
+                        </button>
+                        */}
+                      </div>
+                    );
+                  })}
+                </div>
+
                 {/* Favoris mobile */}
                 {favorites.length > 0 && (
                   <div className="w-full">
@@ -711,8 +737,9 @@ export default function App() {
                             <button
                               type="button"
                               onClick={item.onClick}
-                              className="flex w-full items-center px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                              className="flex w-full items-center gap-2.5 px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
                             >
+                              <item.icon size={15} className="shrink-0" />
                               {label}
                             </button>
                             <button
@@ -730,27 +757,6 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Marathon & Paires — direct buttons, no accordion */}
-                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-                  {[
-                    { label: "Marathon", icon: "🎯", onClick: handleStartMarathon },
-                    { label: "Paires",   icon: "🎯", onClick: handleStartVocabulaire },
-                  ].map(({ label, icon, onClick }, i) => {
-                    const isFav = favorites.includes(label);
-                    return (
-                      <div key={label} className={`relative ${i > 0 ? "border-t border-(--color-ink)/8" : ""}`}>
-                        <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 pr-12 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
-                          <span className="text-base">{icon}</span>
-                          {label}
-                        </button>
-                        <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
-                          <Star size={14} fill={isFav ? "currentColor" : "none"} />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-
                 <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {([
                     {
@@ -758,7 +764,7 @@ export default function App() {
                       label: "Oral",
                       items: [
                         { label: "Interaction", onClick: () => handleSelectPatternsCategory("oral-interaction") },
-                        { label: "Monologue",   onClick: () => handleSelectPatternsCategory("oral-monologue") },
+                        { label: "Persuasion",   onClick: () => handleSelectPatternsCategory("oral-monologue") },
                         { label: "Test oral",   onClick: handleStartOral },
                       ],
                     },
