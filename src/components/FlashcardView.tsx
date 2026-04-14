@@ -1,8 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../types";
 import { SwipeCard } from "./SwipeCard";
+
+type FlashColor = "red" | "yellow" | "emerald" | null;
+
+const FLASH_DURATION_MS = 280;
+
+const FLASH_RING: Record<Exclude<FlashColor, null>, string> = {
+  red:     "ring-red-300 dark:ring-red-500/50",
+  yellow:  "ring-yellow-300 dark:ring-yellow-400/50",
+  emerald: "ring-emerald-300 dark:ring-emerald-500/50",
+};
 
 const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   oral: "Oral — Interaction",
@@ -36,10 +46,28 @@ interface FlashcardViewProps {
 
 export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, onSkip }: FlashcardViewProps) {
   const firstRatingRef = useRef<HTMLButtonElement>(null);
+  const [flash, setFlash] = useState<FlashColor>(null);
+  const pending = useRef(false);
 
   useEffect(() => {
     firstRatingRef.current?.focus();
   }, [index]);
+
+  // Clear flash overlay whenever a new card renders.
+  useEffect(() => { setFlash(null); pending.current = false; }, [card.id]);
+
+  function triggerRate(r: FlashcardRating) {
+    if (pending.current) return;
+    pending.current = true;
+    setFlash(r === 2 ? "emerald" : r === 0 ? "red" : "yellow");
+    window.setTimeout(() => onRate(r), FLASH_DURATION_MS);
+  }
+
+  function triggerSkip() {
+    if (pending.current) return;
+    pending.current = true;
+    window.setTimeout(onSkip, 80);
+  }
 
   return (
     <div className="mx-auto w-full max-w-xl">
@@ -109,14 +137,14 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
       </div>
 
       <SwipeCard
-        className="rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:p-8"
+        className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-125 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
         resetKey={card.id}
-        onSwipeRight={() => onRate(0)}
-        onSwipeLeft={() => onRate(2)}
-        onSwipeDown={onSkip}
-        onSwipeUp={() => onRate(1)}
+        onSwipeRight={() => triggerRate(0)}
+        onSwipeLeft={() => triggerRate(2)}
+        onSwipeDown={triggerSkip}
+        onSwipeUp={() => triggerRate(1)}
       >
-        <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_COLOR[card.category]}`}>
+        <span className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_COLOR[card.category]}`}>
           {CATEGORY_LABEL[card.category]}
         </span>
 
@@ -133,27 +161,27 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
             <button
               ref={firstRatingRef}
               type="button"
-              onClick={() => onRate(0)}
-              className="flex flex-col items-center gap-1 rounded-(--radius-button) bg-red-500/10 px-3 py-3 text-sm font-semibold text-red-600 transition-colors duration-150 hover:bg-red-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) dark:text-red-400"
+              onClick={() => triggerRate(0)}
+              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
             >
-              <span className="text-xl">🔴</span>
-              <span>Je ne savais pas</span>
+              <span className="inline-block h-3 w-3 rounded-full bg-red-500" aria-hidden="true" />
+              <span className="leading-tight">Pas du tout</span>
             </button>
             <button
               type="button"
-              onClick={() => onRate(1)}
-              className="flex flex-col items-center gap-1 rounded-(--radius-button) bg-yellow-500/10 px-3 py-3 text-sm font-semibold text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) dark:text-yellow-400"
+              onClick={() => triggerRate(1)}
+              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-yellow-500/10 px-2 py-3 text-xs font-medium text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500/60 dark:text-yellow-400"
             >
-              <span className="text-xl">🟡</span>
-              <span>J'ai hésité</span>
+              <span className="inline-block h-3 w-3 rounded-full bg-yellow-400" aria-hidden="true" />
+              <span className="leading-tight">Hésité</span>
             </button>
             <button
               type="button"
-              onClick={() => onRate(2)}
-              className="flex flex-col items-center gap-1 rounded-(--radius-button) bg-emerald-500/10 px-3 py-3 text-sm font-semibold text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) dark:text-emerald-400"
+              onClick={() => triggerRate(2)}
+              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-emerald-500/10 px-2 py-3 text-xs font-medium text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500/60 dark:text-emerald-400"
             >
-              <span className="text-xl">🟢</span>
-              <span>Je savais</span>
+              <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" aria-hidden="true" />
+              <span className="leading-tight">Savais</span>
             </button>
           </div>
 
