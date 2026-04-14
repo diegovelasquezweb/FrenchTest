@@ -419,26 +419,29 @@ export default function App() {
           <div className="grid grid-cols-4 gap-3">
             {(
               [
-                { label: "Conditionnel",       sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
-                { label: "Connecteurs",        sub: "Expressions du TEF",     onClick: handleStartPhrases },
-                { label: "Écrit formel",       sub: "Lettres & expressions",  onClick: handleStartEcrit },
-                { label: "Expression orale",   sub: "Poser des questions",    onClick: handleStartOral },
-                { label: "Futur simple",       sub: "Conjuguer par sujet",    onClick: handleStartFutur },
-                { label: "Grammaire",          sub: "Corriger les erreurs",   onClick: handleStartOrthographe },
-                { label: "Imparfait",          sub: "Conjuguer par sujet",    onClick: handleStartImparfait },
-                { label: "Participe passé",    sub: "Identifier la forme",    onClick: handleStartParticipe },
-                { label: "Patterns",           sub: "Mémoriser les phrases",  onClick: handleStartPatterns },
-                { label: "Présent",            sub: "Conjuguer par sujet",    onClick: handleStartPresent },
-                { label: "Touriste",            sub: "Phrases de voyage",      onClick: handleStartTouriste },
-                { label: "Vocabulaire",        sub: "Antonymes & paires",     onClick: handleStartVocabulaire },
+                { icon: "🔀", label: "Conditionnel",     sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
+                { icon: "🔗", label: "Connecteurs",      sub: "Expressions du TEF",     onClick: handleStartPhrases },
+                { icon: "✉️", label: "Écrit formel",     sub: "Lettres & expressions",  onClick: handleStartEcrit },
+                { icon: "🎤", label: "Expression orale", sub: "Poser des questions",    onClick: handleStartOral },
+                { icon: "🔮", label: "Futur simple",     sub: "Conjuguer par sujet",    onClick: handleStartFutur },
+                { icon: "✏️", label: "Grammaire",        sub: "Corriger les erreurs",   onClick: handleStartOrthographe },
+                { icon: "🕰️", label: "Imparfait",        sub: "Conjuguer par sujet",    onClick: handleStartImparfait },
+                { icon: "✅", label: "Participe passé",  sub: "Identifier la forme",    onClick: handleStartParticipe },
+                { icon: "🃏", label: "Patterns",         sub: "Mémoriser les phrases",  onClick: handleStartPatterns },
+                { icon: "⚡", label: "Présent",          sub: "Conjuguer par sujet",    onClick: handleStartPresent },
+                { icon: "🧳", label: "Touriste",         sub: "Phrases de voyage",      onClick: handleStartTouriste },
+                { icon: "📚", label: "Vocabulaire",      sub: "Antonymes & paires",     onClick: handleStartVocabulaire },
               ] as const
-            ).map(({ label, sub, onClick }) => (
+            ).map(({ icon, label, sub, onClick }) => (
               <button
                 key={label}
                 type="button"
                 onClick={onClick}
                 className="flex flex-col items-center gap-3 rounded-(--radius-card) bg-(--color-surface) px-4 py-5 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
               >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-brand)/10 text-xl">
+                  {icon}
+                </span>
                 <span className="text-center">
                   <span className="block font-semibold text-(--color-ink)">{label}</span>
                   <span className="block text-xs text-(--color-muted)">{sub}</span>
