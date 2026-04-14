@@ -124,9 +124,6 @@ export default function App() {
               <h2 className="text-2xl font-bold text-(--color-ink)">
                 Quel quiz ?
               </h2>
-              <p className="mt-2 text-sm text-(--color-muted)">
-                10 questions aléatoires · 4 choix chacune
-              </p>
             </div>
             <button
               type="button"
