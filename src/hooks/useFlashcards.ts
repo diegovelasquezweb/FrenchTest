@@ -20,7 +20,7 @@ type FlashcardsAction =
   | { type: "RESET" }
   | { type: "HOME" };
 
-function makeInitialState(cards: Flashcard[], storageKey: string): FlashcardsState {
+function makeInitialState(storageKey: string): FlashcardsState {
   return {
     phase: "idle",
     deck: [],
@@ -34,7 +34,7 @@ function makeReducer(cards: Flashcard[], storageKey: string) {
   return function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsState {
     switch (action.type) {
       case "HOME":
-        return { ...makeInitialState(cards, storageKey), progress: state.progress };
+        return { ...makeInitialState(storageKey), progress: state.progress };
       case "RESET": {
         const emptyProgress: Record<string, CardProgress> = {};
         return {

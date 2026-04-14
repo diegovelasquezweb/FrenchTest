@@ -407,7 +407,7 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         {/* ── HOME ── */}
         {appMode === "home" && (
-          <div className="mx-auto w-full max-w-4xl flex flex-col gap-8">
+          <div className="mx-auto w-full max-w-4xl flex flex-col gap-6 px-1 sm:px-0">
             <div className="text-center">
               <h1 className="text-3xl font-extrabold tracking-tight text-(--color-ink) sm:text-4xl">
                 🇨🇦&nbsp;Le TEFinateur&nbsp;3000
@@ -416,7 +416,7 @@ export default function App() {
                 Préparez votre TEF. Ou commencez à faire vos valises. Bonne chance.
               </p>
             </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
             {(
               [
                 { icon: "🔀", label: "Conditionnel",     sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
@@ -437,7 +437,7 @@ export default function App() {
                 key={label}
                 type="button"
                 onClick={onClick}
-                className="flex flex-col items-center gap-3 rounded-(--radius-card) bg-(--color-surface) px-4 py-5 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                className="flex flex-col items-center gap-2 rounded-(--radius-card) bg-(--color-surface) px-3 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) sm:gap-3 sm:px-4 sm:py-5"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-brand)/10 text-xl">
                   {icon}
