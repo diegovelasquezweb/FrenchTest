@@ -9,6 +9,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Una mesa para una persona, por favor.",
     usage: "Au restaurant — pour demander une place seul.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-02",
@@ -17,6 +18,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Cuál es la especialidad de la casa?",
     usage: "Au restaurant — pour choisir un plat typique.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-03",
@@ -25,6 +27,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Qué plato me recomienda?",
     usage: "Au restaurant — pour demander conseil au serveur.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-04",
@@ -33,6 +36,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Está incluido en el menú?",
     usage: "Au restaurant — pour savoir ce qui est compris dans le prix.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-05",
@@ -41,6 +45,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "La cuenta, por favor.",
     usage: "Au restaurant — pour demander à payer.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-06",
@@ -49,6 +54,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Podemos pagar por separado?",
     usage: "Au restaurant — pour partager la facture entre plusieurs personnes.",
     category: "touriste",
+    subCategory: "restaurant",
   },
   {
     id: "tour-07",
@@ -57,6 +63,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Es para llevar, por favor.",
     usage: "Dans un café ou restaurant rapide — pour commander à emporter.",
     category: "touriste",
+    subCategory: "restaurant",
   },
 
   // Dans le bus / métro / transport
@@ -67,6 +74,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿En qué parada bajo para ir a...?",
     usage: "Dans le bus ou le métro — pour savoir où descendre.",
     category: "touriste",
+    subCategory: "transport",
   },
   {
     id: "tour-09",
@@ -75,6 +83,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Este autobús va al centro?",
     usage: "À l'arrêt d'autobus — pour vérifier la destination.",
     category: "touriste",
+    subCategory: "transport",
   },
   {
     id: "tour-10",
@@ -83,6 +92,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿A qué hora sale el próximo autobús / metro?",
     usage: "Aux transports en commun — pour connaître les horaires.",
     category: "touriste",
+    subCategory: "transport",
   },
   {
     id: "tour-11",
@@ -91,6 +101,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Un billete de ida / ida y vuelta para..., por favor.",
     usage: "À la billetterie — pour acheter un billet de transport.",
     category: "touriste",
+    subCategory: "transport",
   },
   {
     id: "tour-12",
@@ -99,6 +110,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Me puede dejar en...?",
     usage: "Dans un taxi ou covoiturage — pour indiquer la destination.",
     category: "touriste",
+    subCategory: "transport",
   },
   {
     id: "tour-13",
@@ -107,6 +119,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Dónde está la estación de metro más cercana?",
     usage: "Dans la rue — pour se orienter dans la ville.",
     category: "touriste",
+    subCategory: "transport",
   },
 
   // À l'hôtel
@@ -117,6 +130,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Tengo una reserva a nombre de...",
     usage: "À la réception d'un hôtel — pour s'enregistrer (check-in).",
     category: "touriste",
+    subCategory: "hebergement",
   },
   {
     id: "tour-15",
@@ -125,6 +139,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿El desayuno está incluido?",
     usage: "À l'hôtel — pour savoir si les repas sont compris dans le tarif.",
     category: "touriste",
+    subCategory: "hebergement",
   },
   {
     id: "tour-16",
@@ -133,6 +148,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Me gustaría extender mi estadía una noche.",
     usage: "À la réception — pour modifier sa réservation.",
     category: "touriste",
+    subCategory: "hebergement",
   },
   {
     id: "tour-17",
@@ -141,9 +157,10 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Hay un problema con mi habitación.",
     usage: "À l'hôtel — pour signaler un dysfonctionnement ou une plainte.",
     category: "touriste",
+    subCategory: "hebergement",
   },
 
-  // À la pharmacie
+  // À la pharmacie / urgences
   {
     id: "tour-18",
     front: "Avez-vous quelque chose contre le rhume / le mal de tête / la fièvre ?",
@@ -151,6 +168,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Tiene algo para el resfriado / el dolor de cabeza / la fiebre?",
     usage: "À la pharmacie — pour acheter un médicament sans ordonnance.",
     category: "touriste",
+    subCategory: "urgences",
   },
   {
     id: "tour-19",
@@ -159,6 +177,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Necesito receta para este medicamento?",
     usage: "À la pharmacie — pour savoir si un médicament est en vente libre.",
     category: "touriste",
+    subCategory: "urgences",
   },
 
   // Dans un magasin
@@ -169,6 +188,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Cuánto cuesta, por favor?",
     usage: "Dans un magasin ou marché — pour demander le prix.",
     category: "touriste",
+    subCategory: "shopping",
   },
   {
     id: "tour-21",
@@ -177,6 +197,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Aceptan tarjetas de crédito?",
     usage: "À la caisse — pour savoir comment payer.",
     category: "touriste",
+    subCategory: "shopping",
   },
   {
     id: "tour-22",
@@ -185,6 +206,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Puedo probarme esta talla?",
     usage: "Dans un magasin de vêtements — pour demander à essayer un article.",
     category: "touriste",
+    subCategory: "shopping",
   },
   {
     id: "tour-23",
@@ -193,6 +215,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Hacen devoluciones / cambios?",
     usage: "Dans un magasin — pour connaître la politique de retour.",
     category: "touriste",
+    subCategory: "shopping",
   },
 
   // Demander son chemin
@@ -203,6 +226,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Estoy perdido/a. ¿Puede ayudarme?",
     usage: "Dans la rue — point de départ pour demander son chemin.",
     category: "touriste",
+    subCategory: "orientation",
   },
   {
     id: "tour-25",
@@ -211,6 +235,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Por dónde se va a...?",
     usage: "Dans la rue — pour demander sa direction.",
     category: "touriste",
+    subCategory: "orientation",
   },
   {
     id: "tour-26",
@@ -219,9 +244,10 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Está lejos? ¿Cuánto tiempo a pie?",
     usage: "Dans la rue — pour évaluer la distance avant de marcher.",
     category: "touriste",
+    subCategory: "orientation",
   },
 
-  // Situations générales
+  // Situations générales / urgences
   {
     id: "tour-27",
     front: "Pouvez-vous parler plus lentement, s'il vous plaît ?",
@@ -229,6 +255,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Puede hablar más despacio, por favor?",
     usage: "Dans toute situation — essentiel pour les apprenants en immersion.",
     category: "touriste",
+    subCategory: "urgences",
   },
   {
     id: "tour-28",
@@ -237,6 +264,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "No entiendo. ¿Puede repetir?",
     usage: "Dans toute situation — pour demander une clarification.",
     category: "touriste",
+    subCategory: "urgences",
   },
   {
     id: "tour-29",
@@ -245,6 +273,7 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "¿Dónde están los baños, por favor?",
     usage: "Dans tout lieu public — indispensable en voyage.",
     category: "touriste",
+    subCategory: "urgences",
   },
 
   // À l'aéroport / douane
@@ -255,5 +284,6 @@ export const TOURISTE_CARDS: Flashcard[] = [
     translationEs: "Perdí mi equipaje.",
     usage: "À l'aéroport — pour signaler un bagage perdu au comptoir.",
     category: "touriste",
+    subCategory: "urgences",
   },
 ];

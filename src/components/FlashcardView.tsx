@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import * as Popover from "@radix-ui/react-popover";
+import { HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../types";
 import { SwipeCard } from "./SwipeCard";
 
@@ -52,9 +54,50 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         >
           ←
         </button>
-        <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
-          {index + 1} / {total}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+            {index + 1} / {total}
+          </p>
+          <Popover.Root>
+            <Popover.Trigger asChild>
+              <button
+                type="button"
+                aria-label="Aide — comment utiliser les gestes"
+                className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) md:hidden"
+              >
+                <HelpCircle size={14} />
+              </button>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content
+                side="bottom"
+                align="start"
+                sideOffset={8}
+                className="z-50 w-56 rounded-(--radius-card) border border-(--color-ink)/10 bg-(--color-surface) p-3 shadow-lg"
+              >
+                <ul className="flex flex-col gap-2 text-xs">
+                  <li className="flex items-center gap-2">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 font-semibold text-emerald-600 dark:text-emerald-400">←</span>
+                    <span className="font-medium text-emerald-600 dark:text-emerald-400">Savais</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 font-semibold text-red-600 dark:text-red-400">→</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">No savais</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10 font-semibold text-yellow-600 dark:text-yellow-400">↑</span>
+                    <span className="font-medium text-yellow-600 dark:text-yellow-400">Hésité</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-(--color-ink)/5 font-semibold text-(--color-muted)">↓</span>
+                    <span className="font-medium text-(--color-muted)">Passer</span>
+                  </li>
+                </ul>
+                <Popover.Arrow className="fill-(--color-surface)" />
+              </Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
+        </div>
         <button
           type="button"
           onClick={onSkip}
@@ -120,26 +163,6 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
           </div>
         </div>
       </SwipeCard>
-
-      {/* Swipe hints — touch only */}
-      <div className="mt-4 grid grid-cols-4 gap-1 text-center md:hidden">
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-base">←</span>
-          <span className="text-[10px] text-red-500">No savais</span>
-        </div>
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-base">↑</span>
-          <span className="text-[10px] text-yellow-500">Hésité</span>
-        </div>
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-base">→</span>
-          <span className="text-[10px] text-emerald-500">Savais</span>
-        </div>
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-base">↓</span>
-          <span className="text-[10px] text-(--color-muted)">Passer</span>
-        </div>
-      </div>
     </div>
   );
 }

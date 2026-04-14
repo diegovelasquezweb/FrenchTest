@@ -1,12 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { ChevronDown, ChevronRight, Star } from "lucide-react";
+import {
+  ChevronDown, ChevronRight, Star,
+  GamepadDirectional, FlaskConical, BookCheck,
+  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { VERBS } from "./data/verbs";
 import { useQuiz } from "./hooks/useQuiz";
 import { useImparfaitQuiz } from "./hooks/useImparfaitQuiz";
 import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
+import { useGrammarQuiz } from "./hooks/useGrammarQuiz";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
@@ -29,25 +35,32 @@ import { PresentQuizCard } from "./components/PresentQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
 import type { PatternsCategory } from "./components/PatternsCategoryPicker";
+import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste";
+/** Collapse verbose test labels to just "Test" when they're already inside their section group. */
+function displayLabel(label: string): string {
+  return label.startsWith("Test ") ? "Test" : label;
+}
+
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
   imparfait: "Imparfait",
   conditionnel: "Conditionnel",
   futur: "Futur simple",
-  orthographe: "Grammaire",
-  phrases: "Expressions du discours",
+  orthographe: "Orthographe",
+  phrases: "Test connecteurs",
   présent: "Présent",
-  écrit: "Écrit formel",
-  oral: "Expression orale",
+  écrit: "Test écrit",
+  oral: "Test oral",
   patterns: "Patterns",
-  vocabulaire: "Vocabulaire",
-  touriste: "Touriste",
+  vocabulaire: "Paires",
+  touriste: "Voyage",
+  "grammar-test": "Test grammaire",
 };
 
 export default function App() {
@@ -77,6 +90,7 @@ export default function App() {
   const conditionnel = useConditionnelQuiz();
   const futur = useFuturQuiz();
   const orthographe = useOrthographeQuiz();
+  const grammarTest = useGrammarQuiz();
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
@@ -88,11 +102,17 @@ export default function App() {
   const pEcritFaitsDivers  = useFlashcards(FLASHCARDS.filter(c => c.category === "écrit-faits-divers"),  "tef-p-ecrit-faits-divers");
   const pEcritArgumentatif = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"),       "tef-p-ecrit-argumentatif");
   const vocabulaire = useFlashcards(VOCABULAIRE_CARDS, "tef-vocabulaire-progress");
-  const touriste = useFlashcards(TOURISTE_CARDS, "tef-touriste-progress");
+
+  const vRestaurant   = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "restaurant"),   "tef-voyage-restaurant");
+  const vTransport    = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "transport"),    "tef-voyage-transport");
+  const vHebergement  = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "hebergement"), "tef-voyage-hebergement");
+  const vShopping     = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "shopping"),    "tef-voyage-shopping");
+  const vOrientation  = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "orientation"), "tef-voyage-orientation");
+  const vUrgences     = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "urgences"),    "tef-voyage-urgences");
 
   const [patternsCategory, setPatternsCategory] = useState<PatternsCategory | null>(null);
+  const [voyageCategory, setVoyageCategory] = useState<VoyageCategory | null>(null);
   const [openGroups, setOpenGroups] = useState<string[]>(["favoris"]);
-  const [openItems, setOpenItems] = useState<string[]>([]);
 
   const activeDeck =
     patternsCategory === "connecteurs"        ? pConnecteurs        :
@@ -101,6 +121,14 @@ export default function App() {
     patternsCategory === "ecrit-faits-divers" ? pEcritFaitsDivers   :
     patternsCategory === "ecrit-argumentatif" ? pEcritArgumentatif  :
     flashcards;
+
+  const activeTouristeDeck =
+    voyageCategory === "restaurant"  ? vRestaurant  :
+    voyageCategory === "transport"   ? vTransport   :
+    voyageCategory === "hebergement" ? vHebergement :
+    voyageCategory === "shopping"    ? vShopping    :
+    voyageCategory === "orientation" ? vOrientation :
+    vUrgences;
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -128,6 +156,10 @@ export default function App() {
         if (orthographe.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) orthographe.selectAnswer(d - 1); }
         if (orthographe.state.phase === QuizPhase.Feedback && e.key === "Enter") orthographe.nextQuestion();
       }
+      if (appMode === "grammar-test") {
+        if (grammarTest.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) grammarTest.selectAnswer(d - 1); }
+        if (grammarTest.state.phase === QuizPhase.Feedback && e.key === "Enter") grammarTest.nextQuestion();
+      }
       if (appMode === "phrases") {
         if (phrases.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) phrases.selectAnswer(d - 1); }
         if (phrases.state.phase === QuizPhase.Feedback && e.key === "Enter") phrases.nextQuestion();
@@ -154,12 +186,12 @@ export default function App() {
         if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); vocabulaire.skip(); }
         if (e.key === "ArrowLeft") vocabulaire.back();
       }
-      if (appMode === "touriste" && touriste.state.phase === "session") {
-        if (e.key === "1") touriste.rate(0);
-        if (e.key === "2") touriste.rate(1);
-        if (e.key === "3") touriste.rate(2);
-        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); touriste.skip(); }
-        if (e.key === "ArrowLeft") touriste.back();
+      if (appMode === "touriste" && activeTouristeDeck.state.phase === "session") {
+        if (e.key === "1") activeTouristeDeck.rate(0);
+        if (e.key === "2") activeTouristeDeck.rate(1);
+        if (e.key === "3") activeTouristeDeck.rate(2);
+        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); activeTouristeDeck.skip(); }
+        if (e.key === "ArrowLeft") activeTouristeDeck.back();
       }
       if (appMode === "oral") {
         if (oral.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) oral.selectAnswer(d - 1); }
@@ -220,13 +252,14 @@ export default function App() {
     if (appMode === "conditionnel") conditionnel.goHome();
     if (appMode === "futur") futur.goHome();
     if (appMode === "orthographe") orthographe.goHome();
+    if (appMode === "grammar-test") grammarTest.goHome();
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
     if (appMode === "vocabulaire") vocabulaire.goHome();
-    if (appMode === "touriste") touriste.goHome();
+    if (appMode === "touriste") { activeTouristeDeck.goHome(); setVoyageCategory(null); }
     setAppMode("home");
   }
 
@@ -235,13 +268,26 @@ export default function App() {
   function handleStartConditionnel() { conditionnel.startQuiz(); setAppMode("conditionnel"); }
   function handleStartFutur()        { futur.startQuiz();        setAppMode("futur"); }
   function handleStartOrthographe()  { orthographe.startQuiz();  setAppMode("orthographe"); }
+  function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
-  function handleStartPatterns()     { handleSelectPatternsCategory("all"); }
+  function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
   function handleStartVocabulaire()  { vocabulaire.startSession(); setAppMode("vocabulaire"); }
-  function handleStartTouriste()     { touriste.startSession();    setAppMode("touriste"); }
+
+  function handleSelectVoyageCategory(cat: VoyageCategory) {
+    setVoyageCategory(cat);
+    setAppMode("touriste");
+    const deck =
+      cat === "restaurant"  ? vRestaurant  :
+      cat === "transport"   ? vTransport   :
+      cat === "hebergement" ? vHebergement :
+      cat === "shopping"    ? vShopping    :
+      cat === "orientation" ? vOrientation :
+      vUrgences;
+    deck.startSession();
+  }
 
   function handleSelectPatternsCategory(cat: PatternsCategory) {
     setPatternsCategory(cat);
@@ -257,56 +303,59 @@ export default function App() {
   }
 
   const activePhase =
-    appMode === "participe"   ? participe.state.phase
-    : appMode === "imparfait"   ? imparfait.state.phase
-    : appMode === "conditionnel"? conditionnel.state.phase
-    : appMode === "futur"       ? futur.state.phase
-    : appMode === "orthographe" ? orthographe.state.phase
-    : appMode === "phrases"     ? phrases.state.phase
-    : appMode === "présent"     ? présent.state.phase
-    : appMode === "écrit"       ? écrit.state.phase
-    : appMode === "oral"        ? oral.state.phase
+    appMode === "participe"     ? participe.state.phase
+    : appMode === "imparfait"     ? imparfait.state.phase
+    : appMode === "conditionnel"  ? conditionnel.state.phase
+    : appMode === "futur"         ? futur.state.phase
+    : appMode === "orthographe"   ? orthographe.state.phase
+    : appMode === "grammar-test"  ? grammarTest.state.phase
+    : appMode === "phrases"       ? phrases.state.phase
+    : appMode === "présent"       ? présent.state.phase
+    : appMode === "écrit"         ? écrit.state.phase
+    : appMode === "oral"          ? oral.state.phase
     : QuizPhase.Idle;
 
   const activeProgress =
-    appMode === "participe"   ? participe.progress
-    : appMode === "imparfait"   ? imparfait.progress
-    : appMode === "conditionnel"? conditionnel.progress
-    : appMode === "futur"       ? futur.progress
-    : appMode === "orthographe" ? orthographe.progress
-    : appMode === "phrases"     ? phrases.progress
-    : appMode === "présent"     ? présent.progress
-    : appMode === "écrit"       ? écrit.progress
-    : appMode === "oral"        ? oral.progress
+    appMode === "participe"     ? participe.progress
+    : appMode === "imparfait"     ? imparfait.progress
+    : appMode === "conditionnel"  ? conditionnel.progress
+    : appMode === "futur"         ? futur.progress
+    : appMode === "orthographe"   ? orthographe.progress
+    : appMode === "grammar-test"  ? grammarTest.progress
+    : appMode === "phrases"       ? phrases.progress
+    : appMode === "présent"       ? présent.progress
+    : appMode === "écrit"         ? écrit.progress
+    : appMode === "oral"          ? oral.progress
     : { index: 0, total: 0 };
 
   const activeScore =
-    appMode === "participe"   ? participe.state.score
-    : appMode === "imparfait"   ? imparfait.state.score
-    : appMode === "conditionnel"? conditionnel.state.score
-    : appMode === "futur"       ? futur.state.score
-    : appMode === "orthographe" ? orthographe.state.score
-    : appMode === "phrases"     ? phrases.state.score
-    : appMode === "présent"     ? présent.state.score
-    : appMode === "écrit"       ? écrit.state.score
+    appMode === "participe"     ? participe.state.score
+    : appMode === "imparfait"     ? imparfait.state.score
+    : appMode === "conditionnel"  ? conditionnel.state.score
+    : appMode === "futur"         ? futur.state.score
+    : appMode === "orthographe"   ? orthographe.state.score
+    : appMode === "grammar-test"  ? grammarTest.state.score
+    : appMode === "phrases"       ? phrases.state.score
+    : appMode === "présent"       ? présent.state.score
+    : appMode === "écrit"         ? écrit.state.score
     : oral.state.score;
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
   // ── Suggestion cards (desktop home) ──────────────────────────────────────
   const ALL_SUGGESTIONS = [
-    { label: "Conditionnel",        sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartConditionnel },
-    { label: "Futur simple",        sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartFutur },
-    { label: "Grammaire",           sub: "Corriger les erreurs",    icon: "📝", onClick: handleStartOrthographe },
-    { label: "Imparfait",           sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartImparfait },
-    { label: "Participe passé",     sub: "Identifier la forme",     icon: "📝", onClick: handleStartParticipe },
-    { label: "Présent",             sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartPresent },
-    { label: "Connecteurs",         sub: "Expressions du TEF",      icon: "📝", onClick: handleStartPhrases },
-    { label: "Écrit formel",        sub: "Lettres & expressions",   icon: "📝", onClick: handleStartEcrit },
-    { label: "Expression orale",    sub: "Poser des questions",     icon: "📝", onClick: handleStartOral },
-    { label: "Patterns — Tout",     sub: "100 phrases clés",        icon: "🃏", onClick: handleStartPatterns },
-    { label: "Vocabulaire",         sub: "Antonymes & paires",      icon: "🃏", onClick: handleStartVocabulaire },
-    { label: "Touriste",            sub: "Phrases de voyage",       icon: "🃏", onClick: handleStartTouriste },
+    { label: "Conditionnel",       sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartConditionnel },
+    { label: "Futur simple",       sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartFutur },
+    { label: "Orthographe",        sub: "Corriger les erreurs",  icon: "📝", onClick: handleStartOrthographe },
+    { label: "Imparfait",          sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartImparfait },
+    { label: "Participe passé",    sub: "Identifier la forme",   icon: "📝", onClick: handleStartParticipe },
+    { label: "Présent",            sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartPresent },
+    { label: "Connecteurs Quiz",   sub: "Expressions du TEF",    icon: "📝", onClick: handleStartPhrases },
+    { label: "Test écrit",         sub: "Lettres & expressions", icon: "📝", onClick: handleStartEcrit },
+    { label: "Test oral",          sub: "Poser des questions",   icon: "📝", onClick: handleStartOral },
+    { label: "Marathon",           sub: "100 phrases clés",      icon: "🃏", onClick: handleStartMarathon },
+    { label: "Paires",             sub: "Antonymes & synonymes", icon: "🃏", onClick: handleStartVocabulaire },
+    { label: "Voyage",             sub: "Phrases de voyage",     icon: "🃏", onClick: () => handleSelectVoyageCategory("restaurant") },
   ];
   const suggestions = useMemo(() => {
     const shuffled = [...ALL_SUGGESTIONS].sort(() => Math.random() - 0.5);
@@ -316,30 +365,36 @@ export default function App() {
   }, [appMode]);
 
   // ── Nav data ──────────────────────────────────────────────────────────────
-  const SIDEBAR_LOOKUP: Record<string, { mode: Exclude<AppMode, "home">; onClick: () => void; icon: string }> = {
-    "Conditionnel":     { mode: "conditionnel", onClick: handleStartConditionnel, icon: "📝" },
-    "Connecteurs":      { mode: "phrases",       onClick: handleStartPhrases,      icon: "📝" },
-    "Écrit formel":     { mode: "écrit",         onClick: handleStartEcrit,        icon: "📝" },
-    "Expression orale": { mode: "oral",          onClick: handleStartOral,         icon: "📝" },
-    "Futur simple":     { mode: "futur",         onClick: handleStartFutur,        icon: "📝" },
-    "Grammaire":        { mode: "orthographe",   onClick: handleStartOrthographe,  icon: "📝" },
-    "Imparfait":        { mode: "imparfait",     onClick: handleStartImparfait,    icon: "📝" },
-    "Participe passé":  { mode: "participe",     onClick: handleStartParticipe,    icon: "📝" },
-    "Présent":          { mode: "présent",       onClick: handleStartPresent,      icon: "📝" },
-    "Vocabulaire":            { mode: "vocabulaire", onClick: handleStartVocabulaire,                                   icon: "🃏" },
-    "Touriste":               { mode: "touriste",    onClick: handleStartTouriste,                                      icon: "🃏" },
-    "Patterns — Connecteurs":            { mode: "patterns", onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: "🃏" },
-    "Patterns — Oral — Interaction":     { mode: "patterns", onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: "🃏" },
-    "Patterns — Oral — Persuasion":      { mode: "patterns", onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: "🃏" },
-    "Patterns — Écrit — Faits divers":   { mode: "patterns", onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: "🃏" },
-    "Patterns — Écrit — Argumentatif":   { mode: "patterns", onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: "🃏" },
-    "Patterns — Tout":                   { mode: "patterns", onClick: () => handleSelectPatternsCategory("all"),                icon: "🃏" },
+  const SIDEBAR_LOOKUP: Record<string, { mode: Exclude<AppMode, "home">; onClick: () => void; icon: LucideIcon }> = {
+    "Conditionnel":      { mode: "conditionnel", onClick: handleStartConditionnel, icon: BookCheck },
+    "Futur simple":      { mode: "futur",        onClick: handleStartFutur,        icon: BookCheck },
+    "Imparfait":         { mode: "imparfait",    onClick: handleStartImparfait,    icon: BookCheck },
+    "Participe passé":   { mode: "participe",    onClick: handleStartParticipe,    icon: BookCheck },
+    "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
+    "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
+    "Test connecteurs":  { mode: "phrases",      onClick: handleStartPhrases,      icon: FlaskConical },
+    "Test écrit":        { mode: "écrit",        onClick: handleStartEcrit,        icon: FlaskConical },
+    "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
+    "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: GamepadDirectional },
+    "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: GamepadDirectional },
+    "Interaction":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
+    "Monologue":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
+    "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
+    "Argumentatif":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: BookCheck },
+    "Connecteurs":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: BookCheck },
+    "Restaurant":        { mode: "touriste",     onClick: () => handleSelectVoyageCategory("restaurant"),           icon: UtensilsCrossed },
+    "Transport":         { mode: "touriste",     onClick: () => handleSelectVoyageCategory("transport"),            icon: Bus },
+    "Hébergement":       { mode: "touriste",     onClick: () => handleSelectVoyageCategory("hebergement"),          icon: BedDouble },
+    "Shopping":          { mode: "touriste",     onClick: () => handleSelectVoyageCategory("shopping"),             icon: ShoppingBag },
+    "Orientation":       { mode: "touriste",     onClick: () => handleSelectVoyageCategory("orientation"),          icon: Map },
+    "Urgences":          { mode: "touriste",     onClick: () => handleSelectVoyageCategory("urgences"),             icon: Siren },
   };
 
   // ── Flashcard header helper ───────────────────────────────────────────────
   function FlashcardHeader() {
-    const deck = appMode === "patterns" ? activeDeck : appMode === "vocabulaire" ? vocabulaire : touriste;
+    const deck = appMode === "patterns" ? activeDeck : appMode === "vocabulaire" ? vocabulaire : activeTouristeDeck;
     if (appMode === "patterns" && patternsCategory === null) return null;
+    if (appMode === "touriste" && voyageCategory === null) return null;
     return (
       <div className="flex items-center gap-6">
         <p className="text-sm text-(--color-muted)">
@@ -372,49 +427,103 @@ export default function App() {
               special: "favoris" as const,
             },
             {
-              id: "conjugaison",
-              label: "Conjugaison & Grammaire",
+              id: "marathon",
+              label: "Marathon",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "patterns" as const, onClick: handleStartMarathon, icon: GamepadDirectional as LucideIcon },
+            },
+            {
+              id: "paires",
+              label: "Paires",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "vocabulaire" as const, onClick: handleStartVocabulaire, icon: GamepadDirectional as LucideIcon },
+            },
+            {
+              id: "oral",
+              label: "Oral",
               items: [
-                { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
-                { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
-                { label: "Grammaire",        mode: "orthographe"  as const, onClick: handleStartOrthographe },
-                { label: "Imparfait",        mode: "imparfait"    as const, onClick: handleStartImparfait },
+                { label: "Interaction", mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-interaction") },
+                { label: "Monologue",   mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-monologue") },
+                { label: "Test oral",   mode: "oral"     as const, onClick: handleStartOral },
+              ],
+            },
+            {
+              id: "ecrit",
+              label: "Écrit",
+              items: [
+                { label: "Faits divers",  mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("ecrit-faits-divers") },
+                { label: "Argumentatif",  mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("ecrit-argumentatif") },
+                { label: "Test écrit",    mode: "écrit"    as const, onClick: handleStartEcrit },
+              ],
+            },
+            {
+              id: "grammaire",
+              label: "Grammaire",
+              items: [
                 { label: "Participe passé",  mode: "participe"    as const, onClick: handleStartParticipe },
+                { label: "Imparfait",        mode: "imparfait"    as const, onClick: handleStartImparfait },
                 { label: "Présent",          mode: "présent"      as const, onClick: handleStartPresent },
+                { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
+                { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
+                { label: "Test grammaire",   mode: "grammar-test" as const, onClick: handleStartGrammarTest },
               ],
             },
             {
-              id: "tef-prep",
-              label: "Préparation TEF",
+              id: "connecteurs",
+              label: "Connecteurs",
               items: [
-                { label: "Connecteurs",      mode: "phrases" as const, onClick: handleStartPhrases },
-                { label: "Écrit formel",     mode: "écrit"   as const, onClick: handleStartEcrit },
-                { label: "Expression orale", mode: "oral"    as const, onClick: handleStartOral },
+                { label: "Connecteurs",      mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("connecteurs") },
+                { label: "Test connecteurs", mode: "phrases" as const, onClick: handleStartPhrases },
               ],
             },
             {
-              id: "flashcards",
-              label: "Flashcards",
+              id: "voyage",
+              label: "Voyage",
               items: [
-                { label: "Vocabulaire", mode: "vocabulaire" as const, onClick: handleStartVocabulaire },
-                { label: "Touriste",    mode: "touriste"    as const, onClick: handleStartTouriste },
+                { label: "Restaurant",   mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("restaurant") },
+                { label: "Transport",    mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("transport") },
+                { label: "Hébergement",  mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("hebergement") },
+                { label: "Shopping",     mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("shopping") },
+                { label: "Orientation",  mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("orientation") },
+                { label: "Urgences",     mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("urgences") },
               ],
-              special: "patterns",
             },
           ] as const).map(group => {
             const isOpen = openGroups.includes(group.id);
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const isPatternsOpen = openItems.includes("patterns");
-            const togglePatterns = (e: React.MouseEvent) => {
-              e.stopPropagation();
-              setOpenItems(prev =>
-                prev.includes("patterns") ? prev.filter(i => i !== "patterns") : [...prev, "patterns"]
-              );
-            };
-
             if (group.id === "favoris" && favorites.length === 0) return null;
+
+            // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
+            if ("special" in group && group.special === "single") {
+              const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
+              const isFav = favorites.includes(group.label);
+              return (
+                <div key={group.id} className="group/item relative">
+                  <button
+                    type="button"
+                    onClick={group.action.onClick}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-left text-sm font-semibold transition-colors duration-150 ${
+                      isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-ink) hover:bg-(--color-ink)/6"
+                    }`}
+                  >
+                    <group.action.icon size={16} className="shrink-0" />
+                    {group.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => toggleFavorite(group.label, e)}
+                    aria-label={isFav ? `Retirer ${group.label} des favoris` : `Ajouter ${group.label} aux favoris`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
+                  >
+                    <Star size={13} fill={isFav ? "currentColor" : "none"} />
+                  </button>
+                </div>
+              );
+            }
 
             return (
               <div key={group.id}>
@@ -445,7 +554,7 @@ export default function App() {
                               isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
-                            <span className="text-sm shrink-0 grayscale opacity-50">{item.icon}</span>
+                            <item.icon size={15} className="shrink-0" />
                             {label}
                           </button>
                           <button
@@ -460,67 +569,28 @@ export default function App() {
                       );
                     })}
 
-                    {/* Patterns special item (Flashcards group only) */}
-                    {"special" in group && group.special === "patterns" && (
-                      <div>
-                        <div className="group/pat relative">
-                          <button
-                            type="button"
-                            onClick={togglePatterns}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
-                              appMode === "patterns" ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
-                            }`}
-                          >
-                            <span className="text-sm shrink-0 grayscale opacity-50">🃏</span>
-                            <span className="flex-1">Patterns</span>
-                            {isPatternsOpen ? <ChevronDown size={14} className="text-(--color-muted)" /> : <ChevronRight size={14} className="text-(--color-muted)" />}
-                          </button>
-                        </div>
-                        {isPatternsOpen && (
-                          <div className="ml-5 mt-0.5 flex flex-col gap-0.5">
-                            {([
-                              { label: "Oral — Interaction",       cat: "oral-interaction"   },
-                              { label: "Oral — Persuasion",        cat: "oral-monologue"     },
-                              { label: "Écrit — Faits divers",     cat: "ecrit-faits-divers" },
-                              { label: "Écrit — Argumentatif",     cat: "ecrit-argumentatif" },
-                              { label: "Connecteurs",              cat: "connecteurs"        },
-                              { label: "Tout",                     cat: "all"                },
-                            ] as const).map(({ label, cat }) => {
-                              const favKey = `Patterns — ${label}`;
-                              const isFav = favorites.includes(favKey);
-                              return (
-                                <div key={cat} className="group/psub relative">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleSelectPatternsCategory(cat)}
-                                    className={`w-full text-left px-3 py-1.5 rounded text-xs font-medium transition-colors duration-150 pr-7 ${
-                                      appMode === "patterns" && patternsCategory === cat
-                                        ? "bg-(--color-brand)/10 text-(--color-brand)"
-                                        : "text-(--color-muted) hover:text-(--color-ink) hover:bg-(--color-ink)/5"
-                                    }`}
-                                  >
-                                    {label}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => toggleFavorite(favKey, e)}
-                                    aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                                    className={`absolute right-1.5 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/psub:opacity-60 text-(--color-muted)"}`}
-                                  >
-                                    <Star size={13} fill={isFav ? "currentColor" : "none"} />
-                                  </button>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
                     {/* Regular items */}
                     {group.items.map(({ label, mode, onClick }) => {
-                      const isActive = appMode === mode;
+                      const isActive = appMode === mode && (
+                        mode !== "patterns" || patternsCategory === (
+                          label === "Interaction" ? "oral-interaction" :
+                          label === "Monologue"   ? "oral-monologue"   :
+                          label === "Faits divers" ? "ecrit-faits-divers" :
+                          label === "Argumentatif" ? "ecrit-argumentatif" :
+                          label === "Connecteurs" ? "connecteurs" : null
+                        )
+                      ) && (
+                        mode !== "touriste" || voyageCategory === (
+                          label === "Restaurant"  ? "restaurant"  :
+                          label === "Transport"   ? "transport"   :
+                          label === "Hébergement" ? "hebergement" :
+                          label === "Shopping"    ? "shopping"    :
+                          label === "Orientation" ? "orientation" :
+                          "urgences"
+                        )
+                      );
                       const isFav = favorites.includes(label);
+                      const Icon = SIDEBAR_LOOKUP[label]?.icon ?? BookCheck;
                       return (
                         <div key={label} className="group/item relative">
                           <button
@@ -530,10 +600,8 @@ export default function App() {
                               isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
-                            <span className="text-sm shrink-0 grayscale opacity-50">
-                              {group.id === "flashcards" ? "🃏" : "📝"}
-                            </span>
-                            {label}
+                            <Icon size={14} className="shrink-0" />
+                            {displayLabel(label)}
                           </button>
                           <button
                             type="button"
@@ -662,35 +730,77 @@ export default function App() {
                   </div>
                 )}
 
+                {/* Marathon & Paires — direct buttons, no accordion */}
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  {[
+                    { label: "Marathon", icon: "🎯", onClick: handleStartMarathon },
+                    { label: "Paires",   icon: "🎯", onClick: handleStartVocabulaire },
+                  ].map(({ label, icon, onClick }, i) => {
+                    const isFav = favorites.includes(label);
+                    return (
+                      <div key={label} className={`relative ${i > 0 ? "border-t border-(--color-ink)/8" : ""}`}>
+                        <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 pr-12 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
+                          <span className="text-base">{icon}</span>
+                          {label}
+                        </button>
+                        <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
+                          <Star size={14} fill={isFav ? "currentColor" : "none"} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
                 <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {([
                     {
-                      id: "conjugaison",
-                      label: "Conjugaison & Grammaire",
+                      id: "oral",
+                      label: "Oral",
                       items: [
-                        { label: "Conditionnel",    onClick: handleStartConditionnel },
-                        { label: "Futur simple",    onClick: handleStartFutur },
-                        { label: "Grammaire",       onClick: handleStartOrthographe },
-                        { label: "Imparfait",       onClick: handleStartImparfait },
+                        { label: "Interaction", onClick: () => handleSelectPatternsCategory("oral-interaction") },
+                        { label: "Monologue",   onClick: () => handleSelectPatternsCategory("oral-monologue") },
+                        { label: "Test oral",   onClick: handleStartOral },
+                      ],
+                    },
+                    {
+                      id: "ecrit",
+                      label: "Écrit",
+                      items: [
+                        { label: "Faits divers", onClick: () => handleSelectPatternsCategory("ecrit-faits-divers") },
+                        { label: "Argumentatif", onClick: () => handleSelectPatternsCategory("ecrit-argumentatif") },
+                        { label: "Test écrit",   onClick: handleStartEcrit },
+                      ],
+                    },
+                    {
+                      id: "grammaire",
+                      label: "Grammaire",
+                      items: [
                         { label: "Participe passé", onClick: handleStartParticipe },
+                        { label: "Imparfait",       onClick: handleStartImparfait },
                         { label: "Présent",         onClick: handleStartPresent },
+                        { label: "Futur simple",    onClick: handleStartFutur },
+                        { label: "Conditionnel",    onClick: handleStartConditionnel },
+                        { label: "Test grammaire",  onClick: handleStartGrammarTest },
                       ],
                     },
                     {
-                      id: "tef",
-                      label: "Préparation TEF",
+                      id: "connecteurs",
+                      label: "Connecteurs",
                       items: [
-                        { label: "Connecteurs",      onClick: handleStartPhrases },
-                        { label: "Écrit formel",     onClick: handleStartEcrit },
-                        { label: "Expression orale", onClick: handleStartOral },
+                        { label: "Connecteurs",      onClick: () => handleSelectPatternsCategory("connecteurs") },
+                        { label: "Test connecteurs", onClick: handleStartPhrases },
                       ],
                     },
                     {
-                      id: "flashcards",
-                      label: "Flashcards",
+                      id: "voyage",
+                      label: "Voyage",
                       items: [
-                        { label: "Touriste",    onClick: handleStartTouriste },
-                        { label: "Vocabulaire", onClick: handleStartVocabulaire },
+                        { label: "Restaurant",   onClick: () => handleSelectVoyageCategory("restaurant") },
+                        { label: "Transport",    onClick: () => handleSelectVoyageCategory("transport") },
+                        { label: "Hébergement",  onClick: () => handleSelectVoyageCategory("hebergement") },
+                        { label: "Shopping",     onClick: () => handleSelectVoyageCategory("shopping") },
+                        { label: "Orientation",  onClick: () => handleSelectVoyageCategory("orientation") },
+                        { label: "Urgences",     onClick: () => handleSelectVoyageCategory("urgences") },
                       ],
                     },
                   ]).map((section, si) => (
@@ -708,7 +818,7 @@ export default function App() {
                             return (
                               <div key={label} className="relative">
                                 <button type="button" onClick={onClick} className="w-full px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
-                                  {label}
+                                  {displayLabel(label)}
                                 </button>
                                 <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
                                   <Star size={14} fill={isFav ? "currentColor" : "none"} />
@@ -716,45 +826,6 @@ export default function App() {
                               </div>
                             );
                           })}
-
-                          {/* Patterns nested submenu — only in Flashcards */}
-                          {section.id === "flashcards" && (
-                            <Accordion.Root type="single" collapsible className="border-t border-(--color-ink)/8 mt-1">
-                              <Accordion.Item value="patterns-mobile">
-                                <Accordion.Header>
-                                  <Accordion.Trigger className="group flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-(--color-ink) hover:bg-(--color-brand)/8 hover:text-(--color-brand)">
-                                    Patterns
-                                    <ChevronDown size={13} className="text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
-                                  </Accordion.Trigger>
-                                </Accordion.Header>
-                                <Accordion.Content className="overflow-hidden data-[state=open]:animate-none">
-                                  <div className="flex flex-col pb-1 pl-4">
-                                    {([
-                                      { label: "Oral — Interaction",     cat: "oral-interaction"   as const },
-                                      { label: "Oral — Persuasion",      cat: "oral-monologue"     as const },
-                                      { label: "Écrit — Faits divers",   cat: "ecrit-faits-divers" as const },
-                                      { label: "Écrit — Argumentatif",   cat: "ecrit-argumentatif" as const },
-                                      { label: "Connecteurs",            cat: "connecteurs"        as const },
-                                      { label: "Tout",                   cat: "all"                as const },
-                                    ]).map(({ label, cat }) => {
-                                      const favKey = `Patterns — ${label}`;
-                                      const isFav = favorites.includes(favKey);
-                                      return (
-                                        <div key={cat} className="relative">
-                                          <button type="button" onClick={() => handleSelectPatternsCategory(cat)} className="w-full px-3 py-2.5 pr-10 text-left text-sm text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand)">
-                                            {label}
-                                          </button>
-                                          <button type="button" onClick={(e) => toggleFavorite(favKey, e)} aria-label={isFav ? `Retirer des favoris` : `Ajouter aux favoris`} className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
-                                            <Star size={13} fill={isFav ? "currentColor" : "none"} />
-                                          </button>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </Accordion.Content>
-                              </Accordion.Item>
-                            </Accordion.Root>
-                          )}
                         </div>
                       </Accordion.Content>
                     </Accordion.Item>
@@ -816,7 +887,34 @@ export default function App() {
                 </>
               )}
 
-              {/* ORTHOGRAPHE */}
+              {/* GRAMMAR TEST — mixed 5-tense quiz */}
+              {appMode === "grammar-test" && (
+                <>
+                  {(grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) && grammarTest.currentQuestion && (() => {
+                    const wrapper = grammarTest.currentQuestion;
+                    const common = {
+                      answerState: grammarTest.state.answerState,
+                      selectedIndex: grammarTest.state.selectedIndex,
+                      onSelect: grammarTest.selectAnswer,
+                      onNext: grammarTest.nextQuestion,
+                      questionNumber: grammarTest.progress.index + 1,
+                      total: grammarTest.progress.total,
+                    };
+                    switch (wrapper.source) {
+                      case "participe":    return <QuizCard            {...common} question={wrapper.q} />;
+                      case "imparfait":    return <ImparfaitQuizCard   {...common} question={wrapper.q} />;
+                      case "futur":        return <FuturQuizCard       {...common} question={wrapper.q} />;
+                      case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
+                      case "présent":      return <PresentQuizCard     {...common} question={wrapper.q} />;
+                    }
+                  })()}
+                  {grammarTest.state.phase === QuizPhase.Complete && (
+                    <ResultScreen history={grammarTest.state.history} score={grammarTest.state.score} total={grammarTest.progress.total} onRestart={grammarTest.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* ORTHOGRAPHE — homophones (kept available but not in sidebar) */}
               {appMode === "orthographe" && (
                 <>
                   {(orthographe.state.phase === QuizPhase.Answering || orthographe.state.phase === QuizPhase.Feedback) && orthographe.currentQuestion && (
@@ -903,11 +1001,11 @@ export default function App() {
               {/* TOURISTE */}
               {appMode === "touriste" && (
                 <>
-                  {touriste.state.phase === "session" && touriste.currentCard && (
-                    <FlashcardView card={touriste.currentCard} index={touriste.progress.index} total={touriste.progress.total} canGoBack={touriste.progress.index > 0} onRate={touriste.rate} onBack={touriste.back} onSkip={touriste.skip} />
+                  {activeTouristeDeck.state.phase === "session" && activeTouristeDeck.currentCard && (
+                    <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} canGoBack={activeTouristeDeck.progress.index > 0} onRate={activeTouristeDeck.rate} onBack={activeTouristeDeck.back} onSkip={activeTouristeDeck.skip} />
                   )}
-                  {touriste.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={touriste.state.sessionResults} masteredCount={touriste.masteredCount} totalCards={touriste.totalCards} onRestart={touriste.restart} onHome={handleGoHome} />
+                  {activeTouristeDeck.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={activeTouristeDeck.state.sessionResults} masteredCount={activeTouristeDeck.masteredCount} totalCards={activeTouristeDeck.totalCards} onRestart={activeTouristeDeck.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
