@@ -94,6 +94,23 @@ export enum QuizPhase {
   Complete = "complete",
 }
 
+export type FlashcardRating = 0 | 1 | 2;
+
+export interface Flashcard {
+  id: string;
+  front: string;
+  translationEn: string;
+  translationEs: string;
+  usage: string;
+  category: "oral" | "écrit" | "connecteurs";
+}
+
+export interface CardProgress {
+  score: 0 | 1 | 2;
+  consecutiveCorrect: number;
+  lastSeen: number;
+}
+
 export interface HistoryEntry {
   verb: Verb;
   picked: string;

@@ -9,6 +9,7 @@ import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
+import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
 import { ScoreBoard } from "./components/ScoreBoard";
@@ -20,11 +21,13 @@ import { OrthographeQuizCard } from "./components/OrthographeQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
+import { FlashcardView } from "./components/FlashcardView";
+import { FlashcardResults } from "./components/FlashcardResults";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -36,6 +39,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   présent: "Présent",
   écrit: "Écrit formel",
   oral: "Expression orale",
+  patterns: "Patterns",
 };
 
 export default function App() {
@@ -51,6 +55,7 @@ export default function App() {
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
+  const flashcards = useFlashcards();
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -207,6 +212,7 @@ export default function App() {
     if (appMode === "présent") présent.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
+    if (appMode === "patterns") flashcards.goHome();
     setAppMode("home");
   }
 
@@ -253,6 +259,11 @@ export default function App() {
   function handleStartOral() {
     oral.startQuiz();
     setAppMode("oral");
+  }
+
+  function handleStartPatterns() {
+    flashcards.startSession();
+    setAppMode("patterns");
   }
 
   const activePhase =
@@ -349,6 +360,7 @@ export default function App() {
                 { label: "Imparfait",       sub: "Conjuguer par sujet",  onClick: handleStartImparfait },
                 { label: "Grammaire",        sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
                 { label: "Participe passé", sub: "Identifier la forme",  onClick: handleStartParticipe },
+                { label: "Patterns",         sub: "Mémoriser les phrases", onClick: handleStartPatterns },
                 { label: "Présent",         sub: "Conjuguer par sujet",  onClick: handleStartPresent },
               ] as const
             ).map(({ label, sub, onClick }) => (
@@ -559,6 +571,31 @@ export default function App() {
                 score={écrit.state.score}
                 total={écrit.progress.total}
                 onRestart={écrit.restartQuiz}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── PATTERNS ── */}
+        {appMode === "patterns" && (
+          <>
+            {flashcards.state.phase === "session" && flashcards.currentCard && (
+              <FlashcardView
+                card={flashcards.currentCard}
+                revealed={flashcards.state.revealed}
+                index={flashcards.progress.index}
+                total={flashcards.progress.total}
+                onReveal={flashcards.reveal}
+                onRate={flashcards.rate}
+              />
+            )}
+            {flashcards.state.phase === "complete" && (
+              <FlashcardResults
+                sessionResults={flashcards.state.sessionResults}
+                masteredCount={flashcards.masteredCount}
+                totalCards={flashcards.totalCards}
+                onRestart={flashcards.restart}
                 onHome={handleGoHome}
               />
             )}
