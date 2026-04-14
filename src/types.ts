@@ -30,6 +30,19 @@ export interface QuizQuestion {
   correctIndex: number;
 }
 
+export interface ImparfaitQuestion {
+  verb: Verb;
+  /** Raw conjugated forms without subject pronoun (e.g. "parlions") */
+  options: string[];
+  correctIndex: number;
+  /** The subject being drilled (e.g. "nous") */
+  targetSubject: string;
+  /** Which subject group each option belongs to */
+  optionSubjects: string[];
+  /** 3sg imparfait form — used to build the full conjugation table */
+  imparfait3sg: string;
+}
+
 export enum AnswerState {
   Idle = "idle",
   Correct = "correct",
