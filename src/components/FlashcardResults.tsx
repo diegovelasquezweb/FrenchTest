@@ -1,80 +1,129 @@
-import { Circle, Target } from "lucide-react";
-import type { FlashcardRating } from "../types";
+import type { Flashcard, FlashcardRating } from "../types";
 
 interface FlashcardResultsProps {
   sessionResults: { id: string; rating: FlashcardRating }[];
   masteredCount: number;
   totalCards: number;
+  cards: Flashcard[];
   onRestart(): void;
   onHome(): void;
 }
 
-export function FlashcardResults({
-  sessionResults,
-  masteredCount,
-  totalCards,
-  onRestart,
-  onHome,
-}: FlashcardResultsProps) {
-  const green = sessionResults.filter((r) => r.rating === 2).length;
-  const yellow = sessionResults.filter((r) => r.rating === 1).length;
-  const red = sessionResults.filter((r) => r.rating === 0).length;
+function motivation(pct: number): string {
+  if (pct === 1)   return "Session parfaite — tu les maîtrises toutes !";
+  if (pct >= 0.8)  return "Très bien ! Tu avances rapidement.";
+  if (pct >= 0.6)  return "Bonne session. Continue régulièrement.";
+  if (pct >= 0.4)  return "Tu progresses. La répétition fait la différence.";
+  return "Chaque session compte. Tu vas y arriver.";
+}
+
+export function FlashcardResults({ sessionResults, masteredCount, totalCards, cards, onRestart, onHome }: FlashcardResultsProps) {
+  const green  = sessionResults.filter(r => r.rating === 2).length;
+  const yellow = sessionResults.filter(r => r.rating === 1).length;
+  const red    = sessionResults.filter(r => r.rating === 0).length;
+  const pct    = sessionResults.length > 0 ? green / sessionResults.length : 0;
+  const masteredPct = totalCards > 0 ? masteredCount / totalCards : 0;
+
+  const toReview = sessionResults
+    .filter(r => r.rating === 0)
+    .map(r => cards.find(c => c.id === r.id))
+    .filter((c): c is Flashcard => c !== undefined);
 
   return (
-    <div className="mx-auto w-full max-w-sm text-center">
-      <div className="flex justify-center">
-        <Target size={36} className="text-(--color-brand)" aria-hidden="true" />
-      </div>
-      <h2 className="mt-3 text-2xl font-extrabold text-(--color-ink)">Session terminée</h2>
+    <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
 
-      {/* Session breakdown */}
-      <div className="mt-6 grid grid-cols-3 gap-3">
-        {(
-          [
-            { color: "text-emerald-500", label: "Je savais", count: green },
-            { color: "text-yellow-500", label: "J'ai hésité", count: yellow },
-            { color: "text-red-500", label: "Je ne savais pas", count: red },
-          ] as const
-        ).map(({ color, label, count }) => (
-          <div
-            key={label}
-            className="flex flex-col items-center rounded-(--radius-card) bg-(--color-surface) px-3 py-4 shadow-sm"
-          >
-            <Circle size={20} className={color} aria-hidden="true" />
-            <span className="mt-1 text-2xl font-extrabold text-(--color-ink)">{count}</span>
-            <span className="text-xs text-(--color-muted)">{label}</span>
+      {/* ── Score header ── */}
+      <div className="rounded-(--radius-card) bg-(--color-surface) px-6 py-5 shadow-sm">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="leading-none">
+              <span className="text-5xl font-extrabold tabular-nums text-(--color-ink)">{green}</span>
+              <span className="text-2xl font-medium text-(--color-muted)">/{sessionResults.length}</span>
+            </p>
+            <p className="mt-1.5 text-sm text-(--color-muted)">{motivation(pct)}</p>
           </div>
-        ))}
+          <span className="text-lg font-bold tabular-nums text-(--color-muted)">
+            {Math.round(pct * 100)} %
+          </span>
+        </div>
+
+        {/* Stats row */}
+        <div className="mt-4 grid grid-cols-3 gap-2">
+          {([
+            { count: green,  label: "Savais",      dot: "bg-emerald-500", text: "text-emerald-600 dark:text-emerald-400" },
+            { count: yellow, label: "Hésité",      dot: "bg-yellow-400",  text: "text-yellow-600 dark:text-yellow-400"  },
+            { count: red,    label: "Ne savais pas", dot: "bg-red-500",   text: "text-red-500 dark:text-red-400"        },
+          ] as const).map(({ count, label, dot, text }) => (
+            <div key={label} className="flex flex-col items-center rounded-(--radius-button) bg-(--color-ink)/4 px-2 py-2.5">
+              <span className={`text-xl font-extrabold ${text}`}>{count}</span>
+              <span className="mt-0.5 flex items-center gap-1 text-[10px] text-(--color-muted)">
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Overall mastery */}
-      <div className="mt-4 rounded-(--radius-card) bg-(--color-surface) px-4 py-4 shadow-sm">
-        <p className="text-sm text-(--color-muted)">Fichas dominadas en total</p>
-        <p className="mt-1 text-3xl font-extrabold text-(--color-ink)">
-          {masteredCount}
-          <span className="text-lg font-medium text-(--color-muted)"> / {totalCards}</span>
-        </p>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-(--color-ink)/10">
+      {/* ── Maîtrise globale ── */}
+      <div className="rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-(--color-muted)">Maîtrise totale</p>
+          <p className="text-sm font-bold text-(--color-ink)">
+            {masteredCount}
+            <span className="font-medium text-(--color-muted)"> / {totalCards}</span>
+          </p>
+        </div>
+        <div className="h-1.5 overflow-hidden rounded-full bg-(--color-ink)/8">
           <div
-            className="h-full rounded-full bg-(--color-brand) transition-all duration-500"
-            style={{ width: `${Math.round((masteredCount / totalCards) * 100)}%` }}
+            className="h-full rounded-full bg-(--color-brand) transition-all duration-700"
+            style={{ width: `${masteredPct * 100}%` }}
           />
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="mt-6 flex flex-col gap-3">
+      {/* ── À retravailler ── */}
+      {toReview.length > 0 && (
+        <section aria-label="Phrases à retravailler">
+          <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
+            À retravailler
+          </p>
+          <ol className="flex flex-col gap-1.5">
+            {toReview.map((card) => (
+              <li
+                key={card.id}
+                className="flex items-start gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-2.5 shadow-sm"
+              >
+                <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />
+                <p className="min-w-0 flex-1 text-sm text-(--color-ink) leading-snug" lang="fr">{card.front}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* ── Session parfaite ── */}
+      {toReview.length === 0 && red === 0 && (
+        <div className="rounded-(--radius-card) border border-emerald-500/20 bg-emerald-500/5 px-5 py-4 text-center">
+          <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+            Aucune phrase à retravailler dans cette session.
+          </p>
+        </div>
+      )}
+
+      {/* ── Actions ── */}
+      <div className="flex gap-3">
         <button
           type="button"
           onClick={onRestart}
-          className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-6 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          className="flex-1 min-h-11 rounded-(--radius-card) bg-(--color-brand) px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
         >
           Nouvelle session
         </button>
         <button
           type="button"
           onClick={onHome}
-          className="min-h-11 rounded-(--radius-card) border border-(--color-ink)/12 px-6 py-3 font-semibold text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          className="flex-1 min-h-11 rounded-(--radius-card) border border-(--color-ink)/12 px-6 py-3 font-semibold text-(--color-muted) transition-colors hover:text-(--color-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
         >
           Accueil
         </button>

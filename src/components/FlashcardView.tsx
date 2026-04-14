@@ -101,36 +101,39 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
             <Popover.Trigger asChild>
               <button
                 type="button"
-                aria-label="Aide — comment utiliser les gestes"
-                className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted) transition-colors duration-150 hover:text-(--color-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) md:hidden"
+                aria-label="Aide"
+                className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
               >
-                <HelpCircle size={14} />
+                <HelpCircle size={13} />
               </button>
             </Popover.Trigger>
             <Popover.Portal>
               <Popover.Content
                 side="bottom"
-                align="start"
-                sideOffset={8}
-                className="z-50 w-56 rounded-(--radius-card) border border-(--color-ink)/10 bg-(--color-surface) p-3 shadow-lg"
+                align="center"
+                sideOffset={10}
+                className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-3 shadow-xl shadow-(--color-ink)/8"
               >
-                <ul className="flex flex-col gap-2 text-xs">
-                  <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 font-semibold text-red-600 dark:text-red-400">←</span>
-                    <span className="font-medium text-red-600 dark:text-red-400">Ne savais pas</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 font-semibold text-emerald-600 dark:text-emerald-400">→</span>
-                    <span className="font-medium text-emerald-600 dark:text-emerald-400">Savais</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10 font-semibold text-yellow-600 dark:text-yellow-400">↑</span>
-                    <span className="font-medium text-yellow-600 dark:text-yellow-400">Hésité</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-(--color-ink)/5 font-semibold text-(--color-muted)">↓</span>
-                    <span className="font-medium text-(--color-muted)">Passer</span>
-                  </li>
+                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-(--color-muted)/60">Raccourcis</p>
+                <ul className="flex flex-col gap-1.5">
+                  {([
+                    { gesture: "←", keys: ["←", "1"], label: "Ne savais pas", color: "text-red-500 dark:text-red-400",    bg: "bg-red-500/8"     },
+                    { gesture: "→", keys: ["→", "3"], label: "Savais",         color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/8" },
+                    { gesture: "↑", keys: ["↑", "2"], label: "Hésité",         color: "text-yellow-600 dark:text-yellow-400",  bg: "bg-yellow-500/8"  },
+                    { gesture: "↓", keys: ["↓", "␣"], label: "Passer",         color: "text-(--color-muted)",             bg: "bg-(--color-ink)/5"  },
+                  ] as const).map(({ gesture, keys, label, color, bg }) => (
+                    <li key={label} className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`inline-flex h-5 w-5 items-center justify-center rounded text-[11px] font-bold ${bg} ${color}`}>{gesture}</span>
+                        <span className={`text-xs font-medium ${color}`}>{label}</span>
+                      </div>
+                      <div className="hidden md:flex items-center gap-1">
+                        {keys.map(k => (
+                          <kbd key={k} className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-(--color-ink)/12 bg-(--color-ink)/5 px-1 text-[10px] font-medium text-(--color-muted)">{k}</kbd>
+                        ))}
+                      </div>
+                    </li>
+                  ))}
                 </ul>
                 <Popover.Arrow className="fill-(--color-surface)" />
               </Popover.Content>

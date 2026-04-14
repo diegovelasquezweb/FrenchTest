@@ -541,7 +541,12 @@ export default function App() {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const separatorClass = idx === 0 ? "" : "mt-2 pt-2 border-t border-(--color-ink)/16";
+            const noSeparatorBefore = group.id === "paires" || group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns";
+            const separatorClass = idx === 0
+              ? ""
+              : noSeparatorBefore
+                ? ""
+                : "pt-2 border-t border-(--color-ink)/16";
 
             // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
@@ -946,7 +951,7 @@ export default function App() {
 
           {/* QUIZ / FLASHCARD SCREENS */}
           {appMode !== "home" && (
-            <div className={`flex min-h-full w-full justify-center px-3 py-4 md:px-4 md:py-8 ${appMode === "verbes" ? "items-start" : "items-center"}`}>
+            <div className="flex w-full flex-col items-center px-3 py-6 md:px-4 md:py-10">
 
               {/* PARTICIPE */}
               {appMode === "participe" && (
@@ -1187,7 +1192,7 @@ export default function App() {
                     <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} onRate={activeDeck.rate} onSkip={activeDeck.skip} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
                   )}
                   {patternsCategory !== null && activeDeck.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={activeDeck.state.sessionResults} masteredCount={activeDeck.masteredCount} totalCards={activeDeck.totalCards} onRestart={activeDeck.restart} onHome={handleGoHome} />
+                    <FlashcardResults sessionResults={activeDeck.state.sessionResults} masteredCount={activeDeck.masteredCount} totalCards={activeDeck.totalCards} cards={activeDeck.state.deck} onRestart={activeDeck.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
@@ -1256,7 +1261,7 @@ export default function App() {
                     <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} onRate={mesPatterns.rate} onSkip={mesPatterns.skip} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
                   )}
                   {mesPatterns.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={mesPatterns.state.sessionResults} masteredCount={mesPatterns.masteredCount} totalCards={mesPatterns.totalCards} onRestart={mesPatterns.restart} onHome={handleGoHome} />
+                    <FlashcardResults sessionResults={mesPatterns.state.sessionResults} masteredCount={mesPatterns.masteredCount} totalCards={mesPatterns.totalCards} cards={mesPatterns.state.deck} onRestart={mesPatterns.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
@@ -1268,7 +1273,7 @@ export default function App() {
                     <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} onRate={vocabulaire.rate} onSkip={vocabulaire.skip} />
                   )}
                   {vocabulaire.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={vocabulaire.state.sessionResults} masteredCount={vocabulaire.masteredCount} totalCards={vocabulaire.totalCards} onRestart={vocabulaire.restart} onHome={handleGoHome} />
+                    <FlashcardResults sessionResults={vocabulaire.state.sessionResults} masteredCount={vocabulaire.masteredCount} totalCards={vocabulaire.totalCards} cards={vocabulaire.state.deck} onRestart={vocabulaire.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
@@ -1280,7 +1285,7 @@ export default function App() {
                     <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} onRate={activeTouristeDeck.rate} onSkip={activeTouristeDeck.skip} />
                   )}
                   {activeTouristeDeck.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={activeTouristeDeck.state.sessionResults} masteredCount={activeTouristeDeck.masteredCount} totalCards={activeTouristeDeck.totalCards} onRestart={activeTouristeDeck.restart} onHome={handleGoHome} />
+                    <FlashcardResults sessionResults={activeTouristeDeck.state.sessionResults} masteredCount={activeTouristeDeck.masteredCount} totalCards={activeTouristeDeck.totalCards} cards={activeTouristeDeck.state.deck} onRestart={activeTouristeDeck.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
