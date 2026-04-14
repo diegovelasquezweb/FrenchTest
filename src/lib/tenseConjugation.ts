@@ -62,19 +62,36 @@ function fromFutur(form3sg: string): ConjugationRow[] {
 }
 
 function fromPresent(form3sg: string): ConjugationRow[] | null {
-  // Reliable only for -er verbs (3sg ends in "e")
-  if (!form3sg.endsWith("e") || form3sg === "e") return null;
-  const stem = form3sg.slice(0, -1); // remove "e"
-  return buildForms(SUBJECTS, [
-    stem + "e",
-    stem + "es",
-    stem + "e",
-    stem + "e",
-    stem + "ons",
-    stem + "ez",
-    stem + "ent",
-    stem + "ent",
-  ]);
+  // Regular -er verbs: 3sg ends in "e" (parle, mange...)
+  if (form3sg.endsWith("e") && form3sg.length > 1) {
+    const stem = form3sg.slice(0, -1);
+    return buildForms(SUBJECTS, [
+      stem + "e",
+      stem + "es",
+      stem + "e",
+      stem + "e",
+      stem + "ons",
+      stem + "ez",
+      stem + "ent",
+      stem + "ent",
+    ]);
+  }
+  // Regular -ir group 2 verbs: 3sg ends in "it" (guérit, finit, choisit...)
+  // stem = form without "t" → guéri, fini, choisi
+  if (form3sg.endsWith("it") && form3sg.length > 3) {
+    const stem = form3sg.slice(0, -1); // remove "t"
+    return buildForms(SUBJECTS, [
+      stem + "s",
+      stem + "s",
+      form3sg,
+      form3sg,
+      stem + "ssons",
+      stem + "ssez",
+      stem + "ssent",
+      stem + "ssent",
+    ]);
+  }
+  return null;
 }
 
 export interface TenseConjugation {

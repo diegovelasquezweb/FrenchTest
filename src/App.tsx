@@ -2,21 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { VERBS } from "./data/verbs";
 import { useQuiz } from "./hooks/useQuiz";
 import { useImparfaitQuiz } from "./hooks/useImparfaitQuiz";
+import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
 import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
 import { ImparfaitQuizCard } from "./components/ImparfaitQuizCard";
+import { ConditionnelQuizCard } from "./components/ConditionnelQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
   imparfait: "Imparfait",
+  conditionnel: "Conditionnel",
 };
 
 export default function App() {
@@ -25,6 +28,7 @@ export default function App() {
 
   const participe = useQuiz(VERBS, QUESTION_COUNT);
   const imparfait = useImparfaitQuiz();
+  const conditionnel = useConditionnelQuiz();
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -52,10 +56,20 @@ export default function App() {
           imparfait.nextQuestion();
         }
       }
+
+      if (appMode === "conditionnel") {
+        if (conditionnel.state.phase === QuizPhase.Answering) {
+          const digit = parseInt(e.key, 10);
+          if (digit >= 1 && digit <= 4) conditionnel.selectAnswer(digit - 1);
+        }
+        if (conditionnel.state.phase === QuizPhase.Feedback && e.key === "Enter") {
+          conditionnel.nextQuestion();
+        }
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait]);
+  }, [appMode, participe, imparfait, conditionnel]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -64,14 +78,23 @@ export default function App() {
     } else if (appMode === "imparfait" && imparfait.state.phase === QuizPhase.Feedback && imparfait.currentQuestion) {
       const correct = imparfait.currentQuestion.options[imparfait.currentQuestion.correctIndex] ?? "";
       setAnnouncement(imparfait.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "conditionnel" && conditionnel.state.phase === QuizPhase.Feedback && conditionnel.currentQuestion) {
+      const correct = conditionnel.currentQuestion.options[conditionnel.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(conditionnel.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else {
       setAnnouncement("");
     }
-  }, [appMode, participe.state.phase, participe.state.answerState, participe.currentQuestion, imparfait.state.phase, imparfait.state.answerState, imparfait.currentQuestion]);
+  }, [
+    appMode,
+    participe.state.phase, participe.state.answerState, participe.currentQuestion,
+    imparfait.state.phase, imparfait.state.answerState, imparfait.currentQuestion,
+    conditionnel.state.phase, conditionnel.state.answerState, conditionnel.currentQuestion,
+  ]);
 
   function handleGoHome() {
     if (appMode === "participe") participe.goHome();
     if (appMode === "imparfait") imparfait.goHome();
+    if (appMode === "conditionnel") conditionnel.goHome();
     setAppMode("home");
   }
 
@@ -85,14 +108,32 @@ export default function App() {
     setAppMode("imparfait");
   }
 
-  const activePhase = appMode === "participe" ? participe.state.phase : imparfait.state.phase;
-  const activeProgress = appMode === "participe" ? participe.progress : imparfait.progress;
-  const activeScore = appMode === "participe" ? participe.state.score : imparfait.state.score;
+  function handleStartConditionnel() {
+    conditionnel.startQuiz();
+    setAppMode("conditionnel");
+  }
+
+  const activePhase =
+    appMode === "participe" ? participe.state.phase
+    : appMode === "imparfait" ? imparfait.state.phase
+    : conditionnel.state.phase;
+
+  const activeProgress =
+    appMode === "participe" ? participe.progress
+    : appMode === "imparfait" ? imparfait.progress
+    : conditionnel.progress;
+
+  const activeScore =
+    appMode === "participe" ? participe.state.score
+    : appMode === "imparfait" ? imparfait.state.score
+    : conditionnel.state.score;
+
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
   return (
     <div className="flex min-h-full flex-col bg-(--color-bg)">
       <ThemeToggle theme={theme} onToggle={toggleTheme} />
+
       {/* Header — hidden on home screen */}
       {appMode !== "home" && (
         <header className="border-b border-(--color-ink)/8 bg-(--color-surface) px-4 pb-3 pt-4">
@@ -156,6 +197,21 @@ export default function App() {
               </span>
               <span className="text-(--color-muted)" aria-hidden="true">›</span>
             </button>
+
+            <button
+              type="button"
+              onClick={handleStartConditionnel}
+              className="flex w-full items-center gap-4 rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--color-brand)/10 text-lg">
+                🇫🇷
+              </span>
+              <span className="min-w-0 flex-1 text-left">
+                <span className="block font-semibold text-(--color-ink)">Conditionnel</span>
+                <span className="block text-sm text-(--color-muted)">Conjuguer par sujet</span>
+              </span>
+              <span className="text-(--color-muted)" aria-hidden="true">›</span>
+            </button>
           </div>
         )}
 
@@ -207,6 +263,33 @@ export default function App() {
                 score={imparfait.state.score}
                 total={imparfait.progress.total}
                 onRestart={imparfait.restartQuiz}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── CONDITIONNEL QUIZ ── */}
+        {appMode === "conditionnel" && (
+          <>
+            {(conditionnel.state.phase === QuizPhase.Answering || conditionnel.state.phase === QuizPhase.Feedback) &&
+              conditionnel.currentQuestion && (
+                <ConditionnelQuizCard
+                  question={conditionnel.currentQuestion}
+                  answerState={conditionnel.state.answerState}
+                  selectedIndex={conditionnel.state.selectedIndex}
+                  onSelect={conditionnel.selectAnswer}
+                  onNext={conditionnel.nextQuestion}
+                  questionNumber={conditionnel.progress.index + 1}
+                  total={conditionnel.progress.total}
+                />
+              )}
+            {conditionnel.state.phase === QuizPhase.Complete && (
+              <ResultScreen
+                history={conditionnel.state.history}
+                score={conditionnel.state.score}
+                total={conditionnel.progress.total}
+                onRestart={conditionnel.restartQuiz}
                 onHome={handleGoHome}
               />
             )}

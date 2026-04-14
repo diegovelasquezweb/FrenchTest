@@ -15,11 +15,8 @@ export function WrongAnswerTable({ verb, wrongOption }: WrongAnswerTableProps) {
 
   return (
     <div className="mt-4 rounded-xl border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
-      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
         "{wrongOption}" est le {label} de {verb.infinitive}
-      </p>
-      <p className="mb-3 text-xs text-(--color-muted)">
-        La bonne réponse est le participe passé : <strong className="text-(--color-ink)" lang="fr">{verb.participle}</strong>
       </p>
       <div className={`grid gap-x-4 gap-y-1 ${partial ? "grid-cols-1" : "grid-cols-2"}`}>
         {rows.map(({ subject, form }) => (
@@ -33,11 +30,6 @@ export function WrongAnswerTable({ verb, wrongOption }: WrongAnswerTableProps) {
           </div>
         ))}
       </div>
-      {partial && (
-        <p className="mt-2 text-xs text-(--color-muted)">
-          * Verbe irrégulier — la conjugaison complète du présent varie selon le sujet.
-        </p>
-      )}
     </div>
   );
 }
