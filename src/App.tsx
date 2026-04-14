@@ -628,7 +628,7 @@ export default function App() {
               </div>
 
               {/* Mobile: accordion */}
-              <div className="md:hidden flex flex-col items-center justify-center min-h-[calc(100svh-3rem)] gap-6 px-6 py-6 overflow-y-auto">
+              <div className="md:hidden flex flex-col items-center gap-6 px-6 pt-8 pb-12 w-full">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <span className="text-5xl">🎯</span>
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
