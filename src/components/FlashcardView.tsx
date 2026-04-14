@@ -6,6 +6,8 @@ const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   écrit: "Écrit formel",
   connecteurs: "Connecteurs",
   argumentation: "Argumentation",
+  vocabulaire: "Vocabulaire",
+  touriste: "Touriste",
 };
 
 const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
@@ -13,6 +15,8 @@ const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
   écrit: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   connecteurs: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   argumentation: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+  vocabulaire: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+  touriste: "bg-pink-500/10 text-pink-600 dark:text-pink-400",
 };
 
 interface FlashcardViewProps {

@@ -1,20 +1,18 @@
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
 import { fisherYates } from "./shuffle";
 
-const STORAGE_KEY = "tef-flashcard-progress";
-
-export function loadProgress(): Record<string, CardProgress> {
+export function loadProgress(storageKey: string): Record<string, CardProgress> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     return raw ? (JSON.parse(raw) as Record<string, CardProgress>) : {};
   } catch {
     return {};
   }
 }
 
-export function saveProgress(progress: Record<string, CardProgress>): void {
+export function saveProgress(progress: Record<string, CardProgress>, storageKey: string): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    localStorage.setItem(storageKey, JSON.stringify(progress));
   } catch {
     // localStorage unavailable — silently ignore
   }
@@ -49,23 +47,14 @@ export function buildDeck(
   cards: Flashcard[],
   progress: Record<string, CardProgress>
 ): Flashcard[] {
-  const byAge = (a: Flashcard, b: Flashcard) =>
-    (progress[a.id]?.lastSeen ?? 0) - (progress[b.id]?.lastSeen ?? 0);
-
-  const score0 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 0);
-  const score1 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 1);
-
-  const pending = [
-    ...fisherYates(score0.sort(byAge), Math.random),
-    ...fisherYates(score1.sort(byAge), Math.random),
-  ];
+  const pending = cards.filter((c) => (progress[c.id]?.score ?? 0) < 2);
 
   // If everything is mastered, show all again so the user can still practice
   if (pending.length === 0) {
     return fisherYates([...cards], Math.random);
   }
 
-  return pending;
+  return fisherYates(pending, Math.random);
 }
 
 export function totalMastered(progress: Record<string, CardProgress>): number {

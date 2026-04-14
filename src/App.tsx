@@ -12,6 +12,9 @@ import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
+import { FLASHCARDS } from "./data/flashcards";
+import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
+import { TOURISTE_CARDS } from "./data/touristeCards";
 import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
 import { ImparfaitQuizCard } from "./components/ImparfaitQuizCard";
@@ -27,7 +30,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -40,6 +43,8 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   écrit: "Écrit formel",
   oral: "Expression orale",
   patterns: "Patterns",
+  vocabulaire: "Vocabulaire",
+  touriste: "Touriste",
 };
 
 export default function App() {
@@ -55,7 +60,9 @@ export default function App() {
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
-  const flashcards = useFlashcards();
+  const flashcards = useFlashcards(FLASHCARDS, "tef-flashcard-progress");
+  const vocabulaire = useFlashcards(VOCABULAIRE_CARDS, "tef-vocabulaire-progress");
+  const touriste = useFlashcards(TOURISTE_CARDS, "tef-touriste-progress");
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -154,6 +161,26 @@ export default function App() {
         }
       }
 
+      if (appMode === "vocabulaire") {
+        if (vocabulaire.state.phase === "session") {
+          if (e.key === "1") vocabulaire.rate(0);
+          if (e.key === "2") vocabulaire.rate(1);
+          if (e.key === "3") vocabulaire.rate(2);
+          if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); vocabulaire.skip(); }
+          if (e.key === "ArrowLeft") vocabulaire.back();
+        }
+      }
+
+      if (appMode === "touriste") {
+        if (touriste.state.phase === "session") {
+          if (e.key === "1") touriste.rate(0);
+          if (e.key === "2") touriste.rate(1);
+          if (e.key === "3") touriste.rate(2);
+          if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); touriste.skip(); }
+          if (e.key === "ArrowLeft") touriste.back();
+        }
+      }
+
       if (appMode === "oral") {
         if (oral.state.phase === QuizPhase.Answering) {
           const digit = parseInt(e.key, 10);
@@ -223,6 +250,8 @@ export default function App() {
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") flashcards.goHome();
+    if (appMode === "vocabulaire") vocabulaire.goHome();
+    if (appMode === "touriste") touriste.goHome();
     setAppMode("home");
   }
 
@@ -274,6 +303,16 @@ export default function App() {
   function handleStartPatterns() {
     flashcards.startSession();
     setAppMode("patterns");
+  }
+
+  function handleStartVocabulaire() {
+    vocabulaire.startSession();
+    setAppMode("vocabulaire");
+  }
+
+  function handleStartTouriste() {
+    touriste.startSession();
+    setAppMode("touriste");
   }
 
   const activePhase =
@@ -340,21 +379,24 @@ export default function App() {
               total={activeProgress.total}
             />
           )}
-          {appMode === "patterns" && (
-            <div className="mt-3 flex items-center justify-between">
-              <p className="text-sm text-(--color-muted)">
-                <span className="font-semibold text-(--color-ink)">{flashcards.masteredCount}</span>
-                <span> / {flashcards.totalCards} dominées</span>
-              </p>
-              <button
-                type="button"
-                onClick={flashcards.reset}
-                className="text-xs text-(--color-muted) underline underline-offset-2 transition-colors duration-150 hover:text-red-500"
-              >
-                Réinitialiser
-              </button>
-            </div>
-          )}
+          {(appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste") && (() => {
+            const deck = appMode === "patterns" ? flashcards : appMode === "vocabulaire" ? vocabulaire : touriste;
+            return (
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-sm text-(--color-muted)">
+                  <span className="font-semibold text-(--color-ink)">{deck.masteredCount}</span>
+                  <span> / {deck.totalCards} dominées</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={deck.reset}
+                  className="text-xs text-(--color-muted) underline underline-offset-2 transition-colors duration-150 hover:text-red-500"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+            );
+          })()}
         </header>
       )}
 
@@ -374,19 +416,21 @@ export default function App() {
                 Préparez votre TEF. Ou commencez à faire vos valises. Bonne chance.
               </p>
             </div>
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-4 gap-3">
             {(
               [
-                { label: "Conditionnel",    sub: "Conjuguer par sujet",  onClick: handleStartConditionnel },
-                { label: "Connecteurs",     sub: "Expressions du TEF",   onClick: handleStartPhrases },
-                { label: "Écrit formel",    sub: "Lettres & expressions", onClick: handleStartEcrit },
-                { label: "Expression orale", sub: "Poser des questions",  onClick: handleStartOral },
-                { label: "Futur simple",    sub: "Conjuguer par sujet",  onClick: handleStartFutur },
-                { label: "Imparfait",       sub: "Conjuguer par sujet",  onClick: handleStartImparfait },
-                { label: "Grammaire",        sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
-                { label: "Participe passé", sub: "Identifier la forme",  onClick: handleStartParticipe },
-                { label: "Patterns",         sub: "Mémoriser les phrases", onClick: handleStartPatterns },
-                { label: "Présent",         sub: "Conjuguer par sujet",  onClick: handleStartPresent },
+                { label: "Conditionnel",       sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
+                { label: "Connecteurs",        sub: "Expressions du TEF",     onClick: handleStartPhrases },
+                { label: "Écrit formel",       sub: "Lettres & expressions",  onClick: handleStartEcrit },
+                { label: "Expression orale",   sub: "Poser des questions",    onClick: handleStartOral },
+                { label: "Futur simple",       sub: "Conjuguer par sujet",    onClick: handleStartFutur },
+                { label: "Grammaire",          sub: "Corriger les erreurs",   onClick: handleStartOrthographe },
+                { label: "Imparfait",          sub: "Conjuguer par sujet",    onClick: handleStartImparfait },
+                { label: "Participe passé",    sub: "Identifier la forme",    onClick: handleStartParticipe },
+                { label: "Patterns",           sub: "Mémoriser les phrases",  onClick: handleStartPatterns },
+                { label: "Présent",            sub: "Conjuguer par sujet",    onClick: handleStartPresent },
+                { label: "Touriste",            sub: "Phrases de voyage",      onClick: handleStartTouriste },
+                { label: "Vocabulaire",        sub: "Antonymes & paires",     onClick: handleStartVocabulaire },
               ] as const
             ).map(({ label, sub, onClick }) => (
               <button
@@ -395,9 +439,6 @@ export default function App() {
                 onClick={onClick}
                 className="flex flex-col items-center gap-3 rounded-(--radius-card) bg-(--color-surface) px-4 py-5 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-brand)/10 text-xl">
-                  🇫🇷
-                </span>
                 <span className="text-center">
                   <span className="block font-semibold text-(--color-ink)">{label}</span>
                   <span className="block text-xs text-(--color-muted)">{sub}</span>
@@ -622,6 +663,58 @@ export default function App() {
                 masteredCount={flashcards.masteredCount}
                 totalCards={flashcards.totalCards}
                 onRestart={flashcards.restart}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── VOCABULAIRE ── */}
+        {appMode === "vocabulaire" && (
+          <>
+            {vocabulaire.state.phase === "session" && vocabulaire.currentCard && (
+              <FlashcardView
+                card={vocabulaire.currentCard}
+                index={vocabulaire.progress.index}
+                total={vocabulaire.progress.total}
+                canGoBack={vocabulaire.progress.index > 0}
+                onRate={vocabulaire.rate}
+                onBack={vocabulaire.back}
+                onSkip={vocabulaire.skip}
+              />
+            )}
+            {vocabulaire.state.phase === "complete" && (
+              <FlashcardResults
+                sessionResults={vocabulaire.state.sessionResults}
+                masteredCount={vocabulaire.masteredCount}
+                totalCards={vocabulaire.totalCards}
+                onRestart={vocabulaire.restart}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── TOURISTE ── */}
+        {appMode === "touriste" && (
+          <>
+            {touriste.state.phase === "session" && touriste.currentCard && (
+              <FlashcardView
+                card={touriste.currentCard}
+                index={touriste.progress.index}
+                total={touriste.progress.total}
+                canGoBack={touriste.progress.index > 0}
+                onRate={touriste.rate}
+                onBack={touriste.back}
+                onSkip={touriste.skip}
+              />
+            )}
+            {touriste.state.phase === "complete" && (
+              <FlashcardResults
+                sessionResults={touriste.state.sessionResults}
+                masteredCount={touriste.masteredCount}
+                totalCards={touriste.totalCards}
+                onRestart={touriste.restart}
                 onHome={handleGoHome}
               />
             )}

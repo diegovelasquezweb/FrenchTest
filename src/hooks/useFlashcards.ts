@@ -1,6 +1,5 @@
 import { useReducer, useCallback, useEffect } from "react";
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
-import { FLASHCARDS } from "../data/flashcards";
 import { loadProgress, saveProgress, applyRating, buildDeck, totalMastered } from "../lib/flashcardProgress";
 
 
@@ -21,71 +20,73 @@ type FlashcardsAction =
   | { type: "RESET" }
   | { type: "HOME" };
 
-function makeInitialState(): FlashcardsState {
+function makeInitialState(cards: Flashcard[], storageKey: string): FlashcardsState {
   return {
     phase: "idle",
     deck: [],
     currentIndex: 0,
     sessionResults: [],
-    progress: loadProgress(),
+    progress: loadProgress(storageKey),
   };
 }
 
-function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsState {
-  switch (action.type) {
-    case "HOME":
-      return { ...makeInitialState(), progress: state.progress };
-    case "RESET": {
-      const emptyProgress: Record<string, CardProgress> = {};
-      return {
-        phase: "session",
-        deck: buildDeck(FLASHCARDS, emptyProgress),
-        currentIndex: 0,
-        sessionResults: [],
-        progress: emptyProgress,
-      };
-    }
-    case "START":
-    case "RESTART":
-      return {
-        ...state,
-        phase: "session",
-        deck: buildDeck(FLASHCARDS, state.progress),
-        currentIndex: 0,
-        sessionResults: [],
-      };
-    case "BACK": {
-      if (state.phase !== "session" || state.currentIndex === 0) return state;
-      return {
-        ...state,
-        currentIndex: state.currentIndex - 1,
-        sessionResults: state.sessionResults.slice(0, -1),
-      };
-    }
-    case "SKIP": {
-      if (state.phase !== "session") return state;
-      const nextIndex = state.currentIndex + 1;
-      if (nextIndex >= state.deck.length) {
-        return { ...state, phase: "complete" };
+function makeReducer(cards: Flashcard[], storageKey: string) {
+  return function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsState {
+    switch (action.type) {
+      case "HOME":
+        return { ...makeInitialState(cards, storageKey), progress: state.progress };
+      case "RESET": {
+        const emptyProgress: Record<string, CardProgress> = {};
+        return {
+          phase: "session",
+          deck: buildDeck(cards, emptyProgress),
+          currentIndex: 0,
+          sessionResults: [],
+          progress: emptyProgress,
+        };
       }
-      return { ...state, currentIndex: nextIndex };
-    }
-    case "RATE": {
-      if (state.phase !== "session") return state;
-      const card = state.deck[state.currentIndex];
-      if (!card) return state;
-
-      const newProgress = applyRating(state.progress, card.id, action.payload);
-      const newResults = [...state.sessionResults, { id: card.id, rating: action.payload }];
-      const nextIndex = state.currentIndex + 1;
-
-      if (nextIndex >= state.deck.length) {
-        return { ...state, progress: newProgress, sessionResults: newResults, phase: "complete" };
+      case "START":
+      case "RESTART":
+        return {
+          ...state,
+          phase: "session",
+          deck: buildDeck(cards, state.progress),
+          currentIndex: 0,
+          sessionResults: [],
+        };
+      case "BACK": {
+        if (state.phase !== "session" || state.currentIndex === 0) return state;
+        return {
+          ...state,
+          currentIndex: state.currentIndex - 1,
+          sessionResults: state.sessionResults.slice(0, -1),
+        };
       }
+      case "SKIP": {
+        if (state.phase !== "session") return state;
+        const nextIndex = state.currentIndex + 1;
+        if (nextIndex >= state.deck.length) {
+          return { ...state, phase: "complete" };
+        }
+        return { ...state, currentIndex: nextIndex };
+      }
+      case "RATE": {
+        if (state.phase !== "session") return state;
+        const card = state.deck[state.currentIndex];
+        if (!card) return state;
 
-      return { ...state, progress: newProgress, sessionResults: newResults, currentIndex: nextIndex };
+        const newProgress = applyRating(state.progress, card.id, action.payload);
+        const newResults = [...state.sessionResults, { id: card.id, rating: action.payload }];
+        const nextIndex = state.currentIndex + 1;
+
+        if (nextIndex >= state.deck.length) {
+          return { ...state, progress: newProgress, sessionResults: newResults, phase: "complete" };
+        }
+
+        return { ...state, progress: newProgress, sessionResults: newResults, currentIndex: nextIndex };
+      }
     }
-  }
+  };
 }
 
 export interface UseFlashcardsReturn {
@@ -103,12 +104,13 @@ export interface UseFlashcardsReturn {
   goHome(): void;
 }
 
-export function useFlashcards(): UseFlashcardsReturn {
-  const [state, dispatch] = useReducer(reducer, undefined, makeInitialState);
+export function useFlashcards(cards: Flashcard[], storageKey: string): UseFlashcardsReturn {
+  const reducer = makeReducer(cards, storageKey);
+  const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(cards, storageKey));
 
   useEffect(() => {
-    saveProgress(state.progress);
-  }, [state.progress]);
+    saveProgress(state.progress, storageKey);
+  }, [state.progress, storageKey]);
 
   const startSession = useCallback(() => dispatch({ type: "START" }), []);
   const rate = useCallback((r: FlashcardRating) => dispatch({ type: "RATE", payload: r }), []);
@@ -126,7 +128,7 @@ export function useFlashcards(): UseFlashcardsReturn {
     currentCard,
     progress: { index: state.currentIndex, total: state.deck.length },
     masteredCount: totalMastered(state.progress),
-    totalCards: FLASHCARDS.length,
+    totalCards: cards.length,
     startSession,
     rate,
     back,
