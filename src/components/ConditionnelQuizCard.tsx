@@ -73,7 +73,7 @@ export function ConditionnelQuizCard({
           <span className="mx-2 opacity-40">·</span>
           <span lang="es">{question.verb.translationEs}</span>
         </p>
-        <p className="mt-3 inline-block rounded-lg bg-(--color-brand)/10 px-3 py-1 text-sm font-semibold text-(--color-brand)">
+        <p className="mt-3 inline-block rounded bg-(--color-brand)/10 px-3 py-1 text-sm font-semibold text-(--color-brand)">
           {question.targetSubject}
         </p>
       </div>

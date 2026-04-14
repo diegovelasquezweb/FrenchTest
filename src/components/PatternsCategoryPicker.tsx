@@ -34,10 +34,10 @@ export function PatternsCategoryPicker({ options }: PatternsCategoryPickerProps)
             key={id}
             type="button"
             onClick={onSelect}
-            className={`group flex flex-col items-start gap-3 rounded-2xl bg-(--color-surface) p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) ${id === "all" ? "col-span-2" : ""}`}
+            className={`group flex flex-col items-start gap-3 rounded bg-(--color-surface) p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) ${id === "all" ? "col-span-2" : ""}`}
           >
             <div className="flex w-full items-center gap-3">
-              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base ${color}`}>
+              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded text-base ${color}`}>
                 {icon}
               </span>
               <span className="flex-1 text-left">

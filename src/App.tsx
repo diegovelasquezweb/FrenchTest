@@ -426,7 +426,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={toggleGroup}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors duration-150 hover:bg-(--color-ink)/5 group"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-(--color-ink)/5 group"
                 >
                   <span className="text-[11px] font-bold uppercase tracking-widest text-(--color-muted) group-hover:text-(--color-ink) transition-colors">{group.label}</span>
                   {isOpen ? <ChevronDown size={16} className="text-(--color-muted) transition-transform duration-200" /> : <ChevronRight size={16} className="text-(--color-muted) transition-transform duration-200" />}
@@ -445,7 +445,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={item.onClick}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-sm font-medium transition-colors duration-150 ${
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
                               isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
@@ -471,7 +471,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={togglePatterns}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-sm font-medium transition-colors duration-150 ${
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
                               appMode === "patterns" ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
@@ -498,7 +498,7 @@ export default function App() {
                                   <button
                                     type="button"
                                     onClick={() => handleSelectPatternsCategory(cat)}
-                                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 pr-7 ${
+                                    className={`w-full text-left px-3 py-1.5 rounded text-xs font-medium transition-colors duration-150 pr-7 ${
                                       appMode === "patterns" && patternsCategory === cat
                                         ? "bg-(--color-brand)/10 text-(--color-brand)"
                                         : "text-(--color-muted) hover:text-(--color-ink) hover:bg-(--color-ink)/5"
@@ -531,7 +531,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={onClick}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-sm font-medium transition-colors duration-150 ${
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
                               isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
@@ -639,7 +639,7 @@ export default function App() {
                 {favorites.length > 0 && (
                   <div className="w-full">
                     <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-widest text-(--color-muted)">Favoris</p>
-                    <div className="rounded-2xl overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                    <div className="rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                       {favorites.map(label => {
                         const item = SIDEBAR_LOOKUP[label];
                         if (!item) return null;
@@ -659,7 +659,7 @@ export default function App() {
                   </div>
                 )}
 
-                <Accordion.Root type="multiple" className="w-full rounded-2xl overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {([
                     {
                       id: "conjugaison",
