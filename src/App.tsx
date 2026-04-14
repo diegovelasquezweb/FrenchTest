@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { VERBS } from "./data/verbs";
@@ -296,6 +296,27 @@ export default function App() {
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
+  // ── Suggestion cards (desktop home) ──────────────────────────────────────
+  const ALL_SUGGESTIONS = [
+    { label: "Conditionnel",        sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartConditionnel },
+    { label: "Futur simple",        sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartFutur },
+    { label: "Grammaire",           sub: "Corriger les erreurs",    icon: "📝", onClick: handleStartOrthographe },
+    { label: "Imparfait",           sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartImparfait },
+    { label: "Participe passé",     sub: "Identifier la forme",     icon: "📝", onClick: handleStartParticipe },
+    { label: "Présent",             sub: "Conjuguer par sujet",     icon: "📝", onClick: handleStartPresent },
+    { label: "Connecteurs",         sub: "Expressions du TEF",      icon: "📝", onClick: handleStartPhrases },
+    { label: "Écrit formel",        sub: "Lettres & expressions",   icon: "📝", onClick: handleStartEcrit },
+    { label: "Expression orale",    sub: "Poser des questions",     icon: "📝", onClick: handleStartOral },
+    { label: "Patterns — Tout",     sub: "100 phrases clés",        icon: "🃏", onClick: handleStartPatterns },
+    { label: "Vocabulaire",         sub: "Antonymes & paires",      icon: "🃏", onClick: handleStartVocabulaire },
+    { label: "Touriste",            sub: "Phrases de voyage",       icon: "🃏", onClick: handleStartTouriste },
+  ];
+  const suggestions = useMemo(() => {
+    const shuffled = [...ALL_SUGGESTIONS].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 6);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ── Nav data ──────────────────────────────────────────────────────────────
   const SIDEBAR_LOOKUP: Record<string, { mode: Exclude<AppMode, "home">; onClick: () => void; icon: string }> = {
     "Conditionnel":     { mode: "conditionnel", onClick: handleStartConditionnel, icon: "📝" },
@@ -342,7 +363,7 @@ export default function App() {
       {/* ── SIDEBAR (desktop only) ─────────────────────────────────────────── */}
       <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-(--color-ink)/8 bg-(--color-surface)">
         <div className="px-5 py-5 border-b border-(--color-ink)/8">
-          <p className="text-xl font-extrabold tracking-tight text-(--color-ink)">🇨🇦 TEF Pratiquer</p>
+          <button type="button" onClick={handleGoHome} className="text-xl font-extrabold tracking-tight text-(--color-ink) hover:text-(--color-brand) transition-colors duration-150 text-left">🇨🇦 TEF Pratiquer</button>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-1" aria-label="Navigation">
@@ -552,7 +573,7 @@ export default function App() {
               ← Accueil
             </button>
           ) : (
-            <span className="text-sm font-bold text-(--color-ink)">🇨🇦 TEF Pratiquer</span>
+            <button type="button" onClick={handleGoHome} className="text-sm font-bold text-(--color-ink) hover:text-(--color-brand) transition-colors duration-150">🇨🇦 TEF Pratiquer</button>
           )}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
@@ -582,11 +603,27 @@ export default function App() {
           {/* HOME */}
           {appMode === "home" && (
             <>
-              {/* Desktop: welcome state */}
-              <div className="hidden md:flex h-full flex-col items-center justify-center gap-3 text-center">
-                <span className="text-5xl">🎯</span>
-                <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
-                <p className="text-sm text-(--color-muted)">Sélectionnez un exercice dans le menu à gauche.</p>
+              {/* Desktop: suggestion cards */}
+              <div className="hidden md:flex h-full flex-col items-center justify-center gap-8 px-10 py-12">
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <span className="text-5xl">🎯</span>
+                  <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
+                  <p className="text-sm text-(--color-muted)">Quelques suggestions pour commencer.</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3 w-full max-w-2xl">
+                  {suggestions.map(({ label, sub, icon, onClick }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={onClick}
+                      className="flex flex-col items-start gap-2 rounded bg-(--color-surface) p-4 shadow-sm text-left transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                    >
+                      <span className="text-xl grayscale opacity-60">{icon}</span>
+                      <span className="text-sm font-semibold text-(--color-ink) leading-tight">{label}</span>
+                      <span className="text-xs text-(--color-muted)">{sub}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Mobile: accordion */}
