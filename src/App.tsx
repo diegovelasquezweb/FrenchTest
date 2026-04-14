@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Star } from "lucide-react";
 import { VERBS } from "./data/verbs";
 import { useQuiz } from "./hooks/useQuiz";
 import { useImparfaitQuiz } from "./hooks/useImparfaitQuiz";
@@ -359,7 +359,7 @@ export default function App() {
   const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-(--color-bg)">
+    <div className="flex h-dvh overflow-hidden bg-(--color-bg)">
 
       {/* ── SIDEBAR (desktop only) ─────────────────────────────────────────── */}
       <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-(--color-ink)/8 bg-(--color-surface)">
@@ -445,7 +445,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={item.onClick}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-left text-sm font-medium transition-colors duration-150 ${
                               isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
                             }`}
                           >
@@ -456,9 +456,9 @@ export default function App() {
                             type="button"
                             onClick={(e) => toggleFavorite(label, e)}
                             aria-label={`Retirer ${label} des favoris`}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-amber-400"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-amber-400"
                           >
-                            ⭐
+                            <Star size={13} fill="currentColor" />
                           </button>
                         </div>
                       );
@@ -510,9 +510,9 @@ export default function App() {
                                     type="button"
                                     onClick={(e) => toggleFavorite(favKey, e)}
                                     aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                                    className={`absolute right-1.5 top-1/2 -translate-y-1/2 text-xs transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/psub:opacity-60 text-(--color-muted)"}`}
+                                    className={`absolute right-1.5 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/psub:opacity-60 text-(--color-muted)"}`}
                                   >
-                                    {isFav ? "⭐" : "☆"}
+                                    <Star size={13} fill={isFav ? "currentColor" : "none"} />
                                   </button>
                                 </div>
                               );
@@ -544,9 +544,9 @@ export default function App() {
                             type="button"
                             onClick={(e) => toggleFavorite(label, e)}
                             aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                            className={`absolute right-2 top-1/2 -translate-y-1/2 text-sm transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${isFav ? "text-amber-400" : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"}`}
                           >
-                            {isFav ? "⭐" : "☆"}
+                            <Star size={13} fill={isFav ? "currentColor" : "none"} />
                           </button>
                         </div>
                       );
@@ -568,7 +568,7 @@ export default function App() {
       <div className="flex flex-1 flex-col overflow-hidden">
 
         {/* Mobile top bar */}
-        <div className="md:hidden flex items-center justify-between border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-3">
+        <div className="md:hidden sticky top-0 z-40 flex items-center justify-between border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-3">
           {appMode !== "home" ? (
             <button type="button" onClick={handleGoHome} className="text-sm font-medium text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150">
               ← Accueil
@@ -603,7 +603,7 @@ export default function App() {
 
           {/* HOME */}
           {appMode === "home" && (
-            <>
+            <div className="flex flex-col flex-1">
               {/* Desktop: suggestion cards */}
               <div className="hidden md:flex h-full flex-col items-center justify-center gap-8 px-10 py-12">
                 <div className="flex flex-col items-center gap-3 text-center">
@@ -644,15 +644,23 @@ export default function App() {
                         const item = SIDEBAR_LOOKUP[label];
                         if (!item) return null;
                         return (
-                          <button
-                            key={label}
-                            type="button"
-                            onClick={item.onClick}
-                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15 border-t border-(--color-ink)/8 first:border-t-0"
-                          >
-                            <span className="grayscale opacity-50">{item.icon}</span>
-                            {label}
-                          </button>
+                          <div key={label} className="relative border-t border-(--color-ink)/8 first:border-t-0">
+                            <button
+                              type="button"
+                              onClick={item.onClick}
+                              className="flex w-full items-center px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                            >
+                              {label}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => toggleFavorite(label, e)}
+                              aria-label={`Retirer ${label} des favoris`}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-amber-400"
+                            >
+                              <Star size={14} fill="currentColor" />
+                            </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -686,9 +694,8 @@ export default function App() {
                       id: "flashcards",
                       label: "Flashcards",
                       items: [
-                        { label: "Patterns — Tout", onClick: handleStartPatterns },
-                        { label: "Touriste",        onClick: handleStartTouriste },
-                        { label: "Vocabulaire",     onClick: handleStartVocabulaire },
+                        { label: "Touriste",    onClick: handleStartTouriste },
+                        { label: "Vocabulaire", onClick: handleStartVocabulaire },
                       ],
                     },
                   ]).map((section, si) => (
@@ -705,31 +712,62 @@ export default function App() {
                             const isFav = favorites.includes(label);
                             return (
                               <div key={label} className="relative">
-                                <button
-                                  type="button"
-                                  onClick={onClick}
-                                  className="w-full px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-                                >
+                                <button type="button" onClick={onClick} className="w-full px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
                                   {label}
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => toggleFavorite(label, e)}
-                                  aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 text-base transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}
-                                >
-                                  {isFav ? "⭐" : "☆"}
+                                <button type="button" onClick={(e) => toggleFavorite(label, e)} aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`} className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
+                                  <Star size={14} fill={isFav ? "currentColor" : "none"} />
                                 </button>
                               </div>
                             );
                           })}
+
+                          {/* Patterns nested submenu — only in Flashcards */}
+                          {section.id === "flashcards" && (
+                            <Accordion.Root type="single" collapsible className="border-t border-(--color-ink)/8 mt-1">
+                              <Accordion.Item value="patterns-mobile">
+                                <Accordion.Header>
+                                  <Accordion.Trigger className="group flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-(--color-ink) hover:bg-(--color-brand)/8 hover:text-(--color-brand)">
+                                    Patterns
+                                    <ChevronDown size={13} className="text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                                  </Accordion.Trigger>
+                                </Accordion.Header>
+                                <Accordion.Content className="overflow-hidden data-[state=open]:animate-none">
+                                  <div className="flex flex-col pb-1 pl-4">
+                                    {([
+                                      { label: "Argumenter",    cat: "argumenter"  as const },
+                                      { label: "Connecteurs",   cat: "connecteurs" as const },
+                                      { label: "Oral — Appels", cat: "oral-appels" as const },
+                                      { label: "Oral — Débat",  cat: "oral-debat"  as const },
+                                      { label: "Écrit — Intro", cat: "ecrit-intro" as const },
+                                      { label: "Écrit — Corps", cat: "ecrit-corps" as const },
+                                      { label: "Tout",          cat: "all"         as const },
+                                    ]).map(({ label, cat }) => {
+                                      const favKey = `Patterns — ${label}`;
+                                      const isFav = favorites.includes(favKey);
+                                      return (
+                                        <div key={cat} className="relative">
+                                          <button type="button" onClick={() => handleSelectPatternsCategory(cat)} className="w-full px-3 py-2.5 pr-10 text-left text-sm text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand)">
+                                            {label}
+                                          </button>
+                                          <button type="button" onClick={(e) => toggleFavorite(favKey, e)} aria-label={isFav ? `Retirer des favoris` : `Ajouter aux favoris`} className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 transition-opacity ${isFav ? "text-amber-400" : "text-(--color-muted)"}`}>
+                                            <Star size={13} fill={isFav ? "currentColor" : "none"} />
+                                          </button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </Accordion.Content>
+                              </Accordion.Item>
+                            </Accordion.Root>
+                          )}
                         </div>
                       </Accordion.Content>
                     </Accordion.Item>
                   ))}
                 </Accordion.Root>
               </div>
-            </>
+            </div>
           )}
 
           {/* QUIZ / FLASHCARD SCREENS */}
