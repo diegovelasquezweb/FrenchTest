@@ -13,6 +13,7 @@ interface OrthographeQuizCardProps {
   onNext(): void;
   questionNumber: number;
   total: number;
+  label?: string;
 }
 
 function deriveButtonState(
@@ -47,6 +48,7 @@ export function OrthographeQuizCard({
   onNext,
   questionNumber,
   total,
+  label = "Orthographe — choisissez la bonne forme",
 }: OrthographeQuizCardProps) {
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
@@ -70,7 +72,7 @@ export function OrthographeQuizCard({
     >
       {/* Label */}
       <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
-        Orthographe — choisissez la bonne forme
+        {label}
       </p>
 
       {/* Sentence with blank */}

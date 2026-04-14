@@ -5,6 +5,7 @@ import { useImparfaitQuiz } from "./hooks/useImparfaitQuiz";
 import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
+import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
 import { ScoreBoard } from "./components/ScoreBoard";
@@ -19,7 +20,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -27,6 +28,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   conditionnel: "Conditionnel",
   futur: "Futur simple",
   orthographe: "Orthographe",
+  phrases: "Expressions du discours",
 };
 
 export default function App() {
@@ -38,6 +40,7 @@ export default function App() {
   const conditionnel = useConditionnelQuiz();
   const futur = useFuturQuiz();
   const orthographe = useOrthographeQuiz();
+  const phrases = usePhrasesQuiz();
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -95,10 +98,20 @@ export default function App() {
           orthographe.nextQuestion();
         }
       }
+
+      if (appMode === "phrases") {
+        if (phrases.state.phase === QuizPhase.Answering) {
+          const digit = parseInt(e.key, 10);
+          if (digit >= 1 && digit <= 4) phrases.selectAnswer(digit - 1);
+        }
+        if (phrases.state.phase === QuizPhase.Feedback && e.key === "Enter") {
+          phrases.nextQuestion();
+        }
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -116,6 +129,9 @@ export default function App() {
     } else if (appMode === "orthographe" && orthographe.state.phase === QuizPhase.Feedback && orthographe.currentQuestion) {
       const correct = orthographe.currentQuestion.options[orthographe.currentQuestion.correctIndex] ?? "";
       setAnnouncement(orthographe.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "phrases" && phrases.state.phase === QuizPhase.Feedback && phrases.currentQuestion) {
+      const correct = phrases.currentQuestion.options[phrases.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(phrases.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else {
       setAnnouncement("");
     }
@@ -126,6 +142,7 @@ export default function App() {
     conditionnel.state.phase, conditionnel.state.answerState, conditionnel.currentQuestion,
     futur.state.phase, futur.state.answerState, futur.currentQuestion,
     orthographe.state.phase, orthographe.state.answerState, orthographe.currentQuestion,
+    phrases.state.phase, phrases.state.answerState, phrases.currentQuestion,
   ]);
 
   function handleGoHome() {
@@ -134,6 +151,7 @@ export default function App() {
     if (appMode === "conditionnel") conditionnel.goHome();
     if (appMode === "futur") futur.goHome();
     if (appMode === "orthographe") orthographe.goHome();
+    if (appMode === "phrases") phrases.goHome();
     setAppMode("home");
   }
 
@@ -162,26 +180,34 @@ export default function App() {
     setAppMode("orthographe");
   }
 
+  function handleStartPhrases() {
+    phrases.startQuiz();
+    setAppMode("phrases");
+  }
+
   const activePhase =
     appMode === "participe" ? participe.state.phase
     : appMode === "imparfait" ? imparfait.state.phase
     : appMode === "conditionnel" ? conditionnel.state.phase
     : appMode === "futur" ? futur.state.phase
-    : orthographe.state.phase;
+    : appMode === "orthographe" ? orthographe.state.phase
+    : phrases.state.phase;
 
   const activeProgress =
     appMode === "participe" ? participe.progress
     : appMode === "imparfait" ? imparfait.progress
     : appMode === "conditionnel" ? conditionnel.progress
     : appMode === "futur" ? futur.progress
-    : orthographe.progress;
+    : appMode === "orthographe" ? orthographe.progress
+    : phrases.progress;
 
   const activeScore =
     appMode === "participe" ? participe.state.score
     : appMode === "imparfait" ? imparfait.state.score
     : appMode === "conditionnel" ? conditionnel.state.score
     : appMode === "futur" ? futur.state.score
-    : orthographe.state.score;
+    : appMode === "orthographe" ? orthographe.state.score
+    : phrases.state.score;
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
@@ -229,7 +255,8 @@ export default function App() {
                 { label: "Imparfait",       sub: "Conjuguer par sujet",  onClick: handleStartImparfait },
                 { label: "Conditionnel",    sub: "Conjuguer par sujet",  onClick: handleStartConditionnel },
                 { label: "Futur simple",    sub: "Conjuguer par sujet",  onClick: handleStartFutur },
-                { label: "Orthographe",     sub: "Corriger les erreurs", onClick: handleStartOrthographe },
+                { label: "Orthographe",     sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
+                { label: "Connecteurs",     sub: "Expressions du TEF",   onClick: handleStartPhrases },
               ] as const
             ).map(({ label, sub, onClick }) => (
               <button
@@ -379,6 +406,34 @@ export default function App() {
                 score={orthographe.state.score}
                 total={orthographe.progress.total}
                 onRestart={orthographe.restartQuiz}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── PHRASES QUIZ ── */}
+        {appMode === "phrases" && (
+          <>
+            {(phrases.state.phase === QuizPhase.Answering || phrases.state.phase === QuizPhase.Feedback) &&
+              phrases.currentQuestion && (
+                <OrthographeQuizCard
+                  question={phrases.currentQuestion}
+                  answerState={phrases.state.answerState}
+                  selectedIndex={phrases.state.selectedIndex}
+                  onSelect={phrases.selectAnswer}
+                  onNext={phrases.nextQuestion}
+                  questionNumber={phrases.progress.index + 1}
+                  total={phrases.progress.total}
+                  label="Complétez avec la bonne expression"
+                />
+              )}
+            {phrases.state.phase === QuizPhase.Complete && (
+              <OrthographeResultScreen
+                history={phrases.state.history}
+                score={phrases.state.score}
+                total={phrases.progress.total}
+                onRestart={phrases.restartQuiz}
                 onHome={handleGoHome}
               />
             )}
