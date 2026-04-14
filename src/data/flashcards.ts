@@ -206,7 +206,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I'm taking the liberty of writing to you in order to…",
     translationEs: "Me permito escribirle con el fin de…",
     usage: "Formule d'ouverture formelle standard. \"Afin de\" + infinitif = in order to.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-02",
@@ -214,7 +214,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Following our interview on…, I am contacting you to…",
     translationEs: "Tras nuestra entrevista del…, le contacto para…",
     usage: "\"Suite à\" = following. Formule de référence à un contact précédent.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-03",
@@ -222,7 +222,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "As indicated in your ad, I would like to…",
     translationEs: "Como se indica en su anuncio, deseo…",
     usage: "Référence directe à l'annonce — montre que vous avez bien lu.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-04",
@@ -230,7 +230,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I'd like to point out that…",
     translationEs: "Me permito señalar que…",
     usage: "Formule douce pour soulever un problème sans agressivité.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   // ── ÉCRIT — Corps de la lettre ───────────────────────────────────────────
   {
@@ -239,7 +239,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Please find attached…",
     translationEs: "Encontrará adjunto…",
     usage: "\"Ci-joint\" = attached/enclosed. Invariable quand placé avant le nom.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-06",
@@ -247,7 +247,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Due to…, it is impossible for me to…",
     translationEs: "Debido a…, me es imposible…",
     usage: "\"En raison de\" = due to/because of + nom. Jamais suivi d'un verbe conjugué.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-07",
@@ -255,7 +255,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Following…, I find myself obliged to…",
     translationEs: "A raíz de…, me veo en la obligación de…",
     usage: "\"À la suite de\" = following/as a result of. Plus formel que \"après\".",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-08",
@@ -263,7 +263,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "That is why I kindly ask you to…",
     translationEs: "Por eso le pido que tenga a bien…",
     usage: "\"Bien vouloir\" = kindly. Formule très polie pour une demande formelle.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-09",
@@ -271,7 +271,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Do not hesitate to contact me for any information.",
     translationEs: "No dude en contactarme para cualquier consulta.",
     usage: "Formule de clôture standard — offre de disponibilité.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   // ── ÉCRIT — Clôture ──────────────────────────────────────────────────────
   {
@@ -280,7 +280,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Awaiting your reply, I remain at your disposal.",
     translationEs: "En espera de su respuesta, quedo a su disposición.",
     usage: "Double formule de clôture très courante au TEF. À mémoriser entière.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-11",
@@ -288,7 +288,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Please accept, Madam/Sir, my distinguished greetings.",
     translationEs: "Le ruego que acepte, señora/señor, mis distinguidos saludos.",
     usage: "Formule de politesse finale obligatoire dans toute lettre formelle française.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   {
     id: "ecrit-12",
@@ -296,7 +296,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I thank you for the attention you will give to my request.",
     translationEs: "Le agradezco la atención que prestará a mi solicitud.",
     usage: "Formule de remerciement anticipé — signe de politesse et de confiance.",
-    category: "écrit",
+    category: "écrit-intro",
   },
   // ── CONNECTEURS — Opposition ─────────────────────────────────────────────
   {
@@ -488,7 +488,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I wish to bring to your attention that…",
     translationEs: "Deseo poner en su conocimiento que…",
     usage: "Formule d'ouverture formelle pour signaler un problème. Plus soutenus que \"je vous informe\".",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-14",
@@ -496,7 +496,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I take the liberty of expressing my dissatisfaction regarding…",
     translationEs: "Me permito expresarle mi insatisfacción respecto a…",
     usage: "Ouverture de plainte polie. \"Faire part de\" = to share / to express. Évite l'agressivité.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-15",
@@ -504,7 +504,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I would be grateful if you would kindly examine my request.",
     translationEs: "Le agradecería que tuviera a bien examinar mi solicitud.",
     usage: "\"Je vous serais reconnaissant(e) de + inf.\" = I would be grateful if you would. Conditionnel de politesse formelle.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-16",
@@ -512,7 +512,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I find myself obliged to inform you that…",
     translationEs: "Me veo en la obligación de señalarle que…",
     usage: "Formule de plainte forte — implique une escalade possible si pas de réponse.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-17",
@@ -520,7 +520,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I hereby acknowledge receipt of your letter dated…",
     translationEs: "Acuso recibo de su carta con fecha…",
     usage: "\"Accuser réception\" = to acknowledge receipt. Formule administrative standard.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-18",
@@ -528,7 +528,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I take the liberty of following up regarding…",
     translationEs: "Me permito retomar el contacto con usted respecto a…",
     usage: "Formule de relance polie. \"Revenir vers vous\" = to follow up. Évite \"je vous relance\".",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-19",
@@ -536,7 +536,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "As soon as possible / at the earliest opportunity",
     translationEs: "En el menor plazo posible / a la brevedad",
     usage: "Expression fixe administrative. Jamais \"le plus vite possible\" dans une lettre formelle.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-20",
@@ -544,7 +544,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Could we arrange a meeting in order to…",
     translationEs: "¿Podríamos concertar una cita para…",
     usage: "\"Convenir d'un rendez-vous\" = to arrange a meeting. Conditionnel de politesse collectif.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-21",
@@ -552,7 +552,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I remain entirely at your disposal for any further information.",
     translationEs: "Quedo a su entera disposición para cualquier información adicional.",
     usage: "Version complète de la formule de clôture. \"Entière disposition\" + \"complémentaire\" = registre plus soutenu.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-22",
@@ -560,7 +560,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Please accept the expression of my respectful regards.",
     translationEs: "Le ruego acepte la expresión de mis sentimientos respetuosos.",
     usage: "Formule de clôture pour un égal ou supérieur. ≠ \"salutations distinguées\" (neutre/inférieur).",
-    category: "écrit",
+    category: "écrit-corps",
   },
 
   // ── ARGUMENTATION — Défendre un point de vue ────────────────────────────
@@ -766,7 +766,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "I would be grateful if you would kindly…",
     translationEs: "Le agradecería que tuviera a bien…",
     usage: "\"Savoir gré à qqn de\" = to be grateful to someone for. Formule très soutenue, plus rare que \"je vous serais reconnaissant\".",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "ecrit-24",
@@ -774,7 +774,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Hoping for a favourable response to my request,…",
     translationEs: "Esperando una respuesta favorable a mi solicitud,…",
     usage: "Formule de transition vers la clôture. \"Suite favorable\" = positive follow-up. S'utilise avant la formule de politesse finale.",
-    category: "écrit",
+    category: "écrit-corps",
   },
   {
     id: "arg-14",

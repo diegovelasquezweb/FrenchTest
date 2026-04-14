@@ -2,17 +2,19 @@ import { useEffect, useRef } from "react";
 import type { Flashcard, FlashcardRating } from "../types";
 
 const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
-  oral: "Expression orale",
-  écrit: "Écrit formel",
+  oral: "Oral — Appels",
+  "écrit-intro": "Écrit — Intro",
+  "écrit-corps": "Écrit — Corps",
   connecteurs: "Connecteurs",
-  argumentation: "Argumentation",
+  argumentation: "Argumenter",
   vocabulaire: "Vocabulaire",
   touriste: "Touriste",
 };
 
 const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
   oral: "bg-(--color-brand)/10 text-(--color-brand)",
-  écrit: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  "écrit-intro": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  "écrit-corps": "bg-teal-500/10 text-teal-600 dark:text-teal-400",
   connecteurs: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   argumentation: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
   vocabulaire: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",

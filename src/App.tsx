@@ -26,6 +26,8 @@ import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
+import { PatternsCategoryPicker } from "./components/PatternsCategoryPicker";
+import type { PatternsCategory } from "./components/PatternsCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
@@ -61,8 +63,25 @@ export default function App() {
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
   const flashcards = useFlashcards(FLASHCARDS, "tef-flashcard-progress");
+  const pArgumenter   = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"), "tef-p-argumenter");
+  const pConnecteurs  = useFlashcards(FLASHCARDS.filter(c => c.category === "connecteurs"),   "tef-p-connecteurs");
+  const pOralAppels   = useFlashcards(FLASHCARDS.filter(c => c.category === "oral"),          "tef-p-oral-appels");
+  const pOralDebat    = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"), "tef-p-oral-debat");
+  const pEcritIntro   = useFlashcards(FLASHCARDS.filter(c => c.category === "écrit-intro"),   "tef-p-ecrit-intro");
+  const pEcritCorps   = useFlashcards(FLASHCARDS.filter(c => c.category === "écrit-corps"),   "tef-p-ecrit-corps");
   const vocabulaire = useFlashcards(VOCABULAIRE_CARDS, "tef-vocabulaire-progress");
   const touriste = useFlashcards(TOURISTE_CARDS, "tef-touriste-progress");
+
+  const [patternsCategory, setPatternsCategory] = useState<PatternsCategory | null>(null);
+
+  const activeDeck =
+    patternsCategory === "argumenter"  ? pArgumenter  :
+    patternsCategory === "connecteurs" ? pConnecteurs  :
+    patternsCategory === "oral-appels" ? pOralAppels   :
+    patternsCategory === "oral-debat"  ? pOralDebat    :
+    patternsCategory === "ecrit-intro" ? pEcritIntro   :
+    patternsCategory === "ecrit-corps" ? pEcritCorps   :
+    flashcards;
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -152,12 +171,12 @@ export default function App() {
       }
 
       if (appMode === "patterns") {
-        if (flashcards.state.phase === "session") {
-          if (e.key === "1") flashcards.rate(0);
-          if (e.key === "2") flashcards.rate(1);
-          if (e.key === "3") flashcards.rate(2);
-          if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); flashcards.skip(); }
-          if (e.key === "ArrowLeft") flashcards.back();
+        if (activeDeck.state.phase === "session") {
+          if (e.key === "1") activeDeck.rate(0);
+          if (e.key === "2") activeDeck.rate(1);
+          if (e.key === "3") activeDeck.rate(2);
+          if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); activeDeck.skip(); }
+          if (e.key === "ArrowLeft") activeDeck.back();
         }
       }
 
@@ -249,7 +268,7 @@ export default function App() {
     if (appMode === "présent") présent.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
-    if (appMode === "patterns") flashcards.goHome();
+    if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
     if (appMode === "vocabulaire") vocabulaire.goHome();
     if (appMode === "touriste") touriste.goHome();
     setAppMode("home");
@@ -301,8 +320,21 @@ export default function App() {
   }
 
   function handleStartPatterns() {
-    flashcards.startSession();
+    setPatternsCategory(null);
     setAppMode("patterns");
+  }
+
+  function handleSelectPatternsCategory(cat: PatternsCategory) {
+    setPatternsCategory(cat);
+    const deck =
+      cat === "argumenter"  ? pArgumenter  :
+      cat === "connecteurs" ? pConnecteurs  :
+      cat === "oral-appels" ? pOralAppels   :
+      cat === "oral-debat"  ? pOralDebat    :
+      cat === "ecrit-intro" ? pEcritIntro   :
+      cat === "ecrit-corps" ? pEcritCorps   :
+      flashcards;
+    deck.startSession();
   }
 
   function handleStartVocabulaire() {
@@ -380,7 +412,8 @@ export default function App() {
             />
           )}
           {(appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste") && (() => {
-            const deck = appMode === "patterns" ? flashcards : appMode === "vocabulaire" ? vocabulaire : touriste;
+            const deck = appMode === "patterns" ? activeDeck : appMode === "vocabulaire" ? vocabulaire : touriste;
+            if (appMode === "patterns" && patternsCategory === null) return null;
             return (
               <div className="mt-3 flex items-center justify-between">
                 <p className="text-sm text-(--color-muted)">
@@ -416,37 +449,52 @@ export default function App() {
                 Préparez votre TEF. Ou commencez à faire vos valises. Bonne chance.
               </p>
             </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-            {(
-              [
-                { icon: "🔀", label: "Conditionnel",     sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
-                { icon: "🔗", label: "Connecteurs",      sub: "Expressions du TEF",     onClick: handleStartPhrases },
-                { icon: "✉️", label: "Écrit formel",     sub: "Lettres & expressions",  onClick: handleStartEcrit },
-                { icon: "🎤", label: "Expression orale", sub: "Poser des questions",    onClick: handleStartOral },
-                { icon: "🔮", label: "Futur simple",     sub: "Conjuguer par sujet",    onClick: handleStartFutur },
-                { icon: "✏️", label: "Grammaire",        sub: "Corriger les erreurs",   onClick: handleStartOrthographe },
-                { icon: "🕰️", label: "Imparfait",        sub: "Conjuguer par sujet",    onClick: handleStartImparfait },
-                { icon: "✅", label: "Participe passé",  sub: "Identifier la forme",    onClick: handleStartParticipe },
-                { icon: "🃏", label: "Patterns",         sub: "Mémoriser les phrases",  onClick: handleStartPatterns },
-                { icon: "⚡", label: "Présent",          sub: "Conjuguer par sujet",    onClick: handleStartPresent },
-                { icon: "🧳", label: "Touriste",         sub: "Phrases de voyage",      onClick: handleStartTouriste },
-                { icon: "📚", label: "Vocabulaire",      sub: "Antonymes & paires",     onClick: handleStartVocabulaire },
-              ] as const
-            ).map(({ icon, label, sub, onClick }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={onClick}
-                className="flex flex-col items-center gap-2 rounded-(--radius-card) bg-(--color-surface) px-3 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) sm:gap-3 sm:px-4 sm:py-5"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-brand)/10 text-xl">
-                  {icon}
-                </span>
-                <span className="text-center">
-                  <span className="block font-semibold text-(--color-ink)">{label}</span>
-                  <span className="block text-xs text-(--color-muted)">{sub}</span>
-                </span>
-              </button>
+          <div className="flex flex-col gap-6">
+            {([
+              {
+                heading: "Quiz",
+                items: [
+                  { icon: "🔀", color: "bg-violet-100 dark:bg-violet-900/30",   label: "Conditionnel",     sub: "Conjuguer par sujet",    onClick: handleStartConditionnel },
+                  { icon: "🔗", color: "bg-blue-100 dark:bg-blue-900/30",       label: "Connecteurs",      sub: "Expressions du TEF",     onClick: handleStartPhrases },
+                  { icon: "✉️", color: "bg-emerald-100 dark:bg-emerald-900/30", label: "Écrit formel",     sub: "Lettres & expressions",  onClick: handleStartEcrit },
+                  { icon: "🎤", color: "bg-rose-100 dark:bg-rose-900/30",       label: "Expression orale", sub: "Poser des questions",    onClick: handleStartOral },
+                  { icon: "🔮", color: "bg-indigo-100 dark:bg-indigo-900/30",   label: "Futur simple",     sub: "Conjuguer par sujet",    onClick: handleStartFutur },
+                  { icon: "✏️", color: "bg-amber-100 dark:bg-amber-900/30",     label: "Grammaire",        sub: "Corriger les erreurs",   onClick: handleStartOrthographe },
+                  { icon: "🕰️", color: "bg-orange-100 dark:bg-orange-900/30",   label: "Imparfait",        sub: "Conjuguer par sujet",    onClick: handleStartImparfait },
+                  { icon: "✅", color: "bg-green-100 dark:bg-green-900/30",     label: "Participe passé",  sub: "Identifier la forme",    onClick: handleStartParticipe },
+                  { icon: "⚡", color: "bg-yellow-100 dark:bg-yellow-900/30",   label: "Présent",          sub: "Conjuguer par sujet",    onClick: handleStartPresent },
+                ],
+              },
+              {
+                heading: "Flashcards",
+                items: [
+                  { icon: "🃏", color: "bg-pink-100 dark:bg-pink-900/30",       label: "Patterns",         sub: "Mémoriser les phrases",  onClick: handleStartPatterns },
+                  { icon: "🧳", color: "bg-cyan-100 dark:bg-cyan-900/30",       label: "Touriste",         sub: "Phrases de voyage",      onClick: handleStartTouriste },
+                  { icon: "📚", color: "bg-lime-100 dark:bg-lime-900/30",       label: "Vocabulaire",      sub: "Antonymes & paires",     onClick: handleStartVocabulaire },
+                ],
+              },
+            ] as const).map(({ heading, items }) => (
+              <div key={heading}>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-(--color-muted)">{heading}</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                  {items.map(({ icon, color, label, sub, onClick }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={onClick}
+                      className="group flex flex-col items-start gap-3 rounded-2xl bg-(--color-surface) p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                    >
+                      <span className={`flex h-7 w-7 items-center justify-center rounded-lg text-sm ${color}`}>
+                        {icon}
+                      </span>
+                      <span className="text-left">
+                        <span className="block text-sm font-semibold text-(--color-ink)">{label}</span>
+                        <span className="block text-xs text-(--color-muted) leading-snug mt-0.5">{sub}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
           </div>
@@ -649,23 +697,36 @@ export default function App() {
         {/* ── PATTERNS ── */}
         {appMode === "patterns" && (
           <>
-            {flashcards.state.phase === "session" && flashcards.currentCard && (
-              <FlashcardView
-                card={flashcards.currentCard}
-                index={flashcards.progress.index}
-                total={flashcards.progress.total}
-                canGoBack={flashcards.progress.index > 0}
-                onRate={flashcards.rate}
-                onBack={flashcards.back}
-                onSkip={flashcards.skip}
+            {patternsCategory === null && (
+              <PatternsCategoryPicker
+                options={[
+                  { id: "argumenter",  icon: "💬", color: "bg-orange-100 dark:bg-orange-900/30",  label: "Argumenter",     sub: "Défendre une idée",       totalCards: pArgumenter.totalCards,  masteredCount: pArgumenter.masteredCount,  onSelect: () => handleSelectPatternsCategory("argumenter")  },
+                  { id: "connecteurs", icon: "🔗", color: "bg-violet-100 dark:bg-violet-900/30",  label: "Connecteurs",    sub: "Articuler le discours",   totalCards: pConnecteurs.totalCards, masteredCount: pConnecteurs.masteredCount, onSelect: () => handleSelectPatternsCategory("connecteurs") },
+                  { id: "oral-appels", icon: "📞", color: "bg-blue-100 dark:bg-blue-900/30",      label: "Oral — Appels",  sub: "Partie 1 · Téléphone",    totalCards: pOralAppels.totalCards,  masteredCount: pOralAppels.masteredCount,  onSelect: () => handleSelectPatternsCategory("oral-appels")  },
+                  { id: "oral-debat",  icon: "🎙️", color: "bg-rose-100 dark:bg-rose-900/30",     label: "Oral — Débat",   sub: "Partie 2 · Développer",   totalCards: pOralDebat.totalCards,   masteredCount: pOralDebat.masteredCount,   onSelect: () => handleSelectPatternsCategory("oral-debat")   },
+                  { id: "ecrit-intro", icon: "📝", color: "bg-emerald-100 dark:bg-emerald-900/30", label: "Écrit — Intro",  sub: "Ouverture & corps",       totalCards: pEcritIntro.totalCards,  masteredCount: pEcritIntro.masteredCount,  onSelect: () => handleSelectPatternsCategory("ecrit-intro")  },
+                  { id: "ecrit-corps", icon: "📄", color: "bg-teal-100 dark:bg-teal-900/30",      label: "Écrit — Corps",  sub: "Plaintes & demandes",     totalCards: pEcritCorps.totalCards,  masteredCount: pEcritCorps.masteredCount,  onSelect: () => handleSelectPatternsCategory("ecrit-corps")  },
+                  { id: "all",         icon: "🃏", color: "bg-pink-100 dark:bg-pink-900/30",      label: "Tout",           sub: "Les 100 phrases ensemble", totalCards: flashcards.totalCards,   masteredCount: flashcards.masteredCount,   onSelect: () => handleSelectPatternsCategory("all")          },
+                ]}
               />
             )}
-            {flashcards.state.phase === "complete" && (
+            {patternsCategory !== null && activeDeck.state.phase === "session" && activeDeck.currentCard && (
+              <FlashcardView
+                card={activeDeck.currentCard}
+                index={activeDeck.progress.index}
+                total={activeDeck.progress.total}
+                canGoBack={activeDeck.progress.index > 0}
+                onRate={activeDeck.rate}
+                onBack={activeDeck.back}
+                onSkip={activeDeck.skip}
+              />
+            )}
+            {patternsCategory !== null && activeDeck.state.phase === "complete" && (
               <FlashcardResults
-                sessionResults={flashcards.state.sessionResults}
-                masteredCount={flashcards.masteredCount}
-                totalCards={flashcards.totalCards}
-                onRestart={flashcards.restart}
+                sessionResults={activeDeck.state.sessionResults}
+                masteredCount={activeDeck.masteredCount}
+                totalCards={activeDeck.totalCards}
+                onRestart={activeDeck.restart}
                 onHome={handleGoHome}
               />
             )}
