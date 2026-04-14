@@ -102,7 +102,7 @@ export function QuizCard({
             ref={nextButtonRef}
             type="button"
             onClick={onNext}
-            className="min-h-11 rounded-xl bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
           >
             {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
           </button>

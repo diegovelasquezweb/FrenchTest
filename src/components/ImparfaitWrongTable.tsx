@@ -19,7 +19,7 @@ export function ImparfaitWrongTable({
   const { rows } = buildTenseConjugation("imparfait", imparfait3sg);
 
   return (
-    <div className="mt-4 rounded-xl border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
+    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
       <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
         "{wrongForm}" est la forme de{" "}
         <span lang="fr">{wrongSubject}</span>, pas de{" "}

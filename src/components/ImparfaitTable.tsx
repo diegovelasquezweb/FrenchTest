@@ -10,7 +10,7 @@ export function ImparfaitTable({ verb, imparfait3sg }: ImparfaitTableProps) {
   const { rows } = buildTenseConjugation("imparfait", imparfait3sg);
 
   return (
-    <div className="mt-4 rounded-xl border-2 border-(--color-correct)/40 bg-[color-mix(in_oklch,var(--color-correct)_6%,transparent)] p-4">
+    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-correct)/40 bg-[color-mix(in_oklch,var(--color-correct)_6%,transparent)] p-4">
       <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--color-correct)">
         Imparfait — {verb.infinitive}
       </p>

@@ -9,7 +9,7 @@ export function PasseComposeTable({ verb }: PasseComposeTableProps) {
   const rows = buildPasseCompose(verb);
 
   return (
-    <div className="mt-4 rounded-xl border-2 border-(--color-correct)/40 bg-[color-mix(in_oklch,var(--color-correct)_6%,transparent)] p-4">
+    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-correct)/40 bg-[color-mix(in_oklch,var(--color-correct)_6%,transparent)] p-4">
       <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--color-correct)">
         Passé composé — {verb.infinitive}
       </p>

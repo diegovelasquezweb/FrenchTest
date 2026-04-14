@@ -14,7 +14,7 @@ export function WrongAnswerTable({ verb, wrongOption }: WrongAnswerTableProps) {
   const { label, rows, partial } = buildTenseConjugation(tense, wrongOption, verb.participle);
 
   return (
-    <div className="mt-4 rounded-xl border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
+    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
       <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
         "{wrongOption}" est le {label} de {verb.infinitive}
       </p>
