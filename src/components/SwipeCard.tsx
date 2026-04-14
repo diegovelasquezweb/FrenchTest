@@ -1,5 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
-import { motion, useMotionValue, animate } from "framer-motion";
+import { useRef } from "react";
 
 interface SwipeCardProps {
   children: React.ReactNode;
@@ -12,74 +11,52 @@ interface SwipeCardProps {
   onSwipeDown?: () => void;
 }
 
-const OFFSET_THRESHOLD = 80;
-const VELOCITY_THRESHOLD = 400;
-const EXIT_DURATION = 250;
-
-function isTouchDevice() {
-  return typeof window !== "undefined" && (
-    "ontouchstart" in window || navigator.maxTouchPoints > 0
-  );
-}
+const MIN_DISTANCE = 45;
+const MAX_TIME_MS = 600;
 
 export function SwipeCard({
   children,
   className,
   "aria-label": ariaLabel,
-  resetKey,
   onSwipeRight,
   onSwipeLeft,
   onSwipeUp,
   onSwipeDown,
 }: SwipeCardProps) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const touchOnly = useRef(isTouchDevice());
-
-  useLayoutEffect(() => {
-    x.set(0);
-    y.set(0);
-  }, [resetKey, x, y]);
-
-  const hasCallbacks = !!(onSwipeRight || onSwipeLeft || onSwipeUp || onSwipeDown);
-  const dragEnabled = hasCallbacks && touchOnly.current;
-  const dragAxis = onSwipeUp ?? onSwipeDown ? true : "x";
+  const start = useRef<{ x: number; y: number; t: number } | null>(null);
 
   return (
-    <motion.div
-      drag={dragEnabled ? dragAxis : false}
-      style={{ x, y }}
-      onDragEnd={(_, info) => {
-        const { offset, velocity } = info;
-
-        if (onSwipeRight && (offset.x > OFFSET_THRESHOLD || velocity.x > VELOCITY_THRESHOLD)) {
-          void animate(x, 600, { duration: EXIT_DURATION / 1000, ease: "easeOut" });
-          setTimeout(onSwipeRight, EXIT_DURATION);
-          return;
-        }
-        if (onSwipeLeft && (offset.x < -OFFSET_THRESHOLD || velocity.x < -VELOCITY_THRESHOLD)) {
-          void animate(x, -600, { duration: EXIT_DURATION / 1000, ease: "easeOut" });
-          setTimeout(onSwipeLeft, EXIT_DURATION);
-          return;
-        }
-        if (onSwipeDown && (offset.y > OFFSET_THRESHOLD || velocity.y > VELOCITY_THRESHOLD)) {
-          void animate(y, 600, { duration: EXIT_DURATION / 1000, ease: "easeOut" });
-          setTimeout(onSwipeDown, EXIT_DURATION);
-          return;
-        }
-        if (onSwipeUp && (offset.y < -OFFSET_THRESHOLD || velocity.y < -VELOCITY_THRESHOLD)) {
-          void animate(y, -600, { duration: EXIT_DURATION / 1000, ease: "easeOut" });
-          setTimeout(onSwipeUp, EXIT_DURATION);
-          return;
-        }
-
-        void animate(x, 0, { type: "spring", stiffness: 300, damping: 25 });
-        void animate(y, 0, { type: "spring", stiffness: 300, damping: 25 });
-      }}
+    <div
       className={className}
       aria-label={ariaLabel}
+      onPointerDown={(e) => {
+        if (e.pointerType === "mouse") return;
+        start.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+      }}
+      onPointerUp={(e) => {
+        if (!start.current || e.pointerType === "mouse") return;
+        const dx = e.clientX - start.current.x;
+        const dy = e.clientY - start.current.y;
+        const elapsed = Date.now() - start.current.t;
+        start.current = null;
+
+        if (elapsed > MAX_TIME_MS) return;
+
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        if (absX < MIN_DISTANCE && absY < MIN_DISTANCE) return;
+
+        if (absX >= absY) {
+          if (dx > 0) onSwipeRight?.();
+          else onSwipeLeft?.();
+        } else {
+          if (dy > 0) onSwipeDown?.();
+          else onSwipeUp?.();
+        }
+      }}
+      onPointerCancel={() => { start.current = null; }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
