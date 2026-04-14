@@ -15,11 +15,11 @@ const FLASH_RING: Record<Exclude<FlashColor, null>, string> = {
 };
 
 const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
-  oral: "Oral — Interaction",
+  oral: "Oral — Renseignements",
   "oral-persuasion": "Oral — Persuasion",
   "écrit-faits-divers": "Écrit — Faits divers",
   connecteurs: "Connecteurs",
-  argumentation: "Argumentation",
+  argumentation: "Argumentatif",
   vocabulaire: "Vocabulaire",
   touriste: "Touriste",
   "être-avoir": "MRS VANDERTRAMP",

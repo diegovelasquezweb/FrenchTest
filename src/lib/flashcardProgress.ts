@@ -1,5 +1,6 @@
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
 import { fisherYates } from "./shuffle";
+import { schedulePush } from "./sync";
 
 export function loadProgress(storageKey: string): Record<string, CardProgress> {
   try {
@@ -13,6 +14,7 @@ export function loadProgress(storageKey: string): Record<string, CardProgress> {
 export function saveProgress(progress: Record<string, CardProgress>, storageKey: string): void {
   try {
     localStorage.setItem(storageKey, JSON.stringify(progress));
+    schedulePush();
   } catch {
     // localStorage unavailable — silently ignore
   }

@@ -23,6 +23,7 @@ import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
+import { syncPull, syncPush, schedulePush } from "./lib/sync";
 import { QuizPhase } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
@@ -72,7 +73,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "mes-patterns": "Mes patterns",
   "être-cards": "Être / avoir",
   "être-quiz": "Test être / avoir",
-  "être-guide": "List verbs",
+  "être-guide": "Liste des verbes",
 };
 
 export default function App() {
@@ -91,6 +92,20 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("tef-favorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  // ── Sync ─────────────────────────────────────────────────────────────────
+  // Pull once on mount
+  useEffect(() => { void syncPull(); }, []);
+
+  // Push on tab close / reload
+  useEffect(() => {
+    const handler = () => { void syncPush(); };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
+
+  // Debounced push whenever favorites change (progress is saved by each hook internally)
+  useEffect(() => { schedulePush(); }, [favorites]);
 
   function toggleFavorite(label: string, e: React.MouseEvent) {
     e.stopPropagation();
@@ -111,7 +126,7 @@ export default function App() {
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
-  const flashcards = useFlashcards(FLASHCARDS, "tef-flashcard-progress");
+  const flashcards = useFlashcards(FLASHCARDS.filter(c => c.category !== "être-avoir"), "tef-flashcard-progress");
   const etreQuiz   = useEtreQuiz();
   const pEtreAvoir = useFlashcards(FLASHCARDS.filter(c => c.category === "être-avoir"), "tef-p-etre-avoir");
 
@@ -415,14 +430,14 @@ export default function App() {
     "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
     "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
-    "Interaction":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
+    "Renseignements":    { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
     "Argumentatif":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-argumentatif"), icon: BookCheck },
     "Connecteurs":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("connecteurs"),        icon: BookCheck },
     "Être / avoir":        { mode: "être-cards",   onClick: handleStartEtreCards,  icon: BookCheck },
     "Test être / avoir":   { mode: "être-quiz",    onClick: handleStartEtreQuiz,   icon: FlaskConical },
-    "List verbs": { mode: "être-guide", onClick: handleStartEtreGuide,  icon: Columns3 },
+    "Liste des verbes": { mode: "être-guide", onClick: handleStartEtreGuide,  icon: Columns3 },
     "Restaurant":        { mode: "touriste",     onClick: () => handleSelectVoyageCategory("restaurant"),           icon: UtensilsCrossed },
     "Transport":         { mode: "touriste",     onClick: () => handleSelectVoyageCategory("transport"),            icon: Bus },
     "Hébergement":       { mode: "touriste",     onClick: () => handleSelectVoyageCategory("hebergement"),          icon: BedDouble },
@@ -504,7 +519,7 @@ export default function App() {
               id: "oral",
               label: "Oral",
               items: [
-                { label: "Interaction", mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-interaction") },
+                { label: "Renseignements", mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-interaction") },
                 { label: "Persuasion",   mode: "patterns" as const, onClick: () => handleSelectPatternsCategory("oral-monologue") },
                 { label: "Test oral",   mode: "oral"     as const, onClick: handleStartOral },
               ],
@@ -544,7 +559,7 @@ export default function App() {
               items: [
                 { label: "Être / avoir",        mode: "être-cards" as const, onClick: handleStartEtreCards },
                 { label: "Test être / avoir",   mode: "être-quiz"  as const, onClick: handleStartEtreQuiz },
-                { label: "List verbs", mode: "être-guide" as const, onClick: handleStartEtreGuide },
+                { label: "Liste des verbes", mode: "être-guide" as const, onClick: handleStartEtreGuide },
               ],
             },
             {
@@ -677,7 +692,7 @@ export default function App() {
                     {group.items.map(({ label, mode, onClick }) => {
                       const isActive = appMode === mode && (
                         mode !== "patterns" || patternsCategory === (
-                          label === "Interaction" ? "oral-interaction" :
+                          label === "Renseignements" ? "oral-interaction" :
                           label === "Persuasion"   ? "oral-monologue"   :
                           label === "Faits divers" ? "ecrit-faits-divers" :
                           label === "Argumentatif" ? "ecrit-argumentatif" :
@@ -897,7 +912,7 @@ export default function App() {
                       id: "oral",
                       label: "Oral",
                       items: [
-                        { label: "Interaction", onClick: () => handleSelectPatternsCategory("oral-interaction") },
+                        { label: "Renseignements", onClick: () => handleSelectPatternsCategory("oral-interaction") },
                         { label: "Persuasion",   onClick: () => handleSelectPatternsCategory("oral-monologue") },
                         { label: "Test oral",   onClick: handleStartOral },
                       ],
@@ -937,7 +952,7 @@ export default function App() {
                       items: [
                         { label: "Être / avoir",          onClick: handleStartEtreCards },
                         { label: "Test être / avoir",     onClick: handleStartEtreQuiz },
-                        { label: "List verbs", onClick: handleStartEtreGuide },
+                        { label: "Liste des verbes", onClick: handleStartEtreGuide },
                       ],
                     },
                     {

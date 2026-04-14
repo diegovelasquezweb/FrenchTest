@@ -28,9 +28,9 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
   },
   {
     sentence: "« Je ___ obtenir des renseignements sur les modalités d'inscription. »",
-    options: ["souhaiterais", "voudrais bien", "aimerais trop", "désire"],
+    options: ["souhaiterais", "souhaitais", "souhaiterai", "souhaite"],
     correctIndex: 0,
-    explanation: "\"Je souhaiterais\" = I would like (conditionnel de politesse). Plus formel et poli que \"je veux\" ou \"je désire\".",
+    explanation: "\"Je souhaiterais\" = conditionnel de politesse, très adapté au TEF écrit. Les autres formes changent le temps ou le registre.",
   },
 
   // ── EXPRIMER UN BESOIN / DEMANDE ─────────────────────────────────────────
@@ -41,10 +41,10 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     explanation: "\"Pourriez-vous + infinitif\" = could you — forme interrogative polie au conditionnel. Plus formel que \"pouvez-vous\".",
   },
   {
-    sentence: "« ___ possible de reporter le rendez-vous au 20 mai ? »",
-    options: ["Serait-il", "Est-il", "Sera-t-il", "Était-il"],
+    sentence: "« ___-il possible de reporter le rendez-vous au 20 mai ? »",
+    options: ["Serait", "Sera", "Est", "Était"],
     correctIndex: 0,
-    explanation: "\"Serait-il possible de\" = would it be possible to — formule de demande polie au conditionnel, très utilisée au TEF.",
+    explanation: "\"Serait-il possible de\" = formule de demande polie au conditionnel, recommandée au TEF écrit.",
   },
   {
     sentence: "« J'___ obtenir davantage d'informations sur les tarifs pratiqués. »",
@@ -105,10 +105,10 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
 
   // ── CONNECTEURS FORMELS ──────────────────────────────────────────────────
   {
-    sentence: "« ___, je vous remercie de l'intérêt que vous portez à ma candidature. »",
-    options: ["Tout d'abord", "Pourtant", "Car", "En revanche"],
+    sentence: "« Par avance, je vous remercie de l'intérêt que vous porterez à ma candidature. »",
+    options: ["porterez", "portez", "porteriez", "avez porté"],
     correctIndex: 0,
-    explanation: "\"Tout d'abord\" = first of all — premier connecteur de structure dans une lettre ou un exposé formel.",
+    explanation: "\"Je vous remercie par avance\" + futur (\"vous porterez\") = formulation standard en lettre formelle.",
   },
   {
     sentence: "« ___, j'ai exercé pendant cinq ans en tant que chef de projet dans une agence parisienne. »",
@@ -190,7 +190,7 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "« Je vous remercie pour ___ que vous porterez à cette lettre. »",
     options: ["l'attention", "le temps", "la lecture", "l'intérêt"],
     correctIndex: 0,
-    explanation: "\"Je vous remercie pour l'attention que vous porterez\" = thank you for the attention you will give — formule de clôture standard.",
+    explanation: "\"Je vous remercie pour l'attention que vous porterez\" = formule de clôture polie et très fréquente au TEF écrit.",
   },
 
   // ── FORMULES DE POLITESSE ────────────────────────────────────────────────

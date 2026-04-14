@@ -27,10 +27,10 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     explanation: "\"serais intéressé(e)\" = conditionnel de politesse. \"Suis intéressé\" (présent) est plus direct. \"Sois\" = subjonctif. \"Serai\" = futur simple.",
   },
   {
-    sentence: "Je ___ à obtenir plus d'informations sur vos services.",
-    options: ["m'intéresse", "suis intéressé de", "suis intéressé à", "m'intéresse de"],
+    sentence: "Je ___ plus d'informations sur vos services.",
+    options: ["souhaiterais obtenir", "m'intéresse", "suis intéressé de", "m'intéresse de"],
     correctIndex: 0,
-    explanation: "\"je m'intéresse à + nom\" = I am interested in. \"Je suis intéressé(e) par\" est aussi correct. Jamais \"intéressé de\" ni \"intéressé à\".",
+    explanation: "\"Je souhaiterais obtenir\" = formulation claire et polie pour demander des renseignements (très utile au TEF oral partie 1).",
   },
 
   // ── Demander des renseignements ─────────────────────────────────────────
@@ -72,9 +72,9 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
   },
   {
     sentence: "Merci de me ___ dès que vous aurez les informations disponibles.",
-    options: ["rappeler", "rappelez", "rappelé", "rappelant"],
+    options: ["recontacter", "recontactez", "recontacté", "recontactant"],
     correctIndex: 0,
-    explanation: "\"Merci de + inf.\" = please do X. \"Merci de rappeler\" = thank you for calling back. \"Rappelez\" = impératif (moins formel). \"Rappelé\" = participe passé.",
+    explanation: "\"Merci de + infinitif\" = formule polie pour demander une action. \"Recontacter\" est naturel dans un contexte de suivi.",
   },
 
   // ── Prix et promotions ──────────────────────────────────────────────────
@@ -83,6 +83,12 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     options: ["Quel", "Quelle", "Quels", "Qu'elle"],
     correctIndex: 0,
     explanation: "\"Quel\" s'accorde avec \"le tarif\" (masculin singulier). \"Quelle\" = féminin. \"Quels\" = pluriel. \"Qu'elle\" = que + elle (homonyme).",
+  },
+  {
+    sentence: "Combien cela ___ pour un abonnement mensuel ?",
+    options: ["coûte-t-il", "coûte", "coûte-il", "coûtera"],
+    correctIndex: 0,
+    explanation: "\"Combien cela coûte-t-il ?\" = inversion formelle recommandée au TEF. \"Coûte\" seul est plus oral/familier.",
   },
   {
     sentence: "Est-ce que le prix ___ les frais de matériel ?",
@@ -97,10 +103,10 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     explanation: "\"frais supplémentaires\" = expression fixe (additional fees). \"Supplémentaire\" = singulier. \"En plus\" = familier. \"Additionnels\" = anglicisme.",
   },
   {
-    sentence: "L'accès à l'espace coworking est-il ___ pour les membres ?",
-    options: ["gratuit", "gratuite", "gratuitement", "gratis"],
+    sentence: "Y a-t-il ___ pour essayer le service avant de s'abonner ?",
+    options: ["une période d'essai gratuite", "un période d'essai gratuite", "une période d'essai gratuit", "un essai gratuité"],
     correctIndex: 0,
-    explanation: "\"gratuit\" s'accorde avec \"l'accès\" (masculin). \"Gratuite\" = féminin. \"Gratuitement\" = adverbe. \"Gratis\" = familier.",
+    explanation: "\"une période d'essai gratuite\" = formulation naturelle et utile pour demander les conditions d'essai.",
   },
   {
     sentence: "Est-ce qu'il y a ___ en ce moment pour les nouvelles inscriptions ?",
@@ -115,10 +121,10 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     explanation: "\"un tarif réduit\" = discounted rate — expression fixe standard. \"Moins cher\" = familier. \"Réduction de tarif\" = moins idiomatique. \"Amoindri\" = registre littéraire.",
   },
   {
-    sentence: "Proposez-vous ___ pour tester le produit avant de l'acheter ?",
-    options: ["un échantillon gratuit", "un échantillon de gratuité", "une démonstration gratis", "un essai gratuite"],
+    sentence: "Proposez-vous ___ avant de souscrire à l'offre ?",
+    options: ["une période d'essai", "un période d'essai", "une essai", "un essai gratuite"],
     correctIndex: 0,
-    explanation: "\"un échantillon gratuit\" = free sample — expression fixe commerciale. Les autres formulations sont maladroites ou incorrectes.",
+    explanation: "\"une période d'essai\" est la formulation standard pour demander un essai avant engagement.",
   },
   {
     sentence: "Outre les frais d'inscription, y a-t-il des coûts ___ ?",
@@ -155,7 +161,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     explanation: "\"les horaires\" = opening hours — terme standard. \"Les heurs\" n'existe pas. \"Horairies\" n'existe pas. \"Les temps\" = époques ou formes verbales.",
   },
   {
-    sentence: "Êtes-vous ___ les jours fériés et le weekend ?",
+    sentence: "Êtes-vous ___ les jours fériés et le week-end ?",
     options: ["ouverts", "ouvert", "ouverte", "ouvrant"],
     correctIndex: 0,
     explanation: "\"ouverts\" s'accorde avec \"vous\" (pluriel). \"Ouvert\" = masc. sing. \"Ouvrant\" = participe présent.",

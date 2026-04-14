@@ -1,0 +1,7 @@
+name = "tef-sync"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "TEF_SYNC"
+id = "cffc387776af47aca7dd0bdbd153b6ce"
