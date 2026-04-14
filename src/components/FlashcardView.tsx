@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { Flashcard, FlashcardRating } from "../types";
+import { SwipeCard } from "./SwipeCard";
 
 const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   oral: "Oral — Interaction",
@@ -64,7 +65,14 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         </button>
       </div>
 
-      <div className="rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:p-8">
+      <SwipeCard
+        className="rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:p-8"
+        resetKey={card.id}
+        onSwipeRight={() => onRate(2)}
+        onSwipeLeft={() => onRate(0)}
+        onSwipeDown={onSkip}
+        onSwipeUp={() => onRate(1)}
+      >
         <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_COLOR[card.category]}`}>
           {CATEGORY_LABEL[card.category]}
         </span>
@@ -111,7 +119,7 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
             <p className="text-xs text-(--color-muted)" lang="es">🇪🇸 {card.translationEs}</p>
           </div>
         </div>
-      </div>
+      </SwipeCard>
     </div>
   );
 }

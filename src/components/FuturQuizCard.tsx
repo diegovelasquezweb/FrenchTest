@@ -4,6 +4,7 @@ import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
 import { FuturTable } from "./FuturTable";
 import { FuturWrongTable } from "./FuturWrongTable";
+import { SwipeCard } from "./SwipeCard";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
@@ -54,9 +55,11 @@ export function FuturQuizCard({
       : undefined;
 
   return (
-    <div
+    <SwipeCard
       className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm sm:p-8"
       aria-label={`Question ${questionNumber} sur ${total}`}
+      resetKey={questionNumber}
+      onSwipeRight={isRevealed ? onNext : undefined}
     >
       <div className="mb-2 text-center">
         <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
@@ -121,6 +124,6 @@ export function FuturQuizCard({
           </button>
         </div>
       )}
-    </div>
+    </SwipeCard>
   );
 }

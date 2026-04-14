@@ -4,6 +4,7 @@ import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
 import { PresentTable } from "./PresentTable";
 import { PresentWrongTable } from "./PresentWrongTable";
+import { SwipeCard } from "./SwipeCard";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
@@ -54,9 +55,11 @@ export function PresentQuizCard({
       : undefined;
 
   return (
-    <div
+    <SwipeCard
       className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm sm:p-8"
       aria-label={`Question ${questionNumber} sur ${total}`}
+      resetKey={questionNumber}
+      onSwipeRight={isRevealed ? onNext : undefined}
     >
       <div className="mb-2 text-center">
         <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
@@ -120,6 +123,6 @@ export function PresentQuizCard({
           </button>
         </div>
       )}
-    </div>
+    </SwipeCard>
   );
 }

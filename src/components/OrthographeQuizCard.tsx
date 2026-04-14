@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import type { OrthographeQuestion } from "../types";
 import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
+import { SwipeCard } from "./SwipeCard";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
@@ -66,9 +67,11 @@ export function OrthographeQuizCard({
     selectedIndex !== null ? question.options[selectedIndex] : undefined;
 
   return (
-    <div
+    <SwipeCard
       className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm sm:p-8"
       aria-label={`Question ${questionNumber} sur ${total}`}
+      resetKey={questionNumber}
+      onSwipeRight={isRevealed ? onNext : undefined}
     >
       {/* Label */}
       <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
@@ -130,6 +133,6 @@ export function OrthographeQuizCard({
           </button>
         </div>
       )}
-    </div>
+    </SwipeCard>
   );
 }
