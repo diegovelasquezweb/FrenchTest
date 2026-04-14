@@ -314,8 +314,9 @@ export default function App() {
   const suggestions = useMemo(() => {
     const shuffled = [...ALL_SUGGESTIONS].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 6);
+  // re-shuffle every time the user returns to home
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [appMode]);
 
   // ── Nav data ──────────────────────────────────────────────────────────────
   const SIDEBAR_LOOKUP: Record<string, { mode: Exclude<AppMode, "home">; onClick: () => void; icon: string }> = {
