@@ -61,7 +61,7 @@ function fromFutur(form3sg: string): ConjugationRow[] {
   ]);
 }
 
-function fromPresent(form3sg: string): ConjugationRow[] | null {
+function fromPresent(form3sg: string, participle?: string): ConjugationRow[] | null {
   // Regular -er verbs: 3sg ends in "e" (parle, mange...)
   if (form3sg.endsWith("e") && form3sg.length > 1) {
     const stem = form3sg.slice(0, -1);
@@ -76,10 +76,11 @@ function fromPresent(form3sg: string): ConjugationRow[] | null {
       stem + "ent",
     ]);
   }
-  // Regular -ir group 2 verbs: 3sg ends in "it" (guérit, finit, choisit...)
-  // stem = form without "t" → guéri, fini, choisi
-  if (form3sg.endsWith("it") && form3sg.length > 3) {
-    const stem = form3sg.slice(0, -1); // remove "t"
+  // Regular -ir group 2 verbs (finir, choisir, guérir...):
+  // 3sg présent stem === participe passé (finit→fini, choisit→choisi, guérit→guéri)
+  // This guards against irregular verbs like voir (voit≠vu) or savoir (sait≠su)
+  if (form3sg.endsWith("it") && participle && form3sg.slice(0, -1) === participle) {
+    const stem = form3sg.slice(0, -1);
     return buildForms(SUBJECTS, [
       stem + "s",
       stem + "s",
@@ -110,7 +111,8 @@ const TENSE_LABELS: Record<TenseName, string> = {
 
 export function buildTenseConjugation(
   tense: TenseName,
-  form3sg: string
+  form3sg: string,
+  participle?: string
 ): TenseConjugation {
   let rows: ConjugationRow[] | null = null;
   let partial = false;
@@ -120,9 +122,8 @@ export function buildTenseConjugation(
   } else if (tense === "futur") {
     rows = fromFutur(form3sg);
   } else {
-    rows = fromPresent(form3sg);
+    rows = fromPresent(form3sg, participle);
     if (!rows) {
-      // Irregular présent — show only 3sg as fallback
       rows = [{ subject: "il / elle", form: `il ${form3sg}` }];
       partial = true;
     }

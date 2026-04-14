@@ -167,51 +167,29 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         {/* ── HOME ── */}
         {appMode === "home" && (
-          <div className="mx-auto w-full max-w-sm space-y-3">
-            <button
-              type="button"
-              onClick={handleStartParticipe}
-              className="flex w-full items-center gap-4 rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--color-brand)/10 text-lg">
-                🇫🇷
-              </span>
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block font-semibold text-(--color-ink)">Participe passé</span>
-                <span className="block text-sm text-(--color-muted)">Identifier la bonne forme</span>
-              </span>
-              <span className="text-(--color-muted)" aria-hidden="true">›</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleStartImparfait}
-              className="flex w-full items-center gap-4 rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--color-brand)/10 text-lg">
-                🇫🇷
-              </span>
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block font-semibold text-(--color-ink)">Imparfait</span>
-                <span className="block text-sm text-(--color-muted)">Conjuguer par sujet</span>
-              </span>
-              <span className="text-(--color-muted)" aria-hidden="true">›</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleStartConditionnel}
-              className="flex w-full items-center gap-4 rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--color-brand)/10 text-lg">
-                🇫🇷
-              </span>
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block font-semibold text-(--color-ink)">Conditionnel</span>
-                <span className="block text-sm text-(--color-muted)">Conjuguer par sujet</span>
-              </span>
-              <span className="text-(--color-muted)" aria-hidden="true">›</span>
-            </button>
+          <div className="mx-auto w-full max-w-sm grid grid-cols-2 gap-3">
+            {(
+              [
+                { label: "Participe passé", sub: "Identifier la forme", onClick: handleStartParticipe },
+                { label: "Imparfait",       sub: "Conjuguer par sujet", onClick: handleStartImparfait },
+                { label: "Conditionnel",    sub: "Conjuguer par sujet", onClick: handleStartConditionnel },
+              ] as const
+            ).map(({ label, sub, onClick }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={onClick}
+                className="flex flex-col items-center gap-3 rounded-(--radius-card) bg-(--color-surface) px-4 py-5 shadow-sm transition-all duration-150 hover:shadow-md hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-brand)/10 text-xl">
+                  🇫🇷
+                </span>
+                <span className="text-center">
+                  <span className="block font-semibold text-(--color-ink)">{label}</span>
+                  <span className="block text-xs text-(--color-muted)">{sub}</span>
+                </span>
+              </button>
+            ))}
           </div>
         )}
 

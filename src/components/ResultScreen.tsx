@@ -8,104 +8,90 @@ interface ResultScreenProps {
   onHome(): void;
 }
 
-function tierMessage(pct: number): { emoji: string; text: string } {
-  if (pct === 100) return { emoji: "🏆", text: "Parfait !" };
-  if (pct >= 80) return { emoji: "🎉", text: "Excellent !" };
-  if (pct >= 60) return { emoji: "👍", text: "Bon travail !" };
-  if (pct >= 40) return { emoji: "📚", text: "Continue à pratiquer !" };
-  return { emoji: "💪", text: "Ne lâche pas !" };
-}
-
 export function ResultScreen({ history, score, total, onRestart, onHome }: ResultScreenProps) {
-  const percentage = Math.round((score / total) * 100);
-  const { emoji, text } = tierMessage(percentage);
-  const circumference = 2 * Math.PI * 36;
-  const offset = circumference * (1 - percentage / 100);
+  const pct = score / total;
+  const scoreColor =
+    pct >= 0.8 ? "text-(--color-correct)"
+    : pct >= 0.5 ? "text-(--color-ink)"
+    : "text-(--color-wrong)";
 
   return (
-    <div className="mx-auto w-full max-w-xl space-y-4">
-      {/* Score card */}
-      <div className="rounded-(--radius-card) bg-(--color-surface) p-8 text-center shadow-sm">
-        {/* Circle progress */}
-        <div className="mx-auto mb-4 h-28 w-28" aria-hidden="true">
-          <svg viewBox="0 0 80 80" className="-rotate-90">
-            <circle
-              cx="40" cy="40" r="36"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="6"
-              className="text-(--color-ink)/8"
-            />
-            <circle
-              cx="40" cy="40" r="36"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-              className="text-(--color-brand) transition-all duration-700"
-            />
-          </svg>
+    <div className="mx-auto flex w-full max-w-lg flex-col gap-3">
+
+      {/* ── Score bar ── */}
+      <div className="rounded-(--radius-card) bg-(--color-surface) px-6 py-5 shadow-sm">
+        <div className="flex items-center justify-between gap-6">
+          {/* Score number */}
+          <p aria-label={`Score : ${score} sur ${total}`}>
+            <span className={`text-4xl font-extrabold tabular-nums ${scoreColor}`}>{score}</span>
+            <span className="text-xl font-medium text-(--color-muted)">/{total}</span>
+          </p>
+
+          {/* Actions */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onHome}
+              className="rounded-(--radius-button) border-2 border-(--color-ink)/12 px-4 py-2 text-sm font-semibold text-(--color-ink) transition-colors hover:border-(--color-ink)/24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            >
+              ← Accueil
+            </button>
+            <button
+              type="button"
+              onClick={onRestart}
+              className="rounded-(--radius-button) bg-(--color-brand) px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            >
+              Rejouer
+            </button>
+          </div>
         </div>
 
-        <p className="text-5xl font-extrabold tabular-nums text-(--color-ink)" aria-label={`Score : ${score} sur ${total}`}>
-          {score}<span className="text-2xl font-medium text-(--color-muted)">/{total}</span>
-        </p>
-        <p className="mt-1 text-lg text-(--color-muted)">{percentage}%</p>
-        <p className="mt-3 text-2xl">{emoji}</p>
-        <p className="mt-1 text-base font-semibold text-(--color-ink)">{text}</p>
-
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <button
-            type="button"
-            onClick={onRestart}
-            className="min-h-11 rounded-(--radius-button) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-          >
-            Rejouer
-          </button>
-          <button
-            type="button"
-            onClick={onHome}
-            className="min-h-11 rounded-(--radius-button) border-2 border-(--color-ink)/10 bg-(--color-surface) px-8 py-3 font-semibold text-(--color-ink) transition-colors duration-150 hover:border-(--color-ink)/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-          >
-            ← Accueil
-          </button>
+        {/* Progress bar */}
+        <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-(--color-ink)/8">
+          <div
+            className="h-full rounded-full bg-(--color-brand) transition-all duration-500"
+            style={{ width: `${pct * 100}%` }}
+            role="presentation"
+          />
         </div>
       </div>
 
-      {/* History */}
+      {/* ── History ── */}
       <section aria-label="Récapitulatif des réponses">
-        <h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-widest text-(--color-muted)">
+        <p className="mb-1.5 px-0.5 text-xs font-semibold uppercase tracking-widest text-(--color-muted)">
           Récapitulatif
-        </h2>
-        <ol className="space-y-1.5">
+        </p>
+        <ol className="grid grid-cols-2 gap-1.5">
           {history.map((entry, i) => (
             <li
               key={i}
-              className="flex items-center gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-3 shadow-sm"
+              className={[
+                "flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-2",
+                entry.correct
+                  ? "bg-[color-mix(in_oklch,var(--color-correct)_8%,var(--color-surface))]"
+                  : "bg-[color-mix(in_oklch,var(--color-wrong)_8%,var(--color-surface))]",
+              ].join(" ")}
             >
+              {/* Colored left accent */}
               <span
                 aria-hidden="true"
-                className={`shrink-0 text-sm font-bold ${entry.correct ? "text-(--color-correct)" : "text-(--color-wrong)"}`}
+                className={`shrink-0 text-xs font-bold ${entry.correct ? "text-(--color-correct)" : "text-(--color-wrong)"}`}
               >
                 {entry.correct ? "✓" : "✗"}
               </span>
-              <span className="min-w-0 flex-1 font-medium text-(--color-ink)" lang="fr">
+
+              {/* Verb */}
+              <span className="min-w-0 flex-1 truncate text-sm font-medium text-(--color-ink)" lang="fr">
                 {entry.verb.infinitive}
               </span>
-              {!entry.correct && (
-                <span className="text-sm text-(--color-muted)" lang="fr">
-                  <span className="text-(--color-wrong)">{entry.picked}</span>
-                  {" → "}
-                  <span className="text-(--color-correct)">{entry.verb.participle}</span>
-                </span>
-              )}
-              {entry.correct && (
-                <span className="text-sm font-medium text-(--color-correct)" lang="fr">
-                  {entry.verb.participle}
-                </span>
-              )}
+
+              {/* Answer */}
+              <span className="shrink-0 text-xs font-semibold" lang="fr">
+                {entry.correct
+                  ? <span className="text-(--color-correct)">{entry.verb.participle}</span>
+                  : <span className="text-(--color-wrong)">{entry.verb.participle}</span>
+                }
+              </span>
             </li>
           ))}
         </ol>
