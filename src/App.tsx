@@ -599,7 +599,7 @@ export default function App() {
         <div ref={liveRef} aria-live="polite" aria-atomic="true" className="sr-only">{announcement}</div>
 
         {/* ── SCROLLABLE CONTENT ─────────────────────────────────────────── */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto flex flex-col">
 
           {/* HOME */}
           {appMode === "home" && (
@@ -628,7 +628,7 @@ export default function App() {
               </div>
 
               {/* Mobile: accordion */}
-              <div className="md:hidden flex flex-col items-center gap-6 px-6 pt-8 pb-12 w-full">
+              <div className="md:hidden flex-1 flex flex-col items-center justify-center gap-6 px-6 py-6">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <span className="text-5xl">🎯</span>
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
