@@ -106,7 +106,7 @@ export interface UseFlashcardsReturn {
 
 export function useFlashcards(cards: Flashcard[], storageKey: string): UseFlashcardsReturn {
   const reducer = makeReducer(cards, storageKey);
-  const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(cards, storageKey));
+  const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(storageKey));
 
   useEffect(() => {
     saveProgress(state.progress, storageKey);
