@@ -4,8 +4,7 @@ export type PatternsCategory =
   | "connecteurs"
   | "oral-interaction"
   | "oral-monologue"
-  | "ecrit-intro"
-  | "ecrit-corps"
+  | "ecrit-faits-divers"
   | "ecrit-argumentatif";
 
 export interface CategoryOption {
