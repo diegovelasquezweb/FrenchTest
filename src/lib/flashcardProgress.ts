@@ -54,7 +54,11 @@ export function buildDeck(
     return fisherYates([...cards], Math.random);
   }
 
-  return fisherYates(pending, Math.random);
+  // Score 1 (hésité) → shown first; score 0 (ne savais pas) → shown after
+  const priority = pending.filter((c) => (progress[c.id]?.score ?? 0) === 1);
+  const normal   = pending.filter((c) => (progress[c.id]?.score ?? 0) === 0);
+
+  return [...fisherYates(priority, Math.random), ...fisherYates(normal, Math.random)];
 }
 
 export function totalMastered(progress: Record<string, CardProgress>): number {
