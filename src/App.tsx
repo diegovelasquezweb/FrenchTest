@@ -289,7 +289,7 @@ export default function App() {
   function handleStartFutur()        { futur.startQuiz();        setAppMode("futur"); }
   function handleStartOrthographe()  { orthographe.startQuiz();  setAppMode("orthographe"); }
   function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
-  function handleStartDifficiles()   { difficiles.startQuiz(weakVerbList); setAppMode("difficiles"); }
+  function handleStartDifficiles()   { difficiles.goHome(); setAppMode("difficiles"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }

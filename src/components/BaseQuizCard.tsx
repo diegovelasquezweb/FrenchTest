@@ -71,60 +71,61 @@ export function BaseQuizCard({
   }, [isRevealed, questionNumber]);
 
   return (
-    <SwipeCard
-      className={`mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
-      aria-label={`Question ${questionNumber} sur ${total}`}
-      resetKey={questionNumber}
-      onSwipeLeft={isRevealed ? onNext : undefined}
-    >
+    <div className="relative mx-auto w-full max-w-xl">
       {onToggleWeak !== undefined && (
-        <div className="flex justify-end -mt-1 mb-2">
-          <button
-            type="button"
-            onClick={onToggleWeak}
-            aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
-            className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
-              isWeak
-                ? "text-amber-500 hover:text-amber-600"
-                : "text-(--color-muted) hover:text-(--color-ink)"
-            }`}
-          >
-            <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
-            {isWeak ? "Difficile" : "Marquer"}
-          </button>
-        </div>
+        <button
+          type="button"
+          aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
+          className={`absolute -top-8 right-0 flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
+            isWeak
+              ? "text-amber-500 hover:text-amber-600"
+              : "text-(--color-muted) hover:text-(--color-ink)"
+          }`}
+          onClick={(e) => { e.stopPropagation(); onToggleWeak(); }}
+          onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); onToggleWeak(); }}
+        >
+          <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
+          {isWeak ? "Difficile" : "Marquer"}
+        </button>
       )}
-      {header}
+      <SwipeCard
+        className={`w-full rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
+        aria-label={`Question ${questionNumber} sur ${total}`}
+        resetKey={questionNumber}
+        onSwipeLeft={isRevealed ? onNext : undefined}
+      >
+        {header}
 
-      <div className={optionsGridClassName}>
-        {question.options.map((option, i) => (
-          <AnswerButton
-            key={`${option}-${i}`}
-            label={option}
-            index={i}
-            state={deriveButtonState(i, selectedIndex, question.correctIndex)}
-            disabled={false}
-            onClick={() => onSelect(i)}
-            shortcut={i + 1}
-            ref={i === 0 ? firstButtonRef : undefined}
-          />
-        ))}
-      </div>
-
-      {feedback}
-
-      {isRevealed && (
-        <div className={`${nextButtonSpacing} flex justify-center`}>
-          <button
-            ref={nextButtonRef}
-            type="button"
-            onClick={onNext}
-            className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-          >
-            {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
-          </button>
+        <div className={optionsGridClassName}>
+          {question.options.map((option, i) => (
+            <AnswerButton
+              key={`${option}-${i}`}
+              label={option}
+              index={i}
+              state={deriveButtonState(i, selectedIndex, question.correctIndex)}
+              disabled={false}
+              onClick={() => onSelect(i)}
+              shortcut={i + 1}
+              ref={i === 0 ? firstButtonRef : undefined}
+            />
+          ))}
         </div>
-      )}
-    </SwipeCard>
+
+        {feedback}
+
+        {isRevealed && (
+          <div className={`${nextButtonSpacing} flex justify-center`}>
+            <button
+              ref={nextButtonRef}
+              type="button"
+              onClick={onNext}
+              className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            >
+              {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
+            </button>
+          </div>
+        )}
+      </SwipeCard>
+    </div>
   );
 }
