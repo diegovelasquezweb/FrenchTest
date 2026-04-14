@@ -1,12 +1,8 @@
-import { useRef, useEffect } from "react";
 import type { QuizQuestion } from "../types";
 import { AnswerState } from "../types";
-import { AnswerButton } from "./AnswerButton";
 import { PasseComposeTable } from "./PasseComposeTable";
 import { WrongAnswerTable } from "./WrongAnswerTable";
-import { SwipeCard } from "./SwipeCard";
-
-type ButtonState = "default" | "correct" | "wrong" | "dimmed";
+import { BaseQuizCard } from "./BaseQuizCard";
 
 interface QuizCardProps {
   question: QuizQuestion;
@@ -18,16 +14,6 @@ interface QuizCardProps {
   total: number;
 }
 
-function deriveButtonState(
-  optionIndex: number,
-  answerState: AnswerState,
-  selectedIndex: number | null
-): ButtonState {
-  if (optionIndex !== selectedIndex) return "default";
-  if (answerState === AnswerState.Correct) return "correct";
-  return "wrong";
-}
-
 export function QuizCard({
   question,
   answerState,
@@ -37,58 +23,21 @@ export function QuizCard({
   questionNumber,
   total,
 }: QuizCardProps) {
-  const firstButtonRef = useRef<HTMLButtonElement>(null);
-  const nextButtonRef = useRef<HTMLButtonElement>(null);
-  const isRevealed = answerState !== AnswerState.Idle;
+  const header = (
+    <div className="mb-6 text-center">
+      <p className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
+        {question.verb.infinitive}
+      </p>
+      <p className="mt-1 text-sm text-(--color-muted)">
+        <span lang="en">{question.verb.translation}</span>
+        <span className="mx-2 opacity-40">·</span>
+        <span lang="es">{question.verb.translationEs}</span>
+      </p>
+    </div>
+  );
 
-  useEffect(() => {
-    if (isRevealed) {
-      nextButtonRef.current?.focus();
-    } else {
-      firstButtonRef.current?.focus();
-    }
-  }, [isRevealed, questionNumber]);
-
-  return (
-    <SwipeCard
-      className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:p-8"
-      aria-label={`Question ${questionNumber} sur ${total}`}
-      resetKey={questionNumber}
-      onSwipeRight={isRevealed ? onNext : undefined}
-    >
-      <div className="mb-6 text-center">
-        <p
-          className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-4xl"
-          lang="fr"
-        >
-          {question.verb.infinitive}
-        </p>
-        <p className="mt-1 text-sm text-(--color-muted)">
-          <span lang="en">{question.verb.translation}</span>
-          <span className="mx-2 opacity-40">·</span>
-          <span lang="es">{question.verb.translationEs}</span>
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {question.options.map((option, i) => {
-          const btnState = deriveButtonState(i, answerState, selectedIndex);
-          return (
-            <AnswerButton
-              key={option}
-              label={option}
-              index={i}
-              state={btnState}
-              disabled={false}
-              onClick={() => onSelect(i)}
-              shortcut={i + 1}
-              ref={i === 0 ? firstButtonRef : undefined}
-            />
-          );
-        })}
-      </div>
-
-      {/* Exactly one table at a time based on which button is selected */}
+  const feedback = (
+    <>
       {selectedIndex !== null && selectedIndex === question.correctIndex && (
         <PasseComposeTable verb={question.verb} />
       )}
@@ -98,19 +47,22 @@ export function QuizCard({
           <WrongAnswerTable verb={question.verb} wrongOption={wrongOption} />
         ) : null;
       })()}
+    </>
+  );
 
-      {isRevealed && (
-        <div className="mt-6 flex justify-center">
-          <button
-            ref={nextButtonRef}
-            type="button"
-            onClick={onNext}
-            className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-          >
-            {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
-          </button>
-        </div>
-      )}
-    </SwipeCard>
+  return (
+    <BaseQuizCard
+      header={header}
+      options={question.options}
+      answerState={answerState}
+      selectedIndex={selectedIndex}
+      onSelect={onSelect}
+      onNext={onNext}
+      questionNumber={questionNumber}
+      total={total}
+      feedback={feedback}
+      optionsGridClassName="grid grid-cols-1 gap-3 sm:grid-cols-2"
+      cardPaddingClassName="p-4 sm:p-8"
+    />
   );
 }
