@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
-  ChevronDown, ChevronRight, Star,
+  Bookmark, ChevronDown, ChevronRight, Star,
   Gamepad2, FlaskConical, BookCheck,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
@@ -13,6 +13,8 @@ import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
 import { useGrammarQuiz } from "./hooks/useGrammarQuiz";
+import { useDifficultesQuiz } from "./hooks/useDifficultesQuiz";
+import { useWeakVerbs } from "./hooks/useWeakVerbs";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
@@ -45,7 +47,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -61,6 +63,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   vocabulaire: "Paires",
   touriste: "Voyage",
   "grammar-test": "Test grammaire",
+  difficiles: "Mes difficiles",
 };
 
 export default function App() {
@@ -91,6 +94,8 @@ export default function App() {
   const futur = useFuturQuiz();
   const orthographe = useOrthographeQuiz();
   const grammarTest = useGrammarQuiz();
+  const { isWeak, toggleWeak, weakVerbList } = useWeakVerbs();
+  const difficiles = useDifficultesQuiz();
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
@@ -169,6 +174,10 @@ export default function App() {
       if (appMode === "grammar-test") {
         if (grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) grammarTest.selectAnswer(d - 1); }
         if (grammarTest.state.phase === QuizPhase.Feedback && e.key === "Enter") grammarTest.nextQuestion();
+      }
+      if (appMode === "difficiles") {
+        if (difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) difficiles.selectAnswer(d - 1); }
+        if (difficiles.state.phase === QuizPhase.Feedback && e.key === "Enter") difficiles.nextQuestion();
       }
       if (appMode === "phrases") {
         if (phrases.state.phase === QuizPhase.Answering || phrases.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) phrases.selectAnswer(d - 1); }
@@ -263,6 +272,7 @@ export default function App() {
     if (appMode === "futur") futur.goHome();
     if (appMode === "orthographe") orthographe.goHome();
     if (appMode === "grammar-test") grammarTest.goHome();
+    if (appMode === "difficiles") difficiles.goHome();
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
     if (appMode === "écrit") écrit.goHome();
@@ -279,6 +289,7 @@ export default function App() {
   function handleStartFutur()        { futur.startQuiz();        setAppMode("futur"); }
   function handleStartOrthographe()  { orthographe.startQuiz();  setAppMode("orthographe"); }
   function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
+  function handleStartDifficiles()   { difficiles.startQuiz(weakVerbList); setAppMode("difficiles"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
@@ -319,6 +330,7 @@ export default function App() {
     : appMode === "futur"         ? futur.state.phase
     : appMode === "orthographe"   ? orthographe.state.phase
     : appMode === "grammar-test"  ? grammarTest.state.phase
+    : appMode === "difficiles"    ? difficiles.state.phase
     : appMode === "phrases"       ? phrases.state.phase
     : appMode === "présent"       ? présent.state.phase
     : appMode === "écrit"         ? écrit.state.phase
@@ -332,6 +344,7 @@ export default function App() {
     : appMode === "futur"         ? futur.progress
     : appMode === "orthographe"   ? orthographe.progress
     : appMode === "grammar-test"  ? grammarTest.progress
+    : appMode === "difficiles"    ? difficiles.progress
     : appMode === "phrases"       ? phrases.progress
     : appMode === "présent"       ? présent.progress
     : appMode === "écrit"         ? écrit.progress
@@ -345,6 +358,7 @@ export default function App() {
     : appMode === "futur"         ? futur.state.score
     : appMode === "orthographe"   ? orthographe.state.score
     : appMode === "grammar-test"  ? grammarTest.state.score
+    : appMode === "difficiles"    ? difficiles.state.score
     : appMode === "phrases"       ? phrases.state.score
     : appMode === "présent"       ? présent.state.score
     : appMode === "écrit"         ? écrit.state.score
@@ -382,6 +396,7 @@ export default function App() {
     "Participe passé":   { mode: "participe",    onClick: handleStartParticipe,    icon: BookCheck },
     "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
     "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
+    "Mes difficiles":    { mode: "difficiles",   onClick: handleStartDifficiles,   icon: Bookmark },
     "Test connecteurs":  { mode: "phrases",      onClick: handleStartPhrases,      icon: FlaskConical },
     "Test écrit":        { mode: "écrit",        onClick: handleStartEcrit,        icon: FlaskConical },
     "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
@@ -478,6 +493,7 @@ export default function App() {
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
                 { label: "Test grammaire",   mode: "grammar-test" as const, onClick: handleStartGrammarTest },
+                { label: "Mes difficiles",   mode: "difficiles"   as const, onClick: handleStartDifficiles },
               ],
             },
             {
@@ -797,6 +813,7 @@ export default function App() {
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },
                         { label: "Test grammaire",  onClick: handleStartGrammarTest },
+                        { label: "Mes difficiles",  onClick: handleStartDifficiles },
                       ],
                     },
                     {
@@ -859,7 +876,7 @@ export default function App() {
               {appMode === "participe" && (
                 <>
                   {(participe.state.phase === QuizPhase.Answering || participe.state.phase === QuizPhase.Feedback) && participe.currentQuestion && (
-                    <QuizCard question={participe.currentQuestion} answerState={participe.state.answerState} selectedIndex={participe.state.selectedIndex} onSelect={participe.selectAnswer} onNext={participe.nextQuestion} questionNumber={participe.progress.index + 1} total={participe.progress.total} />
+                    <QuizCard question={participe.currentQuestion} answerState={participe.state.answerState} selectedIndex={participe.state.selectedIndex} onSelect={participe.selectAnswer} onNext={participe.nextQuestion} questionNumber={participe.progress.index + 1} total={participe.progress.total} isWeak={isWeak(participe.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(participe.currentQuestion!.verb.infinitive)} />
                   )}
                   {participe.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={participe.state.history} score={participe.state.score} total={participe.progress.total} onRestart={participe.restartQuiz} onHome={handleGoHome} />
@@ -871,7 +888,7 @@ export default function App() {
               {appMode === "imparfait" && (
                 <>
                   {(imparfait.state.phase === QuizPhase.Answering || imparfait.state.phase === QuizPhase.Feedback) && imparfait.currentQuestion && (
-                    <ImparfaitQuizCard question={imparfait.currentQuestion} answerState={imparfait.state.answerState} selectedIndex={imparfait.state.selectedIndex} onSelect={imparfait.selectAnswer} onNext={imparfait.nextQuestion} questionNumber={imparfait.progress.index + 1} total={imparfait.progress.total} />
+                    <ImparfaitQuizCard question={imparfait.currentQuestion} answerState={imparfait.state.answerState} selectedIndex={imparfait.state.selectedIndex} onSelect={imparfait.selectAnswer} onNext={imparfait.nextQuestion} questionNumber={imparfait.progress.index + 1} total={imparfait.progress.total} isWeak={isWeak(imparfait.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(imparfait.currentQuestion!.verb.infinitive)} />
                   )}
                   {imparfait.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={imparfait.state.history} score={imparfait.state.score} total={imparfait.progress.total} onRestart={imparfait.restartQuiz} onHome={handleGoHome} />
@@ -883,7 +900,7 @@ export default function App() {
               {appMode === "futur" && (
                 <>
                   {(futur.state.phase === QuizPhase.Answering || futur.state.phase === QuizPhase.Feedback) && futur.currentQuestion && (
-                    <FuturQuizCard question={futur.currentQuestion} answerState={futur.state.answerState} selectedIndex={futur.state.selectedIndex} onSelect={futur.selectAnswer} onNext={futur.nextQuestion} questionNumber={futur.progress.index + 1} total={futur.progress.total} />
+                    <FuturQuizCard question={futur.currentQuestion} answerState={futur.state.answerState} selectedIndex={futur.state.selectedIndex} onSelect={futur.selectAnswer} onNext={futur.nextQuestion} questionNumber={futur.progress.index + 1} total={futur.progress.total} isWeak={isWeak(futur.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(futur.currentQuestion!.verb.infinitive)} />
                   )}
                   {futur.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={futur.state.history} score={futur.state.score} total={futur.progress.total} onRestart={futur.restartQuiz} onHome={handleGoHome} />
@@ -895,7 +912,7 @@ export default function App() {
               {appMode === "conditionnel" && (
                 <>
                   {(conditionnel.state.phase === QuizPhase.Answering || conditionnel.state.phase === QuizPhase.Feedback) && conditionnel.currentQuestion && (
-                    <ConditionnelQuizCard question={conditionnel.currentQuestion} answerState={conditionnel.state.answerState} selectedIndex={conditionnel.state.selectedIndex} onSelect={conditionnel.selectAnswer} onNext={conditionnel.nextQuestion} questionNumber={conditionnel.progress.index + 1} total={conditionnel.progress.total} />
+                    <ConditionnelQuizCard question={conditionnel.currentQuestion} answerState={conditionnel.state.answerState} selectedIndex={conditionnel.state.selectedIndex} onSelect={conditionnel.selectAnswer} onNext={conditionnel.nextQuestion} questionNumber={conditionnel.progress.index + 1} total={conditionnel.progress.total} isWeak={isWeak(conditionnel.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(conditionnel.currentQuestion!.verb.infinitive)} />
                   )}
                   {conditionnel.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={conditionnel.state.history} score={conditionnel.state.score} total={conditionnel.progress.total} onRestart={conditionnel.restartQuiz} onHome={handleGoHome} />
@@ -908,6 +925,7 @@ export default function App() {
                 <>
                   {(grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) && grammarTest.currentQuestion && (() => {
                     const wrapper = grammarTest.currentQuestion;
+                    const verbInfinitive = wrapper.q.verb.infinitive;
                     const common = {
                       answerState: grammarTest.state.answerState,
                       selectedIndex: grammarTest.state.selectedIndex,
@@ -915,6 +933,8 @@ export default function App() {
                       onNext: grammarTest.nextQuestion,
                       questionNumber: grammarTest.progress.index + 1,
                       total: grammarTest.progress.total,
+                      isWeak: isWeak(verbInfinitive),
+                      onToggleWeak: () => toggleWeak(verbInfinitive),
                     };
                     switch (wrapper.source) {
                       case "participe":    return <QuizCard            {...common} question={wrapper.q} />;
@@ -926,6 +946,44 @@ export default function App() {
                   })()}
                   {grammarTest.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={grammarTest.state.history} score={grammarTest.state.score} total={grammarTest.progress.total} onRestart={grammarTest.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* DIFFICILES — mixed quiz from bookmarked weak verbs */}
+              {appMode === "difficiles" && (
+                <>
+                  {weakVerbList.length < 3 && difficiles.state.phase === QuizPhase.Idle && (
+                    <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm p-8 text-center flex flex-col gap-4">
+                      <Bookmark size={32} className="mx-auto text-(--color-muted)" />
+                      <p className="text-base font-semibold text-(--color-ink)">Pas encore assez de verbes difficiles</p>
+                      <p className="text-sm text-(--color-muted)">Marquez au moins 3 verbes avec <span className="font-medium text-amber-500">Marquer</span> pendant vos exercices pour créer votre liste personnalisée.</p>
+                      <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-card) bg-(--color-brand) px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">Retour</button>
+                    </div>
+                  )}
+                  {(difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) && difficiles.currentQuestion && (() => {
+                    const wrapper = difficiles.currentQuestion;
+                    const verbInfinitive = wrapper.q.verb.infinitive;
+                    const common = {
+                      answerState: difficiles.state.answerState,
+                      selectedIndex: difficiles.state.selectedIndex,
+                      onSelect: difficiles.selectAnswer,
+                      onNext: difficiles.nextQuestion,
+                      questionNumber: difficiles.progress.index + 1,
+                      total: difficiles.progress.total,
+                      isWeak: isWeak(verbInfinitive),
+                      onToggleWeak: () => toggleWeak(verbInfinitive),
+                    };
+                    switch (wrapper.source) {
+                      case "participe":    return <QuizCard            {...common} question={wrapper.q} />;
+                      case "imparfait":    return <ImparfaitQuizCard   {...common} question={wrapper.q} />;
+                      case "futur":        return <FuturQuizCard       {...common} question={wrapper.q} />;
+                      case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
+                      case "présent":      return <PresentQuizCard     {...common} question={wrapper.q} />;
+                    }
+                  })()}
+                  {difficiles.state.phase === QuizPhase.Complete && (
+                    <ResultScreen history={difficiles.state.history} score={difficiles.state.score} total={difficiles.progress.total} onRestart={() => difficiles.restartQuiz(weakVerbList)} onHome={handleGoHome} />
                   )}
                 </>
               )}
@@ -946,7 +1004,7 @@ export default function App() {
               {appMode === "présent" && (
                 <>
                   {(présent.state.phase === QuizPhase.Answering || présent.state.phase === QuizPhase.Feedback) && présent.currentQuestion && (
-                    <PresentQuizCard question={présent.currentQuestion} answerState={présent.state.answerState} selectedIndex={présent.state.selectedIndex} onSelect={présent.selectAnswer} onNext={présent.nextQuestion} questionNumber={présent.progress.index + 1} total={présent.progress.total} />
+                    <PresentQuizCard question={présent.currentQuestion} answerState={présent.state.answerState} selectedIndex={présent.state.selectedIndex} onSelect={présent.selectAnswer} onNext={présent.nextQuestion} questionNumber={présent.progress.index + 1} total={présent.progress.total} isWeak={isWeak(présent.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(présent.currentQuestion!.verb.infinitive)} />
                   )}
                   {présent.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={présent.state.history.map(e => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))} score={présent.state.score} total={présent.progress.total} onRestart={présent.restartQuiz} onHome={handleGoHome} />

@@ -12,6 +12,8 @@ interface PresentQuizCardProps {
   onNext(): void;
   questionNumber: number;
   total: number;
+  isWeak?: boolean;
+  onToggleWeak?(): void;
 }
 
 export function PresentQuizCard({
@@ -22,6 +24,8 @@ export function PresentQuizCard({
   onNext,
   questionNumber,
   total,
+  isWeak,
+  onToggleWeak,
 }: PresentQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -74,6 +78,8 @@ export function PresentQuizCard({
       questionNumber={questionNumber}
       total={total}
       feedback={feedback}
+      isWeak={isWeak}
+      onToggleWeak={onToggleWeak}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Bookmark } from "lucide-react";
 import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
 import { SwipeCard } from "./SwipeCard";
@@ -36,6 +37,9 @@ interface BaseQuizCardProps {
   cardPaddingClassName?: string;
   /** Spacing above the Next button. Default: "mt-6" */
   nextButtonSpacing?: string;
+  /** Weak-verb bookmark — shown when provided */
+  isWeak?: boolean;
+  onToggleWeak?(): void;
 }
 
 export function BaseQuizCard({
@@ -51,6 +55,8 @@ export function BaseQuizCard({
   optionsGridClassName = "mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2",
   cardPaddingClassName = "p-6 sm:p-8",
   nextButtonSpacing = "mt-6",
+  isWeak,
+  onToggleWeak,
 }: BaseQuizCardProps) {
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
@@ -71,6 +77,23 @@ export function BaseQuizCard({
       resetKey={questionNumber}
       onSwipeLeft={isRevealed ? onNext : undefined}
     >
+      {onToggleWeak !== undefined && (
+        <div className="flex justify-end -mt-1 mb-2">
+          <button
+            type="button"
+            onClick={onToggleWeak}
+            aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
+            className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
+              isWeak
+                ? "text-amber-500 hover:text-amber-600"
+                : "text-(--color-muted) hover:text-(--color-ink)"
+            }`}
+          >
+            <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
+            {isWeak ? "Difficile" : "Marquer"}
+          </button>
+        </div>
+      )}
       {header}
 
       <div className={optionsGridClassName}>
