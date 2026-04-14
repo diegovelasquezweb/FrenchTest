@@ -1,10 +1,10 @@
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
 import { fisherYates } from "./shuffle";
-import { schedulePush } from "./sync";
+import { getItem, setItem } from "./store";
 
 export function loadProgress(storageKey: string): Record<string, CardProgress> {
   try {
-    const raw = localStorage.getItem(storageKey);
+    const raw = getItem(storageKey);
     return raw ? (JSON.parse(raw) as Record<string, CardProgress>) : {};
   } catch {
     return {};
@@ -12,12 +12,7 @@ export function loadProgress(storageKey: string): Record<string, CardProgress> {
 }
 
 export function saveProgress(progress: Record<string, CardProgress>, storageKey: string): void {
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(progress));
-    schedulePush();
-  } catch {
-    // localStorage unavailable — silently ignore
-  }
+  setItem(storageKey, JSON.stringify(progress));
 }
 
 export function applyRating(
@@ -51,12 +46,10 @@ export function buildDeck(
 ): Flashcard[] {
   const pending = cards.filter((c) => (progress[c.id]?.score ?? 0) < 2);
 
-  // If everything is mastered, show all again so the user can still practice
   if (pending.length === 0) {
     return fisherYates([...cards], Math.random);
   }
 
-  // Score 1 (hésité) → shown first; score 0 (ne savais pas) → shown after
   const priority = pending.filter((c) => (progress[c.id]?.score ?? 0) === 1);
   const normal   = pending.filter((c) => (progress[c.id]?.score ?? 0) === 0);
 

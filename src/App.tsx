@@ -23,7 +23,7 @@ import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
-import { syncPull, syncPush, schedulePush } from "./lib/sync";
+import { getItem, setItem, pushStore } from "./lib/store";
 import { QuizPhase } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
@@ -82,7 +82,7 @@ export default function App() {
   const DEFAULT_FAVORITES = ["Participe passé"];
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
-      const stored = localStorage.getItem("tef-favorites");
+      const stored = getItem("tef-favorites");
       if (stored === null) return DEFAULT_FAVORITES;
       return JSON.parse(stored) as string[];
     }
@@ -90,22 +90,15 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("tef-favorites", JSON.stringify(favorites));
+    setItem("tef-favorites", JSON.stringify(favorites));
   }, [favorites]);
-
-  // ── Sync ─────────────────────────────────────────────────────────────────
-  // Pull once on mount
-  useEffect(() => { void syncPull(); }, []);
 
   // Push on tab close / reload
   useEffect(() => {
-    const handler = () => { void syncPush(); };
+    const handler = () => { void pushStore(); };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, []);
-
-  // Debounced push whenever favorites change (progress is saved by each hook internally)
-  useEffect(() => { schedulePush(); }, [favorites]);
 
   function toggleFavorite(label: string, e: React.MouseEvent) {
     e.stopPropagation();

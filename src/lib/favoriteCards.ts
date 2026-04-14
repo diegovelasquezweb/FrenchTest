@@ -1,8 +1,10 @@
+import { getItem, setItem } from "./store";
+
 const KEY = "tef-favorite-cards";
 
 export function getFavoriteCards(): Set<string> {
   try {
-    const stored = localStorage.getItem(KEY);
+    const stored = getItem(KEY);
     if (!stored) return new Set();
     return new Set(JSON.parse(stored) as string[]);
   } catch {
@@ -11,5 +13,5 @@ export function getFavoriteCards(): Set<string> {
 }
 
 export function saveFavoriteCards(ids: Set<string>): void {
-  localStorage.setItem(KEY, JSON.stringify([...ids]));
+  setItem(KEY, JSON.stringify([...ids]));
 }

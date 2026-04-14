@@ -1,8 +1,10 @@
+import { getItem, setItem } from "./store";
+
 const KEY = "tef-weak-verbs";
 
 export function getWeakVerbs(): Set<string> {
   try {
-    const stored = localStorage.getItem(KEY);
+    const stored = getItem(KEY);
     if (!stored) return new Set();
     return new Set(JSON.parse(stored) as string[]);
   } catch {
@@ -11,5 +13,5 @@ export function getWeakVerbs(): Set<string> {
 }
 
 export function saveWeakVerbs(verbs: Set<string>): void {
-  localStorage.setItem(KEY, JSON.stringify([...verbs]));
+  setItem(KEY, JSON.stringify([...verbs]));
 }
