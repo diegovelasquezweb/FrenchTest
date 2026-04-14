@@ -110,7 +110,7 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 font-semibold text-red-600 dark:text-red-400">→</span>
-                    <span className="font-medium text-red-600 dark:text-red-400">No savais</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">Ne savais pas</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10 font-semibold text-yellow-600 dark:text-yellow-400">↑</span>
