@@ -303,7 +303,7 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         {/* ── HOME ── */}
         {appMode === "home" && (
-          <div className="mx-auto w-full max-w-lg grid grid-cols-3 gap-3">
+          <div className="mx-auto w-full max-w-2xl grid grid-cols-4 gap-3">
             {(
               [
                 { label: "Conditionnel",    sub: "Conjuguer par sujet",  onClick: handleStartConditionnel },
