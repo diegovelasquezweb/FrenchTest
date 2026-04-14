@@ -3,22 +3,22 @@ import type { Flashcard, CardProgress, FlashcardRating } from "../types";
 import { FLASHCARDS } from "../data/flashcards";
 import { loadProgress, saveProgress, applyRating, buildDeck, totalMastered } from "../lib/flashcardProgress";
 
-const SESSION_SIZE = 15;
 
 interface FlashcardsState {
   phase: "idle" | "session" | "complete";
   deck: Flashcard[];
   currentIndex: number;
-  revealed: boolean;
   sessionResults: { id: string; rating: FlashcardRating }[];
   progress: Record<string, CardProgress>;
 }
 
 type FlashcardsAction =
   | { type: "START" }
-  | { type: "REVEAL" }
   | { type: "RATE"; payload: FlashcardRating }
+  | { type: "BACK" }
+  | { type: "SKIP" }
   | { type: "RESTART" }
+  | { type: "RESET" }
   | { type: "HOME" };
 
 function makeInitialState(): FlashcardsState {
@@ -26,7 +26,6 @@ function makeInitialState(): FlashcardsState {
     phase: "idle",
     deck: [],
     currentIndex: 0,
-    revealed: false,
     sessionResults: [],
     progress: loadProgress(),
   };
@@ -36,21 +35,43 @@ function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsSt
   switch (action.type) {
     case "HOME":
       return { ...makeInitialState(), progress: state.progress };
+    case "RESET": {
+      const emptyProgress: Record<string, CardProgress> = {};
+      return {
+        phase: "session",
+        deck: buildDeck(FLASHCARDS, emptyProgress),
+        currentIndex: 0,
+        sessionResults: [],
+        progress: emptyProgress,
+      };
+    }
     case "START":
     case "RESTART":
       return {
         ...state,
         phase: "session",
-        deck: buildDeck(FLASHCARDS, state.progress, SESSION_SIZE),
+        deck: buildDeck(FLASHCARDS, state.progress),
         currentIndex: 0,
-        revealed: false,
         sessionResults: [],
       };
-    case "REVEAL":
+    case "BACK": {
+      if (state.phase !== "session" || state.currentIndex === 0) return state;
+      return {
+        ...state,
+        currentIndex: state.currentIndex - 1,
+        sessionResults: state.sessionResults.slice(0, -1),
+      };
+    }
+    case "SKIP": {
       if (state.phase !== "session") return state;
-      return { ...state, revealed: true };
+      const nextIndex = state.currentIndex + 1;
+      if (nextIndex >= state.deck.length) {
+        return { ...state, phase: "complete" };
+      }
+      return { ...state, currentIndex: nextIndex };
+    }
     case "RATE": {
-      if (state.phase !== "session" || !state.revealed) return state;
+      if (state.phase !== "session") return state;
       const card = state.deck[state.currentIndex];
       if (!card) return state;
 
@@ -59,21 +80,10 @@ function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsSt
       const nextIndex = state.currentIndex + 1;
 
       if (nextIndex >= state.deck.length) {
-        return {
-          ...state,
-          progress: newProgress,
-          sessionResults: newResults,
-          phase: "complete",
-        };
+        return { ...state, progress: newProgress, sessionResults: newResults, phase: "complete" };
       }
 
-      return {
-        ...state,
-        progress: newProgress,
-        sessionResults: newResults,
-        currentIndex: nextIndex,
-        revealed: false,
-      };
+      return { ...state, progress: newProgress, sessionResults: newResults, currentIndex: nextIndex };
     }
   }
 }
@@ -85,24 +95,27 @@ export interface UseFlashcardsReturn {
   masteredCount: number;
   totalCards: number;
   startSession(): void;
-  reveal(): void;
   rate(r: FlashcardRating): void;
+  back(): void;
+  skip(): void;
   restart(): void;
+  reset(): void;
   goHome(): void;
 }
 
 export function useFlashcards(): UseFlashcardsReturn {
   const [state, dispatch] = useReducer(reducer, undefined, makeInitialState);
 
-  // Persist progress to localStorage whenever it changes
   useEffect(() => {
     saveProgress(state.progress);
   }, [state.progress]);
 
   const startSession = useCallback(() => dispatch({ type: "START" }), []);
-  const reveal = useCallback(() => dispatch({ type: "REVEAL" }), []);
   const rate = useCallback((r: FlashcardRating) => dispatch({ type: "RATE", payload: r }), []);
+  const back = useCallback(() => dispatch({ type: "BACK" }), []);
+  const skip = useCallback(() => dispatch({ type: "SKIP" }), []);
   const restart = useCallback(() => dispatch({ type: "RESTART" }), []);
+  const reset = useCallback(() => dispatch({ type: "RESET" }), []);
   const goHome = useCallback(() => dispatch({ type: "HOME" }), []);
 
   const currentCard =
@@ -115,9 +128,11 @@ export function useFlashcards(): UseFlashcardsReturn {
     masteredCount: totalMastered(state.progress),
     totalCards: FLASHCARDS.length,
     startSession,
-    reveal,
     rate,
+    back,
+    skip,
     restart,
+    reset,
     goHome,
   };
 }

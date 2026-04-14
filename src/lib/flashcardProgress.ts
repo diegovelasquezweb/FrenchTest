@@ -47,24 +47,25 @@ export function applyRating(
 
 export function buildDeck(
   cards: Flashcard[],
-  progress: Record<string, CardProgress>,
-  count: number
+  progress: Record<string, CardProgress>
 ): Flashcard[] {
-  const score0 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 0);
-  const score1 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 1);
-  const score2 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 2);
-
-  // Within each group, sort oldest-seen first
   const byAge = (a: Flashcard, b: Flashcard) =>
     (progress[a.id]?.lastSeen ?? 0) - (progress[b.id]?.lastSeen ?? 0);
 
-  const prioritized = [
+  const score0 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 0);
+  const score1 = cards.filter((c) => (progress[c.id]?.score ?? 0) === 1);
+
+  const pending = [
     ...fisherYates(score0.sort(byAge), Math.random),
     ...fisherYates(score1.sort(byAge), Math.random),
-    ...fisherYates(score2.sort(byAge), Math.random),
   ];
 
-  return prioritized.slice(0, count);
+  // If everything is mastered, show all again so the user can still practice
+  if (pending.length === 0) {
+    return fisherYates([...cards], Math.random);
+  }
+
+  return pending;
 }
 
 export function totalMastered(progress: Record<string, CardProgress>): number {

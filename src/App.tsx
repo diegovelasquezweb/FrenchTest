@@ -144,6 +144,16 @@ export default function App() {
         }
       }
 
+      if (appMode === "patterns") {
+        if (flashcards.state.phase === "session") {
+          if (e.key === "1") flashcards.rate(0);
+          if (e.key === "2") flashcards.rate(1);
+          if (e.key === "3") flashcards.rate(2);
+          if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); flashcards.skip(); }
+          if (e.key === "ArrowLeft") flashcards.back();
+        }
+      }
+
       if (appMode === "oral") {
         if (oral.state.phase === QuizPhase.Answering) {
           const digit = parseInt(e.key, 10);
@@ -330,6 +340,21 @@ export default function App() {
               total={activeProgress.total}
             />
           )}
+          {appMode === "patterns" && (
+            <div className="mt-3 flex items-center justify-between">
+              <p className="text-sm text-(--color-muted)">
+                <span className="font-semibold text-(--color-ink)">{flashcards.masteredCount}</span>
+                <span> / {flashcards.totalCards} dominées</span>
+              </p>
+              <button
+                type="button"
+                onClick={flashcards.reset}
+                className="text-xs text-(--color-muted) underline underline-offset-2 transition-colors duration-150 hover:text-red-500"
+              >
+                Réinitialiser
+              </button>
+            </div>
+          )}
         </header>
       )}
 
@@ -340,7 +365,7 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         {/* ── HOME ── */}
         {appMode === "home" && (
-          <div className="mx-auto w-full max-w-2xl flex flex-col gap-8">
+          <div className="mx-auto w-full max-w-4xl flex flex-col gap-8">
             <div className="text-center">
               <h1 className="text-3xl font-extrabold tracking-tight text-(--color-ink) sm:text-4xl">
                 🇨🇦&nbsp;Le TEFinateur&nbsp;3000
@@ -349,7 +374,7 @@ export default function App() {
                 Préparez votre TEF. Ou commencez à faire vos valises. Bonne chance.
               </p>
             </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-5 gap-3">
             {(
               [
                 { label: "Conditionnel",    sub: "Conjuguer par sujet",  onClick: handleStartConditionnel },
@@ -583,11 +608,12 @@ export default function App() {
             {flashcards.state.phase === "session" && flashcards.currentCard && (
               <FlashcardView
                 card={flashcards.currentCard}
-                revealed={flashcards.state.revealed}
                 index={flashcards.progress.index}
                 total={flashcards.progress.total}
-                onReveal={flashcards.reveal}
+                canGoBack={flashcards.progress.index > 0}
                 onRate={flashcards.rate}
+                onBack={flashcards.back}
+                onSkip={flashcards.skip}
               />
             )}
             {flashcards.state.phase === "complete" && (

@@ -28,9 +28,9 @@ export function FlashcardResults({
       <div className="mt-6 grid grid-cols-3 gap-3">
         {(
           [
-            { emoji: "🟢", label: "Sabía", count: green },
-            { emoji: "🟡", label: "Dudé", count: yellow },
-            { emoji: "🔴", label: "No sabía", count: red },
+            { emoji: "🟢", label: "Je savais", count: green },
+            { emoji: "🟡", label: "J'ai hésité", count: yellow },
+            { emoji: "🔴", label: "Je ne savais pas", count: red },
           ] as const
         ).map(({ emoji, label, count }) => (
           <div

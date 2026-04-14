@@ -102,7 +102,7 @@ export interface Flashcard {
   translationEn: string;
   translationEs: string;
   usage: string;
-  category: "oral" | "écrit" | "connecteurs";
+  category: "oral" | "écrit" | "connecteurs" | "argumentation";
 }
 
 export interface CardProgress {
