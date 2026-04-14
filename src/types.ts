@@ -1,3 +1,5 @@
+export type TenseName = "présent" | "imparfait" | "futur" | "conditionnel";
+
 export type ParticipleEnding =
   | "-é"
   | "-i"
@@ -16,8 +18,10 @@ export interface Verb {
   ending: ParticipleEnding;
   auxiliary: "avoir" | "être";
   irregular: boolean;
-  /** Three confusing conjugations from other tenses (présent, imparfait, futur) */
+  /** Three confusing conjugations from other tenses */
   confusers: readonly [string, string, string];
+  /** Tense name for each confuser — used to build the explanation table */
+  confuserTenses: readonly [TenseName, TenseName, TenseName];
 }
 
 export interface QuizQuestion {
@@ -53,5 +57,6 @@ export interface QuizState {
   selectedIndex: number | null;
   answerState: AnswerState;
   history: HistoryEntry[];
-  triedIndices: number[];
+  currentWrongIndex: number | null;
+  everWrong: boolean;
 }

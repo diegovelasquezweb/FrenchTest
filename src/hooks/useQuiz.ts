@@ -33,7 +33,8 @@ const initialState: QuizState = {
   selectedIndex: null,
   answerState: AnswerState.Idle,
   history: [],
-  triedIndices: [],
+  currentWrongIndex: null,
+  everWrong: false,
 };
 
 function makeReducer(verbs: Verb[], questionCount: number) {

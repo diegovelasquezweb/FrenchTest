@@ -3,6 +3,7 @@ import type { QuizQuestion } from "../types";
 import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
 import { PasseComposeTable } from "./PasseComposeTable";
+import { WrongAnswerTable } from "./WrongAnswerTable";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
@@ -58,7 +59,7 @@ export function QuizCard({
   return (
     <div
       className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm transition-opacity duration-200 sm:p-8"
-      aria-label={`Question ${questionNumber} of ${total}`}
+      aria-label={`Question ${questionNumber} sur ${total}`}
     >
       <div className="mb-6 text-center">
         <p
@@ -99,6 +100,16 @@ export function QuizCard({
         })}
       </div>
 
+      {/* Show wrong tense explanation after each incorrect attempt */}
+      {!isRevealed && triedIndices.length > 0 && (() => {
+        const lastIdx = triedIndices[triedIndices.length - 1];
+        const wrongOption = lastIdx !== undefined ? question.options[lastIdx] : undefined;
+        return wrongOption ? (
+          <WrongAnswerTable verb={question.verb} wrongOption={wrongOption} />
+        ) : null;
+      })()}
+
+      {/* Show passé composé table after correct answer */}
       {isRevealed && answerState === AnswerState.Correct && (
         <PasseComposeTable verb={question.verb} />
       )}
@@ -111,7 +122,7 @@ export function QuizCard({
             onClick={onNext}
             className="min-h-11 rounded-xl bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
           >
-            {questionNumber >= total ? "See Results" : "Next →"}
+            {questionNumber >= total ? "Voir les résultats" : "Suivant →"}
           </button>
         </div>
       )}

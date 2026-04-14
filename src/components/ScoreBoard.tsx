@@ -9,19 +9,19 @@ export function ScoreBoard({ score, index, total }: ScoreBoardProps) {
 
   return (
     <section
-      aria-label="Quiz progress"
+      aria-label="Progression du quiz"
       className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
     >
       <p className="text-sm text-(--color-muted)">
         Question{" "}
-        <strong className="text-(--color-ink)">{questionNumber}</strong> of{" "}
+        <strong className="text-(--color-ink)">{questionNumber}</strong> sur{" "}
         <strong className="text-(--color-ink)">{total}</strong>
       </p>
       <p
         className="text-sm font-semibold text-(--color-brand)"
         aria-label={`Score: ${score} out of ${total}`}
       >
-        {score} / {total} correct
+        {score} / {total} correct{score <= 1 ? "e" : "s"}
       </p>
       <progress
         max={total}
