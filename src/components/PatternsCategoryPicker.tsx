@@ -2,10 +2,11 @@ export type PatternsCategory =
   | "all"
   | "argumenter"
   | "connecteurs"
-  | "oral-appels"
-  | "oral-debat"
+  | "oral-interaction"
+  | "oral-monologue"
   | "ecrit-intro"
-  | "ecrit-corps";
+  | "ecrit-corps"
+  | "ecrit-argumentatif";
 
 export interface CategoryOption {
   id: PatternsCategory;
