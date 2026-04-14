@@ -7,6 +7,7 @@ import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
+import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useTheme } from "./hooks/useTheme";
 import { QuizPhase } from "./types";
 import { ScoreBoard } from "./components/ScoreBoard";
@@ -22,7 +23,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 
 const QUESTION_COUNT = 10;
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -32,6 +33,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   orthographe: "Orthographe",
   phrases: "Expressions du discours",
   présent: "Présent",
+  écrit: "Écrit formel",
 };
 
 export default function App() {
@@ -45,6 +47,7 @@ export default function App() {
   const orthographe = useOrthographeQuiz();
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
+  const écrit = useEcritQuiz();
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -122,10 +125,20 @@ export default function App() {
           présent.nextQuestion();
         }
       }
+
+      if (appMode === "écrit") {
+        if (écrit.state.phase === QuizPhase.Answering) {
+          const digit = parseInt(e.key, 10);
+          if (digit >= 1 && digit <= 4) écrit.selectAnswer(digit - 1);
+        }
+        if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") {
+          écrit.nextQuestion();
+        }
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, présent]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, présent, écrit]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -149,6 +162,9 @@ export default function App() {
     } else if (appMode === "présent" && présent.state.phase === QuizPhase.Feedback && présent.currentQuestion) {
       const correct = présent.currentQuestion.options[présent.currentQuestion.correctIndex] ?? "";
       setAnnouncement(présent.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "écrit" && écrit.state.phase === QuizPhase.Feedback && écrit.currentQuestion) {
+      const correct = écrit.currentQuestion.options[écrit.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(écrit.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else {
       setAnnouncement("");
     }
@@ -161,6 +177,7 @@ export default function App() {
     orthographe.state.phase, orthographe.state.answerState, orthographe.currentQuestion,
     phrases.state.phase, phrases.state.answerState, phrases.currentQuestion,
     présent.state.phase, présent.state.answerState, présent.currentQuestion,
+    écrit.state.phase, écrit.state.answerState, écrit.currentQuestion,
   ]);
 
   function handleGoHome() {
@@ -171,6 +188,7 @@ export default function App() {
     if (appMode === "orthographe") orthographe.goHome();
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
+    if (appMode === "écrit") écrit.goHome();
     setAppMode("home");
   }
 
@@ -209,6 +227,11 @@ export default function App() {
     setAppMode("présent");
   }
 
+  function handleStartEcrit() {
+    écrit.startQuiz();
+    setAppMode("écrit");
+  }
+
   const activePhase =
     appMode === "participe" ? participe.state.phase
     : appMode === "imparfait" ? imparfait.state.phase
@@ -217,6 +240,7 @@ export default function App() {
     : appMode === "orthographe" ? orthographe.state.phase
     : appMode === "phrases" ? phrases.state.phase
     : appMode === "présent" ? présent.state.phase
+    : appMode === "écrit" ? écrit.state.phase
     : QuizPhase.Idle;
 
   const activeProgress =
@@ -227,6 +251,7 @@ export default function App() {
     : appMode === "orthographe" ? orthographe.progress
     : appMode === "phrases" ? phrases.progress
     : appMode === "présent" ? présent.progress
+    : appMode === "écrit" ? écrit.progress
     : { index: 0, total: 0 };
 
   const activeScore =
@@ -236,7 +261,8 @@ export default function App() {
     : appMode === "futur" ? futur.state.score
     : appMode === "orthographe" ? orthographe.state.score
     : appMode === "phrases" ? phrases.state.score
-    : présent.state.score;
+    : appMode === "présent" ? présent.state.score
+    : écrit.state.score;
 
   const showScoreBoard = appMode !== "home" && (activePhase === QuizPhase.Answering || activePhase === QuizPhase.Feedback);
 
@@ -280,12 +306,13 @@ export default function App() {
           <div className="mx-auto w-full max-w-lg grid grid-cols-3 gap-3">
             {(
               [
-                { label: "Participe passé", sub: "Identifier la forme",  onClick: handleStartParticipe },
-                { label: "Imparfait",       sub: "Conjuguer par sujet",  onClick: handleStartImparfait },
                 { label: "Conditionnel",    sub: "Conjuguer par sujet",  onClick: handleStartConditionnel },
-                { label: "Futur simple",    sub: "Conjuguer par sujet",  onClick: handleStartFutur },
-                { label: "Orthographe",     sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
                 { label: "Connecteurs",     sub: "Expressions du TEF",   onClick: handleStartPhrases },
+                { label: "Écrit formel",    sub: "Lettres & expressions", onClick: handleStartEcrit },
+                { label: "Futur simple",    sub: "Conjuguer par sujet",  onClick: handleStartFutur },
+                { label: "Imparfait",       sub: "Conjuguer par sujet",  onClick: handleStartImparfait },
+                { label: "Orthographe",     sub: "Corriger les erreurs",  onClick: handleStartOrthographe },
+                { label: "Participe passé", sub: "Identifier la forme",  onClick: handleStartParticipe },
                 { label: "Présent",         sub: "Conjuguer par sujet",  onClick: handleStartPresent },
               ] as const
             ).map(({ label, sub, onClick }) => (
@@ -467,6 +494,34 @@ export default function App() {
                 score={présent.state.score}
                 total={présent.progress.total}
                 onRestart={présent.restartQuiz}
+                onHome={handleGoHome}
+              />
+            )}
+          </>
+        )}
+
+        {/* ── ÉCRIT QUIZ ── */}
+        {appMode === "écrit" && (
+          <>
+            {(écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) &&
+              écrit.currentQuestion && (
+                <OrthographeQuizCard
+                  question={écrit.currentQuestion}
+                  answerState={écrit.state.answerState}
+                  selectedIndex={écrit.state.selectedIndex}
+                  onSelect={écrit.selectAnswer}
+                  onNext={écrit.nextQuestion}
+                  questionNumber={écrit.progress.index + 1}
+                  total={écrit.progress.total}
+                  label="Lettre formelle — complétez l'expression"
+                />
+              )}
+            {écrit.state.phase === QuizPhase.Complete && (
+              <OrthographeResultScreen
+                history={écrit.state.history}
+                score={écrit.state.score}
+                total={écrit.progress.total}
+                onRestart={écrit.restartQuiz}
                 onHome={handleGoHome}
               />
             )}
