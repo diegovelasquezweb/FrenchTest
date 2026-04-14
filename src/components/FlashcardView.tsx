@@ -64,12 +64,12 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         </button>
       </div>
 
-      <div className="rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm sm:p-8">
+      <div className="rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:p-8">
         <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_COLOR[card.category]}`}>
           {CATEGORY_LABEL[card.category]}
         </span>
 
-        <p className="mt-4 text-2xl font-bold leading-snug text-(--color-ink) sm:text-3xl" lang="fr">
+        <p className="mt-3 text-xl font-bold leading-snug text-(--color-ink) sm:text-3xl" lang="fr">
           {card.front}
         </p>
 

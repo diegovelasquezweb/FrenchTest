@@ -50,12 +50,12 @@ export function QuizCard({
 
   return (
     <div
-      className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-6 shadow-sm transition-opacity duration-200 sm:p-8"
+      className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm transition-opacity duration-200 sm:p-8"
       aria-label={`Question ${questionNumber} sur ${total}`}
     >
       <div className="mb-6 text-center">
         <p
-          className="text-3xl font-bold tracking-tight text-(--color-ink) sm:text-4xl"
+          className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-4xl"
           lang="fr"
         >
           {question.verb.infinitive}
