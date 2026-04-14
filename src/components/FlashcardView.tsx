@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
-import { HelpCircle } from "lucide-react";
+import { Heart, HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../types";
 import { SwipeCard } from "./SwipeCard";
 
@@ -42,9 +42,11 @@ interface FlashcardViewProps {
   onRate(r: FlashcardRating): void;
   onBack(): void;
   onSkip(): void;
+  isFavorite?: boolean;
+  onToggleFavorite?(): void;
 }
 
-export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, onSkip }: FlashcardViewProps) {
+export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, onSkip, isFavorite, onToggleFavorite }: FlashcardViewProps) {
   const firstRatingRef = useRef<HTMLButtonElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const pending = useRef(false);
@@ -144,6 +146,23 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
         onSwipeDown={triggerSkip}
         onSwipeUp={() => triggerRate(1)}
       >
+        {onToggleFavorite !== undefined && (
+          <div className="flex justify-end mb-3">
+            <button
+              type="button"
+              aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
+                isFavorite
+                  ? "text-(--color-ink) font-semibold"
+                  : "text-(--color-muted) hover:text-(--color-ink)"
+              }`}
+              onClick={onToggleFavorite}
+            >
+              <Heart size={13} fill={isFavorite ? "currentColor" : "none"} />
+              {isFavorite ? "Sauvegardé" : "Sauvegarder"}
+            </button>
+          </div>
+        )}
         <span className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_COLOR[card.category]}`}>
           {CATEGORY_LABEL[card.category]}
         </span>

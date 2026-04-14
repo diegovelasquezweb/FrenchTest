@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
-  Bookmark, ChevronDown, ChevronRight, Star, Target,
-  Gamepad2, FlaskConical, BookCheck,
+  Bookmark, ChevronDown, ChevronRight, Heart, Star, Target,
+  Gamepad2, FlaskConical, BookCheck, Columns3,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -15,6 +15,7 @@ import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
 import { useGrammarQuiz } from "./hooks/useGrammarQuiz";
 import { useDifficultesQuiz } from "./hooks/useDifficultesQuiz";
 import { useWeakVerbs } from "./hooks/useWeakVerbs";
+import { useFavoriteCards } from "./hooks/useFavoriteCards";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
@@ -36,6 +37,7 @@ import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
+import { EssentialVerbsGuide } from "./components/EssentialVerbsGuide";
 import type { PatternsCategory } from "./components/PatternsCategoryPicker";
 import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
@@ -47,7 +49,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -64,6 +66,8 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   touriste: "Voyage",
   "grammar-test": "Test grammaire",
   difficiles: "Mes difficiles",
+  verbes: "Verbes essentiels",
+  "mes-patterns": "Mes patterns",
 };
 
 export default function App() {
@@ -95,7 +99,9 @@ export default function App() {
   const orthographe = useOrthographeQuiz();
   const grammarTest = useGrammarQuiz();
   const { isWeak, toggleWeak, weakVerbList } = useWeakVerbs();
+  const { isFavoriteCard, toggleFavoriteCard, favoriteCardList } = useFavoriteCards();
   const difficiles = useDifficultesQuiz();
+  const mesPatterns = useFlashcards(favoriteCardList, "tef-mes-patterns-progress");
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
@@ -212,6 +218,13 @@ export default function App() {
         if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); activeTouristeDeck.skip(); }
         if (e.key === "ArrowLeft") activeTouristeDeck.back();
       }
+      if (appMode === "mes-patterns" && mesPatterns.state.phase === "session") {
+        if (e.key === "1") mesPatterns.rate(0);
+        if (e.key === "2") mesPatterns.rate(1);
+        if (e.key === "3") mesPatterns.rate(2);
+        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); mesPatterns.skip(); }
+        if (e.key === "ArrowLeft") mesPatterns.back();
+      }
       if (appMode === "oral") {
         if (oral.state.phase === QuizPhase.Answering || oral.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) oral.selectAnswer(d - 1); }
         if (oral.state.phase === QuizPhase.Feedback && e.key === "Enter") oral.nextQuestion();
@@ -280,6 +293,7 @@ export default function App() {
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
     if (appMode === "vocabulaire") vocabulaire.goHome();
     if (appMode === "touriste") { activeTouristeDeck.goHome(); setVoyageCategory(null); }
+    if (appMode === "mes-patterns") mesPatterns.goHome();
     setAppMode("home");
   }
 
@@ -290,10 +304,12 @@ export default function App() {
   function handleStartOrthographe()  { orthographe.startQuiz();  setAppMode("orthographe"); }
   function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
   function handleStartDifficiles()   { difficiles.goHome(); setAppMode("difficiles"); }
+  function handleStartMesPatterns()  { mesPatterns.goHome(); setAppMode("mes-patterns"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
+  function handleStartVerbes()       { setAppMode("verbes"); }
   function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
   function handleStartVocabulaire()  { vocabulaire.startSession(); setAppMode("vocabulaire"); }
 
@@ -400,6 +416,7 @@ export default function App() {
     "Test connecteurs":  { mode: "phrases",      onClick: handleStartPhrases,      icon: FlaskConical },
     "Test écrit":        { mode: "écrit",        onClick: handleStartEcrit,        icon: FlaskConical },
     "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
+    "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
     "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
     "Interaction":       { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
@@ -417,7 +434,11 @@ export default function App() {
 
   // ── Flashcard header helper ───────────────────────────────────────────────
   function FlashcardHeader() {
-    const deck = appMode === "patterns" ? activeDeck : appMode === "vocabulaire" ? vocabulaire : activeTouristeDeck;
+    const deck =
+      appMode === "patterns"      ? activeDeck      :
+      appMode === "vocabulaire"   ? vocabulaire      :
+      appMode === "mes-patterns"  ? mesPatterns      :
+      activeTouristeDeck;
     if (appMode === "patterns" && patternsCategory === null) return null;
     if (appMode === "touriste" && voyageCategory === null) return null;
     return (
@@ -432,7 +453,7 @@ export default function App() {
     );
   }
 
-  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste";
+  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns";
 
   return (
     <div className="flex h-dvh overflow-hidden bg-(--color-bg)">
@@ -471,6 +492,13 @@ export default function App() {
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
               action: { mode: "difficiles" as const, onClick: handleStartDifficiles, icon: Target as LucideIcon },
+            },
+            {
+              id: "mes-patterns",
+              label: "Mes patterns",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "mes-patterns" as const, onClick: handleStartMesPatterns, icon: Heart as LucideIcon },
             },
             {
               id: "oral",
@@ -522,13 +550,26 @@ export default function App() {
                 { label: "Urgences",     mode: "touriste" as const, onClick: () => handleSelectVoyageCategory("urgences") },
               ],
             },
-          ] as const).map(group => {
+            {
+              id: "verbes",
+              label: "Verbes essentiels",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "verbes" as const, onClick: handleStartVerbes, icon: Columns3 as LucideIcon },
+            },
+          ] as const)
+            .filter((group) => {
+              if (group.id === "favoris" && favorites.length === 0) return false;
+              if (group.id === "difficiles" && weakVerbList.length === 0) return false;
+              if (group.id === "mes-patterns" && favoriteCardList.length === 0) return false;
+              return true;
+            })
+            .map((group, idx) => {
             const isOpen = openGroups.includes(group.id);
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            if (group.id === "favoris" && favorites.length === 0) return null;
-            if (group.id === "difficiles" && weakVerbList.length === 0) return null;
+            const separatorClass = idx === 0 ? "" : "mt-2 pt-2 border-t border-(--color-ink)/16";
 
             // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
@@ -536,7 +577,7 @@ export default function App() {
               // Marathon & Paires are already pinned at top of sidebar — no need to favorite them.
               // const isFav = favorites.includes(group.label);
               return (
-                <div key={group.id} className="group/item relative">
+                <div key={group.id} className={`${separatorClass} group/item relative`}>
                   <button
                     type="button"
                     onClick={group.action.onClick}
@@ -549,6 +590,11 @@ export default function App() {
                     {group.id === "difficiles" && weakVerbList.length > 0 && (
                       <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
                         {weakVerbList.length}
+                      </span>
+                    )}
+                    {group.id === "mes-patterns" && favoriteCardList.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
+                        {favoriteCardList.length}
                       </span>
                     )}
                   </button>
@@ -567,15 +613,15 @@ export default function App() {
             }
 
             return (
-              <div key={group.id}>
+              <div key={group.id} className={separatorClass}>
                 {/* Group header */}
                 <button
                   type="button"
                   onClick={toggleGroup}
                   className="w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-(--color-ink)/5 group"
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-(--color-muted) group-hover:text-(--color-ink) transition-colors">{group.label}</span>
-                  {isOpen ? <ChevronDown size={16} className="text-(--color-muted) transition-transform duration-200" /> : <ChevronRight size={16} className="text-(--color-muted) transition-transform duration-200" />}
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-(--color-ink) transition-colors">{group.label}</span>
+                  {isOpen ? <ChevronDown size={16} className="text-(--color-ink) transition-transform duration-200" /> : <ChevronRight size={16} className="text-(--color-ink) transition-transform duration-200" />}
                 </button>
 
                 {/* Items */}
@@ -592,7 +638,7 @@ export default function App() {
                             type="button"
                             onClick={item.onClick}
                             className={`w-full flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-left text-sm font-medium transition-colors duration-150 ${
-                              isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
+                              isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-ink) hover:bg-(--color-ink)/6"
                             }`}
                           >
                             <item.icon size={15} className="shrink-0" />
@@ -638,7 +684,7 @@ export default function App() {
                             type="button"
                             onClick={onClick}
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-medium transition-colors duration-150 ${
-                              isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-muted) hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
+                              isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-ink) hover:bg-(--color-ink)/6"
                             }`}
                           >
                             <Icon size={14} className="shrink-0" />
@@ -772,11 +818,22 @@ export default function App() {
                   >
                     <Target size={16} className="shrink-0" />
                     Mes difficiles
-                    {weakVerbList.length > 0 && (
-                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
-                        {weakVerbList.length}
-                      </span>
-                    )}
+                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
+                  </button>
+                </div>
+                )}
+
+                {/* Mes patterns mobile */}
+                {favoriteCardList.length > 0 && (
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartMesPatterns}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <Heart size={16} className="shrink-0" />
+                    Mes patterns
+                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
                   </button>
                 </div>
                 )}
@@ -894,13 +951,24 @@ export default function App() {
                     </Accordion.Item>
                   ))}
                 </Accordion.Root>
+
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartVerbes}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <Columns3 size={16} className="shrink-0" />
+                    Verbes essentiels
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
           {/* QUIZ / FLASHCARD SCREENS */}
           {appMode !== "home" && (
-            <div className="flex min-h-full w-full items-center justify-center px-3 py-4 md:px-4 md:py-8">
+            <div className={`flex min-h-full w-full justify-center px-3 py-4 md:px-4 md:py-8 ${appMode === "verbes" ? "items-start" : "items-center"}`}>
 
               {/* PARTICIPE */}
               {appMode === "participe" && (
@@ -1131,14 +1199,86 @@ export default function App() {
                 </>
               )}
 
+              {/* VERBES ESSENTIELS */}
+              {appMode === "verbes" && <EssentialVerbsGuide />}
+
               {/* PATTERNS */}
               {appMode === "patterns" && (
                 <>
                   {patternsCategory !== null && activeDeck.state.phase === "session" && activeDeck.currentCard && (
-                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} canGoBack={activeDeck.progress.index > 0} onRate={activeDeck.rate} onBack={activeDeck.back} onSkip={activeDeck.skip} />
+                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} canGoBack={activeDeck.progress.index > 0} onRate={activeDeck.rate} onBack={activeDeck.back} onSkip={activeDeck.skip} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
                   )}
                   {patternsCategory !== null && activeDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeDeck.state.sessionResults} masteredCount={activeDeck.masteredCount} totalCards={activeDeck.totalCards} onRestart={activeDeck.restart} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* MES PATTERNS */}
+              {appMode === "mes-patterns" && (
+                <>
+                  {mesPatterns.state.phase === "idle" && (
+                    <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
+                      <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
+                        <div className="flex items-center gap-2">
+                          <Heart size={16} className="text-(--color-ink)" />
+                          <span className="text-sm font-semibold text-(--color-ink)">Mes patterns</span>
+                        </div>
+                        {favoriteCardList.length > 0 && (
+                          <span className="text-xs font-bold text-(--color-muted)">{favoriteCardList.length}</span>
+                        )}
+                      </div>
+
+                      {favoriteCardList.length === 0 ? (
+                        <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+                          <p className="text-sm font-medium text-(--color-ink)">Aucune phrase sauvegardée</p>
+                          <p className="text-xs text-(--color-muted) max-w-xs">
+                            Pendant les Patterns, clique sur <span className="font-medium text-(--color-ink)">♡</span> pour ajouter une phrase ici.
+                          </p>
+                          <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">
+                            Commencer un exercice
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <ul className="divide-y divide-(--color-ink)/6 max-h-[60vh] overflow-y-auto">
+                            {favoriteCardList.map(card => (
+                              <li key={card.id} className="flex items-center justify-between px-6 py-3 gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <span className="font-semibold text-(--color-ink) leading-snug line-clamp-2" lang="fr">{card.front}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleFavoriteCard(card.id)}
+                                  aria-label={`Retirer "${card.front}"`}
+                                  className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
+                                >
+                                  <Heart size={14} fill="currentColor" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="px-6 py-4 border-t border-(--color-ink)/8 flex items-center justify-between gap-3">
+                            <p className="text-xs text-(--color-muted)">
+                              {favoriteCardList.length} phrase{favoriteCardList.length > 1 ? "s" : ""} · révision ciblée
+                            </p>
+                            <button
+                              type="button"
+                              onClick={mesPatterns.startSession}
+                              className="rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150"
+                            >
+                              Commencer
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {mesPatterns.state.phase === "session" && mesPatterns.currentCard && (
+                    <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} canGoBack={mesPatterns.progress.index > 0} onRate={mesPatterns.rate} onBack={mesPatterns.back} onSkip={mesPatterns.skip} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
+                  )}
+                  {mesPatterns.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={mesPatterns.state.sessionResults} masteredCount={mesPatterns.masteredCount} totalCards={mesPatterns.totalCards} onRestart={mesPatterns.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
