@@ -29,14 +29,17 @@ export function SwipeCard({
     <div
       className={className}
       aria-label={ariaLabel}
-      onPointerDown={(e) => {
-        if (e.pointerType === "mouse") return;
-        start.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (!t) return;
+        start.current = { x: t.clientX, y: t.clientY, t: Date.now() };
       }}
-      onPointerUp={(e) => {
-        if (!start.current || e.pointerType === "mouse") return;
-        const dx = e.clientX - start.current.x;
-        const dy = e.clientY - start.current.y;
+      onTouchEnd={(e) => {
+        if (!start.current) return;
+        const t = e.changedTouches[0];
+        if (!t) return;
+        const dx = t.clientX - start.current.x;
+        const dy = t.clientY - start.current.y;
         const elapsed = Date.now() - start.current.t;
         start.current = null;
 
@@ -54,7 +57,7 @@ export function SwipeCard({
           else onSwipeUp?.();
         }
       }}
-      onPointerCancel={() => { start.current = null; }}
+      onTouchCancel={() => { start.current = null; }}
     >
       {children}
     </div>
