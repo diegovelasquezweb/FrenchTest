@@ -137,7 +137,7 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
       </div>
 
       <SwipeCard
-        className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-125 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
+        className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
         resetKey={card.id}
         onSwipeRight={() => triggerRate(0)}
         onSwipeLeft={() => triggerRate(2)}

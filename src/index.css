@@ -70,3 +70,12 @@
 .animate-flash-shake {
   animation: flash-shake 180ms ease-in-out;
 }
+
+@keyframes progress-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-shimmer {
+  animation: progress-shimmer 1.8s ease-in-out infinite;
+}
