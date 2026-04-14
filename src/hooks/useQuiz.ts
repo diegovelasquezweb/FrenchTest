@@ -8,7 +8,8 @@ type QuizAction =
   | { type: "START" }
   | { type: "SELECT"; payload: number }
   | { type: "NEXT" }
-  | { type: "RESTART" };
+  | { type: "RESTART" }
+  | { type: "HOME" };
 
 function buildQuestions(
   verbs: Verb[],
@@ -33,13 +34,15 @@ const initialState: QuizState = {
   selectedIndex: null,
   answerState: AnswerState.Idle,
   history: [],
-  currentWrongIndex: null,
   everWrong: false,
 };
 
 function makeReducer(verbs: Verb[], questionCount: number) {
   return function reducer(state: QuizState, action: QuizAction): QuizState {
     switch (action.type) {
+      case "HOME": {
+        return { ...initialState };
+      }
       case "START":
       case "RESTART": {
         return {
@@ -49,33 +52,32 @@ function makeReducer(verbs: Verb[], questionCount: number) {
         };
       }
       case "SELECT": {
+        // In feedback phase: any click just changes which button is selected
+        if (state.phase === QuizPhase.Feedback) {
+          return { ...state, selectedIndex: action.payload };
+        }
         if (state.phase !== QuizPhase.Answering) return state;
         const question = state.questions[state.currentIndex];
         if (!question) return state;
         const isCorrect = action.payload === question.correctIndex;
 
         if (!isCorrect) {
-          // Stay alive — mark this option as tried and keep answering
-          return {
-            ...state,
-            triedIndices: [...state.triedIndices, action.payload],
-          };
+          return { ...state, selectedIndex: action.payload, everWrong: true };
         }
 
-        // Correct — only award point if first attempt
-        const firstTry = state.triedIndices.length === 0;
+        // Correct — only award point if no wrong attempt was made
         return {
           ...state,
           phase: QuizPhase.Feedback,
           selectedIndex: action.payload,
           answerState: AnswerState.Correct,
-          score: firstTry ? state.score + 1 : state.score,
+          score: state.everWrong ? state.score : state.score + 1,
           history: [
             ...state.history,
             {
               verb: question.verb,
               picked: question.options[action.payload] ?? "",
-              correct: firstTry,
+              correct: !state.everWrong,
             },
           ],
         };
@@ -92,7 +94,7 @@ function makeReducer(verbs: Verb[], questionCount: number) {
           currentIndex: nextIndex,
           selectedIndex: null,
           answerState: AnswerState.Idle,
-          triedIndices: [],
+          everWrong: false,
         };
       }
     }
@@ -105,6 +107,7 @@ export interface UseQuizReturn {
   selectAnswer(index: number): void;
   nextQuestion(): void;
   restartQuiz(): void;
+  goHome(): void;
   currentQuestion: QuizQuestion | null;
   progress: { index: number; total: number };
 }
@@ -119,6 +122,7 @@ export function useQuiz(verbs: Verb[], questionCount = 10): UseQuizReturn {
   );
   const nextQuestion = useCallback(() => dispatch({ type: "NEXT" }), []);
   const restartQuiz = useCallback(() => dispatch({ type: "RESTART" }), []);
+  const goHome = useCallback(() => dispatch({ type: "HOME" }), []);
 
   const currentQuestion =
     state.phase === QuizPhase.Answering || state.phase === QuizPhase.Feedback
@@ -131,6 +135,7 @@ export function useQuiz(verbs: Verb[], questionCount = 10): UseQuizReturn {
     selectAnswer,
     nextQuestion,
     restartQuiz,
+    goHome,
     currentQuestion,
     progress: { index: state.currentIndex, total: state.questions.length },
   };

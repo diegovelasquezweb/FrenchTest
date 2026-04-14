@@ -10,7 +10,7 @@ type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 interface QuizCardProps {
   question: QuizQuestion;
   answerState: AnswerState;
-  triedIndices: number[];
+  selectedIndex: number | null;
   onSelect(i: number): void;
   onNext(): void;
   questionNumber: number;
@@ -20,25 +20,25 @@ interface QuizCardProps {
 function deriveButtonState(
   optionIndex: number,
   correctIndex: number,
-  _selectedIndex: number | null,
   answerState: AnswerState,
-  triedIndices: number[]
+  selectedIndex: number | null
 ): ButtonState {
-  // Feedback phase (correct answer found)
   if (answerState === AnswerState.Correct) {
-    if (optionIndex === correctIndex) return "correct";
-    if (triedIndices.includes(optionIndex)) return "wrong";
+    // Feedback phase: only the selected button gets a color; rest are dimmed
+    if (optionIndex === selectedIndex) {
+      return optionIndex === correctIndex ? "correct" : "wrong";
+    }
     return "dimmed";
   }
-  // Answering phase — mark tried options as wrong, rest default
-  if (triedIndices.includes(optionIndex)) return "wrong";
+  // Answering phase: selected button is wrong (correct can't be selected here yet)
+  if (optionIndex === selectedIndex) return "wrong";
   return "default";
 }
 
 export function QuizCard({
   question,
   answerState,
-  triedIndices,
+  selectedIndex,
   onSelect,
   onNext,
   questionNumber,
@@ -80,18 +80,16 @@ export function QuizCard({
           const btnState = deriveButtonState(
             i,
             question.correctIndex,
-            null,
             answerState,
-            triedIndices
+            selectedIndex
           );
-          const isTried = triedIndices.includes(i);
           return (
             <AnswerButton
               key={option}
               label={option}
               index={i}
               state={btnState}
-              disabled={isRevealed || isTried}
+              disabled={false}
               onClick={() => onSelect(i)}
               shortcut={i + 1}
               ref={i === 0 ? firstButtonRef : undefined}
@@ -100,19 +98,16 @@ export function QuizCard({
         })}
       </div>
 
-      {/* Show wrong tense explanation after each incorrect attempt */}
-      {!isRevealed && triedIndices.length > 0 && (() => {
-        const lastIdx = triedIndices[triedIndices.length - 1];
-        const wrongOption = lastIdx !== undefined ? question.options[lastIdx] : undefined;
+      {/* Exactly one table at a time based on which button is selected */}
+      {selectedIndex !== null && selectedIndex === question.correctIndex && (
+        <PasseComposeTable verb={question.verb} />
+      )}
+      {selectedIndex !== null && selectedIndex !== question.correctIndex && (() => {
+        const wrongOption = question.options[selectedIndex];
         return wrongOption ? (
           <WrongAnswerTable verb={question.verb} wrongOption={wrongOption} />
         ) : null;
       })()}
-
-      {/* Show passé composé table after correct answer */}
-      {isRevealed && answerState === AnswerState.Correct && (
-        <PasseComposeTable verb={question.verb} />
-      )}
 
       {isRevealed && (
         <div className="mt-6 flex justify-center">

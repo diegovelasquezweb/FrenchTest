@@ -6,10 +6,10 @@ import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 
-const QUESTION_COUNT = VERBS.length;
+const QUESTION_COUNT = 10;
 
 export default function App() {
-  const { state, startQuiz, selectAnswer, nextQuestion, restartQuiz, currentQuestion, progress } =
+  const { state, startQuiz, selectAnswer, nextQuestion, restartQuiz, goHome, currentQuestion, progress } =
     useQuiz(VERBS, QUESTION_COUNT);
 
   const [announcement, setAnnouncement] = useState("");
@@ -58,9 +58,21 @@ export default function App() {
   return (
     <div className="flex min-h-full flex-col bg-(--color-bg)">
       <header className="border-b border-black/10 bg-(--color-surface) px-4 py-4">
-        <h1 className="text-center text-xl font-bold tracking-tight text-(--color-ink)">
-          Participe Passé Quiz
-        </h1>
+        <div className="relative flex items-center justify-center">
+          <h1 className="text-xl font-bold tracking-tight text-(--color-ink)">
+            Participe Passé Quiz
+          </h1>
+          {showScoreBoard && (
+            <button
+              type="button"
+              onClick={goHome}
+              aria-label="Retour à l'accueil"
+              className="absolute left-0 text-sm text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150"
+            >
+              ← Accueil
+            </button>
+          )}
+        </div>
         {showScoreBoard && (
           <ScoreBoard
             score={state.score}
@@ -86,9 +98,7 @@ export default function App() {
             <h2 className="text-2xl font-bold text-(--color-ink)">
               Test your French participes passés
             </h2>
-            <p className="mt-2 text-(--color-muted)">
-              {QUESTION_COUNT} questions · 4 choices each
-            </p>
+
             <button
               type="button"
               onClick={startQuiz}
@@ -104,7 +114,7 @@ export default function App() {
             <QuizCard
               question={currentQuestion}
               answerState={state.answerState}
-              triedIndices={state.triedIndices}
+              selectedIndex={state.selectedIndex}
               onSelect={selectAnswer}
               onNext={nextQuestion}
               questionNumber={progress.index + 1}

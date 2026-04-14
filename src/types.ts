@@ -57,6 +57,5 @@ export interface QuizState {
   selectedIndex: number | null;
   answerState: AnswerState;
   history: HistoryEntry[];
-  currentWrongIndex: number | null;
   everWrong: boolean;
 }
