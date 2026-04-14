@@ -67,7 +67,7 @@ export function ConditionnelQuizCard({
   return (
     <BaseQuizCard
       header={header}
-      options={question.options}
+      question={question}
       answerState={answerState}
       selectedIndex={selectedIndex}
       onSelect={onSelect}

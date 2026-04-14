@@ -5,19 +5,24 @@ import { SwipeCard } from "./SwipeCard";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
+/** Minimal shape shared by every quiz question type. */
+export interface AnswerableQuestion {
+  options: readonly string[];
+  correctIndex: number;
+}
+
 function deriveButtonState(
   optionIndex: number,
-  answerState: AnswerState,
-  selectedIndex: number | null
+  selectedIndex: number | null,
+  correctIndex: number
 ): ButtonState {
   if (optionIndex !== selectedIndex) return "default";
-  if (answerState === AnswerState.Correct) return "correct";
-  return "wrong";
+  return optionIndex === correctIndex ? "correct" : "wrong";
 }
 
 interface BaseQuizCardProps {
   header: React.ReactNode;
-  options: readonly string[];
+  question: AnswerableQuestion;
   answerState: AnswerState;
   selectedIndex: number | null;
   onSelect(i: number): void;
@@ -35,7 +40,7 @@ interface BaseQuizCardProps {
 
 export function BaseQuizCard({
   header,
-  options,
+  question,
   answerState,
   selectedIndex,
   onSelect,
@@ -69,12 +74,12 @@ export function BaseQuizCard({
       {header}
 
       <div className={optionsGridClassName}>
-        {options.map((option, i) => (
+        {question.options.map((option, i) => (
           <AnswerButton
             key={`${option}-${i}`}
             label={option}
             index={i}
-            state={deriveButtonState(i, answerState, selectedIndex)}
+            state={deriveButtonState(i, selectedIndex, question.correctIndex)}
             disabled={false}
             onClick={() => onSelect(i)}
             shortcut={i + 1}

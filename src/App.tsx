@@ -147,39 +147,39 @@ export default function App() {
     const handleKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (appMode === "participe") {
-        if (participe.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) participe.selectAnswer(d - 1); }
+        if (participe.state.phase === QuizPhase.Answering || participe.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) participe.selectAnswer(d - 1); }
         if (participe.state.phase === QuizPhase.Feedback && e.key === "Enter") participe.nextQuestion();
       }
       if (appMode === "imparfait") {
-        if (imparfait.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) imparfait.selectAnswer(d - 1); }
+        if (imparfait.state.phase === QuizPhase.Answering || imparfait.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) imparfait.selectAnswer(d - 1); }
         if (imparfait.state.phase === QuizPhase.Feedback && e.key === "Enter") imparfait.nextQuestion();
       }
       if (appMode === "conditionnel") {
-        if (conditionnel.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) conditionnel.selectAnswer(d - 1); }
+        if (conditionnel.state.phase === QuizPhase.Answering || conditionnel.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) conditionnel.selectAnswer(d - 1); }
         if (conditionnel.state.phase === QuizPhase.Feedback && e.key === "Enter") conditionnel.nextQuestion();
       }
       if (appMode === "futur") {
-        if (futur.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) futur.selectAnswer(d - 1); }
+        if (futur.state.phase === QuizPhase.Answering || futur.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) futur.selectAnswer(d - 1); }
         if (futur.state.phase === QuizPhase.Feedback && e.key === "Enter") futur.nextQuestion();
       }
       if (appMode === "orthographe") {
-        if (orthographe.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) orthographe.selectAnswer(d - 1); }
+        if (orthographe.state.phase === QuizPhase.Answering || orthographe.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) orthographe.selectAnswer(d - 1); }
         if (orthographe.state.phase === QuizPhase.Feedback && e.key === "Enter") orthographe.nextQuestion();
       }
       if (appMode === "grammar-test") {
-        if (grammarTest.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) grammarTest.selectAnswer(d - 1); }
+        if (grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) grammarTest.selectAnswer(d - 1); }
         if (grammarTest.state.phase === QuizPhase.Feedback && e.key === "Enter") grammarTest.nextQuestion();
       }
       if (appMode === "phrases") {
-        if (phrases.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) phrases.selectAnswer(d - 1); }
+        if (phrases.state.phase === QuizPhase.Answering || phrases.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) phrases.selectAnswer(d - 1); }
         if (phrases.state.phase === QuizPhase.Feedback && e.key === "Enter") phrases.nextQuestion();
       }
       if (appMode === "présent") {
-        if (présent.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) présent.selectAnswer(d - 1); }
+        if (présent.state.phase === QuizPhase.Answering || présent.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) présent.selectAnswer(d - 1); }
         if (présent.state.phase === QuizPhase.Feedback && e.key === "Enter") présent.nextQuestion();
       }
       if (appMode === "écrit") {
-        if (écrit.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
+        if (écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
         if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") écrit.nextQuestion();
       }
       if (appMode === "patterns" && activeDeck.state.phase === "session") {
@@ -204,7 +204,7 @@ export default function App() {
         if (e.key === "ArrowLeft") activeTouristeDeck.back();
       }
       if (appMode === "oral") {
-        if (oral.state.phase === QuizPhase.Answering) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) oral.selectAnswer(d - 1); }
+        if (oral.state.phase === QuizPhase.Answering || oral.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) oral.selectAnswer(d - 1); }
         if (oral.state.phase === QuizPhase.Feedback && e.key === "Enter") oral.nextQuestion();
       }
     };
