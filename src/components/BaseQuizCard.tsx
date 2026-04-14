@@ -71,30 +71,30 @@ export function BaseQuizCard({
   }, [isRevealed, questionNumber]);
 
   return (
-    <div className="relative mx-auto w-full max-w-xl">
+    <SwipeCard
+      className={`mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
+      aria-label={`Question ${questionNumber} sur ${total}`}
+      resetKey={questionNumber}
+      onSwipeLeft={isRevealed ? onNext : undefined}
+    >
       {onToggleWeak !== undefined && (
-        <button
-          type="button"
-          aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
-          className={`absolute -top-8 right-0 flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
-            isWeak
-              ? "text-amber-500 hover:text-amber-600"
-              : "text-(--color-muted) hover:text-(--color-ink)"
-          }`}
-          onClick={(e) => { e.stopPropagation(); onToggleWeak(); }}
-          onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); onToggleWeak(); }}
-        >
-          <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
-          {isWeak ? "Difficile" : "Marquer"}
-        </button>
+        <div className="flex justify-end mb-3">
+          <button
+            type="button"
+            aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
+            className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
+              isWeak
+                ? "text-(--color-ink) font-semibold"
+                : "text-(--color-muted) hover:text-(--color-ink)"
+            }`}
+            onClick={onToggleWeak}
+          >
+            <Bookmark size={13} fill={isWeak ? "currentColor" : "none"} />
+            {isWeak ? "Difficile" : "Marquer"}
+          </button>
+        </div>
       )}
-      <SwipeCard
-        className={`w-full rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
-        aria-label={`Question ${questionNumber} sur ${total}`}
-        resetKey={questionNumber}
-        onSwipeLeft={isRevealed ? onNext : undefined}
-      >
-        {header}
+      {header}
 
         <div className={optionsGridClassName}>
           {question.options.map((option, i) => (
@@ -125,7 +125,6 @@ export function BaseQuizCard({
             </button>
           </div>
         )}
-      </SwipeCard>
-    </div>
+    </SwipeCard>
   );
 }

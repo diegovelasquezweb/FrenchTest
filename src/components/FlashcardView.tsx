@@ -185,9 +185,15 @@ export function FlashcardView({ card, index, total, canGoBack, onRate, onBack, o
             </button>
           </div>
 
-          <div className="mt-4 flex flex-col gap-0.5 border-t border-(--color-ink)/8 pt-3">
-            <p className="text-xs text-(--color-muted)" lang="en">🇬🇧 {card.translationEn}</p>
-            <p className="text-xs text-(--color-muted)" lang="es">🇪🇸 {card.translationEs}</p>
+          <div className="mt-4 flex flex-col gap-1 border-t border-(--color-ink)/8 pt-3">
+            <p className="text-xs text-(--color-muted)" lang="en">
+              <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ENG</span>
+              {card.translationEn}
+            </p>
+            <p className="text-xs text-(--color-muted)" lang="es">
+              <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ESP</span>
+              {card.translationEs}
+            </p>
           </div>
         </div>
       </SwipeCard>

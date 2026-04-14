@@ -1,3 +1,5 @@
+import { Moon, Sun } from "lucide-react";
+
 interface ThemeToggleProps {
   theme: "light" | "dark";
   onToggle(): void;
@@ -24,7 +26,7 @@ export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
             : "translate-x-0 bg-(--color-surface) shadow-sm",
         ].join(" ")}
       >
-        {isDark ? "🌙" : "☀️"}
+        {isDark ? <Moon size={11} /> : <Sun size={11} />}
       </span>
     </button>
   );

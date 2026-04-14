@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
-  Bookmark, ChevronDown, ChevronRight, Star,
+  Bookmark, ChevronDown, ChevronRight, Star, Target,
   Gamepad2, FlaskConical, BookCheck,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
@@ -368,18 +368,18 @@ export default function App() {
 
   // ── Suggestion cards (desktop home) ──────────────────────────────────────
   const ALL_SUGGESTIONS = [
-    { label: "Conditionnel",       sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartConditionnel },
-    { label: "Futur simple",       sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartFutur },
-    { label: "Orthographe",        sub: "Corriger les erreurs",  icon: "📝", onClick: handleStartOrthographe },
-    { label: "Imparfait",          sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartImparfait },
-    { label: "Participe passé",    sub: "Identifier la forme",   icon: "📝", onClick: handleStartParticipe },
-    { label: "Présent",            sub: "Conjuguer par sujet",   icon: "📝", onClick: handleStartPresent },
-    { label: "Connecteurs Quiz",   sub: "Expressions du TEF",    icon: "📝", onClick: handleStartPhrases },
-    { label: "Test écrit",         sub: "Lettres & expressions", icon: "📝", onClick: handleStartEcrit },
-    { label: "Test oral",          sub: "Poser des questions",   icon: "📝", onClick: handleStartOral },
-    { label: "Marathon",           sub: "100 phrases clés",      icon: "🃏", onClick: handleStartMarathon },
-    { label: "Paires",             sub: "Antonymes & synonymes", icon: "🃏", onClick: handleStartVocabulaire },
-    { label: "Voyage",             sub: "Phrases de voyage",     icon: "🃏", onClick: () => handleSelectVoyageCategory("restaurant") },
+    { label: "Conditionnel",       sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartConditionnel },
+    { label: "Futur simple",       sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartFutur },
+    { label: "Orthographe",        sub: "Corriger les erreurs",  icon: BookCheck, onClick: handleStartOrthographe },
+    { label: "Imparfait",          sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartImparfait },
+    { label: "Participe passé",    sub: "Identifier la forme",   icon: BookCheck, onClick: handleStartParticipe },
+    { label: "Présent",            sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartPresent },
+    { label: "Connecteurs Quiz",   sub: "Expressions du TEF",    icon: FlaskConical, onClick: handleStartPhrases },
+    { label: "Test écrit",         sub: "Lettres & expressions", icon: FlaskConical, onClick: handleStartEcrit },
+    { label: "Test oral",          sub: "Poser des questions",   icon: FlaskConical, onClick: handleStartOral },
+    { label: "Marathon",           sub: "100 phrases clés",      icon: Gamepad2, onClick: handleStartMarathon },
+    { label: "Paires",             sub: "Antonymes & synonymes", icon: Gamepad2, onClick: handleStartVocabulaire },
+    { label: "Voyage",             sub: "Phrases de voyage",     icon: Map, onClick: () => handleSelectVoyageCategory("restaurant") },
   ];
   const suggestions = useMemo(() => {
     const shuffled = [...ALL_SUGGESTIONS].sort(() => Math.random() - 0.5);
@@ -466,6 +466,13 @@ export default function App() {
               special: "favoris" as const,
             },
             {
+              id: "difficiles",
+              label: "Mes difficiles",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "difficiles" as const, onClick: handleStartDifficiles, icon: Target as LucideIcon },
+            },
+            {
               id: "oral",
               label: "Oral",
               items: [
@@ -493,7 +500,6 @@ export default function App() {
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
                 { label: "Test grammaire",   mode: "grammar-test" as const, onClick: handleStartGrammarTest },
-                { label: "Mes difficiles",   mode: "difficiles"   as const, onClick: handleStartDifficiles },
               ],
             },
             {
@@ -522,6 +528,7 @@ export default function App() {
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
             if (group.id === "favoris" && favorites.length === 0) return null;
+            if (group.id === "difficiles" && weakVerbList.length === 0) return null;
 
             // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
@@ -539,6 +546,11 @@ export default function App() {
                   >
                     <group.action.icon size={16} className="shrink-0" />
                     {group.label}
+                    {group.id === "difficiles" && weakVerbList.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
+                        {weakVerbList.length}
+                      </span>
+                    )}
                   </button>
                   {/* Favorite star disabled — uncomment to re-enable
                   <button
@@ -699,19 +711,19 @@ export default function App() {
               {/* Desktop: suggestion cards */}
               <div className="hidden md:flex h-full flex-col items-center justify-center gap-8 px-10 py-12">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <span className="text-5xl">🎯</span>
+                  <Target size={44} className="text-(--color-brand)" aria-hidden="true" />
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
                   <p className="text-sm text-(--color-muted)">Quelques suggestions pour commencer.</p>
                 </div>
                 <div className="grid grid-cols-3 gap-3 w-full max-w-2xl">
-                  {suggestions.map(({ label, sub, icon, onClick }) => (
+                  {suggestions.map(({ label, sub, icon: Icon, onClick }) => (
                     <button
                       key={label}
                       type="button"
                       onClick={onClick}
                       className="flex flex-col items-start gap-2 rounded bg-(--color-surface) p-4 shadow-sm text-left transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
                     >
-                      <span className="text-xl grayscale opacity-60">{icon}</span>
+                      <Icon size={20} className="text-(--color-muted)" aria-hidden="true" />
                       <span className="text-sm font-semibold text-(--color-ink) leading-tight">{label}</span>
                       <span className="text-xs text-(--color-muted)">{sub}</span>
                     </button>
@@ -722,7 +734,7 @@ export default function App() {
               {/* Mobile: accordion */}
               <div className="md:hidden flex-1 flex flex-col items-center justify-center gap-6 px-6 py-6">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <span className="text-5xl">🎯</span>
+                  <Target size={44} className="text-(--color-brand)" aria-hidden="true" />
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
                   <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
                 </div>
@@ -749,6 +761,25 @@ export default function App() {
                     );
                   })}
                 </div>
+
+                {/* Mes difficiles mobile */}
+                {weakVerbList.length > 0 && (
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartDifficiles}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <Target size={16} className="shrink-0" />
+                    Mes difficiles
+                    {weakVerbList.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
+                        {weakVerbList.length}
+                      </span>
+                    )}
+                  </button>
+                </div>
+                )}
 
                 {/* Favoris mobile */}
                 {favorites.length > 0 && (
@@ -813,7 +844,6 @@ export default function App() {
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },
                         { label: "Test grammaire",  onClick: handleStartGrammarTest },
-                        { label: "Mes difficiles",  onClick: handleStartDifficiles },
                       ],
                     },
                     {
@@ -957,11 +987,11 @@ export default function App() {
                     <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
                       <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
                         <div className="flex items-center gap-2">
-                          <Bookmark size={16} className="text-amber-500" fill="currentColor" />
+                          <Target size={16} className="text-(--color-ink)" />
                           <span className="text-sm font-semibold text-(--color-ink)">Mes difficiles</span>
                         </div>
                         {weakVerbList.length > 0 && (
-                          <span className="rounded-full bg-amber-100 dark:bg-amber-900/30 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                          <span className="text-xs font-bold text-(--color-muted)">
                             {weakVerbList.length}
                           </span>
                         )}
@@ -971,7 +1001,7 @@ export default function App() {
                         <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
                           <p className="text-sm font-medium text-(--color-ink)">Aucun verbe marqué</p>
                           <p className="text-xs text-(--color-muted) max-w-xs">
-                            Pendant tes exercices, clique sur <span className="font-medium text-amber-500">Marquer</span> pour ajouter un verbe ici.
+                            Pendant tes exercices, clique sur <span className="font-medium text-(--color-ink)">Marquer</span> pour ajouter un verbe ici.
                           </p>
                           <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">
                             Commencer un exercice
@@ -992,7 +1022,7 @@ export default function App() {
                                   aria-label={`Retirer ${verb.infinitive}`}
                                   className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
                                 >
-                                  <Bookmark size={14} fill="currentColor" className="text-amber-400 hover:text-amber-300 transition-colors duration-150" />
+                                  <Bookmark size={14} fill="currentColor" className="text-(--color-muted) hover:text-red-400 transition-colors duration-150" />
                                 </button>
                               </li>
                             ))}

@@ -1,3 +1,4 @@
+import { Circle, Target } from "lucide-react";
 import type { FlashcardRating } from "../types";
 
 interface FlashcardResultsProps {
@@ -21,23 +22,25 @@ export function FlashcardResults({
 
   return (
     <div className="mx-auto w-full max-w-sm text-center">
-      <p className="text-4xl">🎯</p>
+      <div className="flex justify-center">
+        <Target size={36} className="text-(--color-brand)" aria-hidden="true" />
+      </div>
       <h2 className="mt-3 text-2xl font-extrabold text-(--color-ink)">Session terminée</h2>
 
       {/* Session breakdown */}
       <div className="mt-6 grid grid-cols-3 gap-3">
         {(
           [
-            { emoji: "🟢", label: "Je savais", count: green },
-            { emoji: "🟡", label: "J'ai hésité", count: yellow },
-            { emoji: "🔴", label: "Je ne savais pas", count: red },
+            { color: "text-emerald-500", label: "Je savais", count: green },
+            { color: "text-yellow-500", label: "J'ai hésité", count: yellow },
+            { color: "text-red-500", label: "Je ne savais pas", count: red },
           ] as const
-        ).map(({ emoji, label, count }) => (
+        ).map(({ color, label, count }) => (
           <div
             key={label}
             className="flex flex-col items-center rounded-(--radius-card) bg-(--color-surface) px-3 py-4 shadow-sm"
           >
-            <span className="text-2xl">{emoji}</span>
+            <Circle size={20} className={color} aria-hidden="true" />
             <span className="mt-1 text-2xl font-extrabold text-(--color-ink)">{count}</span>
             <span className="text-xs text-(--color-muted)">{label}</span>
           </div>
