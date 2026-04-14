@@ -36,9 +36,16 @@ const initialState: OrthographeQuizState = {
 function buildQuestions(count: number): OrthographeQuestion[] {
   const shuffled = fisherYates([...ORTHOGRAPHE_PHRASES], Math.random);
   return shuffled.slice(0, count).map((p) => ({
+    ...(() => {
+      const optionsWithMeta = p.options.map((option, idx) => ({ option, isCorrect: idx === p.correctIndex }));
+      const shuffledOptions = fisherYates(optionsWithMeta, Math.random);
+      const correctIndex = shuffledOptions.findIndex((x) => x.isCorrect);
+      return {
+        options: shuffledOptions.map((x) => x.option) as [string, string, string, string],
+        correctIndex: (correctIndex >= 0 ? correctIndex : p.correctIndex) as 0 | 1 | 2 | 3,
+      };
+    })(),
     sentence: p.sentence,
-    options: p.options,
-    correctIndex: p.correctIndex,
     explanation: p.explanation,
   }));
 }

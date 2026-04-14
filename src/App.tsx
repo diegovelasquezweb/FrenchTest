@@ -951,7 +951,8 @@ export default function App() {
 
           {/* QUIZ / FLASHCARD SCREENS */}
           {appMode !== "home" && (
-            <div className="flex w-full flex-col items-center px-3 py-6 md:px-4 md:py-10">
+            <div className="flex min-h-full w-full flex-col items-center px-3 md:px-4">
+            <div className="my-auto w-full py-6 md:py-10">
 
               {/* PARTICIPE */}
               {appMode === "participe" && (
@@ -1290,6 +1291,7 @@ export default function App() {
                 </>
               )}
 
+            </div>
             </div>
           )}
         </main>

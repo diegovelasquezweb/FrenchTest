@@ -24,10 +24,9 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
   const pct    = sessionResults.length > 0 ? green / sessionResults.length : 0;
   const masteredPct = totalCards > 0 ? masteredCount / totalCards : 0;
 
-  const toReview = sessionResults
-    .filter(r => r.rating === 0)
-    .map(r => cards.find(c => c.id === r.id))
-    .filter((c): c is Flashcard => c !== undefined);
+  const toReview  = sessionResults.filter(r => r.rating === 0).map(r => cards.find(c => c.id === r.id)).filter((c): c is Flashcard => c !== undefined);
+  const hesitated = sessionResults.filter(r => r.rating === 1).map(r => cards.find(c => c.id === r.id)).filter((c): c is Flashcard => c !== undefined);
+  const mastered  = sessionResults.filter(r => r.rating === 2).map(r => cards.find(c => c.id === r.id)).filter((c): c is Flashcard => c !== undefined);
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
@@ -82,33 +81,28 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
         </div>
       </div>
 
-      {/* ── À retravailler ── */}
-      {toReview.length > 0 && (
-        <section aria-label="Phrases à retravailler">
+      {/* ── Récapitulatif complet ── */}
+      {sessionResults.length > 0 && (
+        <section aria-label="Récapitulatif de la session">
           <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
-            À retravailler
+            Récapitulatif
           </p>
           <ol className="flex flex-col gap-1.5">
-            {toReview.map((card) => (
+            {[
+              ...toReview.map(c => ({ card: c, dot: "bg-red-400" })),
+              ...hesitated.map(c => ({ card: c, dot: "bg-yellow-400" })),
+              ...mastered.map(c => ({ card: c, dot: "bg-emerald-400" })),
+            ].map(({ card, dot }) => (
               <li
                 key={card.id}
                 className="flex items-start gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-2.5 shadow-sm"
               >
-                <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />
+                <span className={`mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} aria-hidden="true" />
                 <p className="min-w-0 flex-1 text-sm text-(--color-ink) leading-snug" lang="fr">{card.front}</p>
               </li>
             ))}
           </ol>
         </section>
-      )}
-
-      {/* ── Session parfaite ── */}
-      {toReview.length === 0 && red === 0 && (
-        <div className="rounded-(--radius-card) border border-emerald-500/20 bg-emerald-500/5 px-5 py-4 text-center">
-          <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-            Aucune phrase à retravailler dans cette session.
-          </p>
-        </div>
       )}
 
       {/* ── Actions ── */}

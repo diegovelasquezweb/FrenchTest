@@ -59,48 +59,47 @@ export function OrthographeResultScreen({ history, score, total, onRestart, onHo
         </div>
       </div>
 
-      {/* ── Erreurs détaillées ── */}
-      {wrong.length > 0 && (
-        <section aria-label="Erreurs à retravailler">
-          <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
-            À retravailler
-          </p>
-          <ol className="flex flex-col gap-2">
-            {wrong.map((entry, i) => {
-              const correct = entry.question.options[entry.question.correctIndex];
-              return (
-                <li
-                  key={i}
-                  className="rounded-(--radius-button) bg-(--color-surface) px-4 py-3 shadow-sm"
-                >
-                  <p className="text-sm font-medium text-(--color-ink)" lang="fr">
-                    {entry.question.sentence.replace("___", `‹${correct}›`)}
-                  </p>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs" lang="fr">
-                    <span className="text-red-500 line-through">{entry.picked}</span>
-                    <span className="text-(--color-muted)">→</span>
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{correct}</span>
-                  </p>
-                  {entry.question.explanation && (
-                    <p className="mt-1.5 text-xs text-(--color-muted) leading-relaxed">
-                      {entry.question.explanation}
+      {/* ── Récapitulatif ── */}
+      <section aria-label="Récapitulatif des réponses">
+        <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
+          Récapitulatif
+        </p>
+        <ol className="flex flex-col gap-2">
+          {history.map((entry, i) => {
+            const correct = entry.question.options[entry.question.correctIndex];
+            return (
+              <li
+                key={i}
+                className="rounded-(--radius-button) bg-(--color-surface) px-4 py-3 shadow-sm"
+              >
+                <div className="flex items-start gap-2">
+                  <span
+                    className={`mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${entry.correct ? "bg-emerald-400" : "bg-red-400"}`}
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-(--color-ink)" lang="fr">
+                      {entry.question.sentence.replace("___", `‹${correct}›`)}
                     </p>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        </section>
-      )}
-
-      {/* ── Tout correct ── */}
-      {wrong.length === 0 && (
-        <div className="rounded-(--radius-card) border border-emerald-500/20 bg-emerald-500/5 px-5 py-4 text-center">
-          <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-            Toutes les réponses correctes du premier coup.
-          </p>
-        </div>
-      )}
+                    {!entry.correct && (
+                      <p className="mt-1 flex items-center gap-1.5 text-xs" lang="fr">
+                        <span className="text-red-500 line-through">{entry.picked}</span>
+                        <span className="text-(--color-muted)">→</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">{correct}</span>
+                      </p>
+                    )}
+                    {entry.question.explanation && (
+                      <p className="mt-1.5 text-xs text-(--color-muted) leading-relaxed">
+                        {entry.question.explanation}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
       {/* ── Actions ── */}
       <div className="flex gap-3">

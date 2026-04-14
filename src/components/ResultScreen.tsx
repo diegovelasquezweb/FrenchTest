@@ -59,40 +59,39 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
         </div>
       </div>
 
-      {/* ── Erreurs ── */}
-      {wrong.length > 0 && (
-        <section aria-label="Verbes à retravailler">
-          <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
-            À retravailler
-          </p>
-          <ol className="flex flex-col gap-1.5">
-            {wrong.map((entry, i) => (
-              <li
-                key={i}
-                className="flex items-center gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-2.5 shadow-sm"
+      {/* ── Résultats détaillés ── */}
+      <section aria-label="Récapitulatif des verbes">
+        <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
+          Récapitulatif
+        </p>
+        <ol className="flex flex-col gap-1.5">
+          {history.map((entry, i) => (
+            <li
+              key={i}
+              className="flex items-center gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-2.5 shadow-sm"
+            >
+              <span
+                className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${entry.correct ? "bg-emerald-400" : "bg-red-400"}`}
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1 text-sm font-semibold text-(--color-ink)" lang="fr">
+                {entry.verb.infinitive}
+              </span>
+              {!entry.correct && (
+                <span className="shrink-0 text-xs text-red-500 line-through" lang="fr">
+                  {entry.picked}
+                </span>
+              )}
+              <span
+                className={`shrink-0 text-sm font-bold ${entry.correct ? "text-emerald-600 dark:text-emerald-400" : "text-emerald-600 dark:text-emerald-400"}`}
+                lang="fr"
               >
-                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />
-                <span className="min-w-0 flex-1 text-sm font-semibold text-(--color-ink)" lang="fr">
-                  {entry.verb.infinitive}
-                </span>
-                <span className="shrink-0 text-xs text-(--color-muted)" lang="fr">participe</span>
-                <span className="shrink-0 text-sm font-bold text-emerald-600 dark:text-emerald-400" lang="fr">
-                  {entry.verb.participle}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      {/* ── Tout correct ── */}
-      {wrong.length === 0 && (
-        <div className="rounded-(--radius-card) border border-emerald-500/20 bg-emerald-500/5 px-5 py-4 text-center">
-          <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-            Toutes les réponses correctes du premier coup.
-          </p>
-        </div>
-      )}
+                {entry.verb.participle}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       {/* ── Actions ── */}
       <div className="flex gap-3">
