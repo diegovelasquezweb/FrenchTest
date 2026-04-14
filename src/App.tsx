@@ -114,6 +114,16 @@ export default function App() {
   const [voyageCategory, setVoyageCategory] = useState<VoyageCategory | null>(null);
   const [openGroups, setOpenGroups] = useState<string[]>(["favoris"]);
 
+  // On desktop, never show the home landing — land users directly in Marathon.
+  // Mobile keeps the accordion landing.
+  useEffect(() => {
+    if (appMode !== "home") return;
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+    setPatternsCategory("all");
+    setAppMode("patterns");
+    flashcards.startSession();
+  }, [appMode]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const activeDeck =
     patternsCategory === "connecteurs"        ? pConnecteurs        :
     patternsCategory === "oral-interaction"   ? pOralInteraction    :
