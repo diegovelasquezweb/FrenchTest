@@ -76,19 +76,19 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "« ___, je cherche un poste dans le secteur de la communication digitale. »",
     options: ["Actuellement", "Récemment", "Autrefois", "Jadis"],
     correctIndex: 0,
-    explanation: "\"Actuellement\" = currently/at present — situe la situation dans le temps présent. Très utile pour présenter sa situation au TEF.",
+    explanation: "\"Actuellement\" : situe la situation dans le temps présent. Très utile pour présenter sa situation au TEF.",
   },
   {
     sentence: "« ___, j'ai constaté que les délais de livraison n'étaient pas respectés. »",
     options: ["Récemment", "Autrefois", "Jadis", "Naguère"],
     correctIndex: 0,
-    explanation: "\"Récemment\" = recently — situe l'événement dans un passé proche. Indispensable pour les lettres de réclamation.",
+    explanation: "\"Récemment\" : situe l'événement dans un passé proche. Indispensable pour les lettres de réclamation.",
   },
   {
     sentence: "« ___, je souhaite vous soumettre ma candidature pour ce poste. »",
     options: ["C'est pourquoi", "Pourtant", "Cependant", "En revanche"],
     correctIndex: 0,
-    explanation: "\"C'est pourquoi\" = that is why — conséquence logique. Enchaîne la raison avec la démarche dans une lettre de motivation.",
+    explanation: "\"C'est pourquoi\" : conséquence logique. Enchaîne la raison avec la démarche dans une lettre de motivation.",
   },
   {
     sentence: "« ___, je souhaite obtenir un remboursement ou un échange du produit. »",
@@ -114,31 +114,31 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "« ___, j'ai exercé pendant cinq ans en tant que chef de projet dans une agence parisienne. »",
     options: ["Premièrement", "Pourtant", "Certes", "En revanche"],
     correctIndex: 0,
-    explanation: "\"Premièrement\" = firstly — structure le premier argument. À enchaîner avec \"deuxièmement\" ou \"ensuite\".",
+    explanation: "\"Premièrement\" : structure le premier argument. À enchaîner avec \"deuxièmement\" ou \"ensuite\".",
   },
   {
     sentence: "« ___, j'aimerais vous demander si une période d'essai est prévue avant la titularisation. »",
     options: ["De plus", "Pourtant", "Car", "Certes"],
     correctIndex: 0,
-    explanation: "\"De plus\" = furthermore — ajoute une demande supplémentaire. Synonymes dans une lettre : en outre, par ailleurs.",
+    explanation: "\"De plus\" : ajoute une demande supplémentaire. Synonymes dans une lettre : en outre, par ailleurs.",
   },
   {
     sentence: "« ___, je voudrais connaître les possibilités d'évolution au sein de votre entreprise. »",
     options: ["En outre", "Pourtant", "Cependant", "Car"],
     correctIndex: 0,
-    explanation: "\"En outre\" = moreover — addition formelle légèrement plus soutenu que \"de plus\". Très apprécié dans les lettres TEF.",
+    explanation: "\"En outre\" : addition formelle légèrement plus soutenue que « de plus ». Très apprécié dans les lettres TEF.",
   },
   {
     sentence: "« Le poste m'intéresse beaucoup. ___, je souhaite m'assurer que le télétravail est possible. »",
     options: ["Néanmoins", "Donc", "Car", "De plus"],
     correctIndex: 0,
-    explanation: "\"Néanmoins\" = nevertheless — concession polie. Permet d'exprimer une réserve sans être négatif dans une lettre formelle.",
+    explanation: "\"Néanmoins\" : concession polie. Permet d'exprimer une réserve sans être négatif dans une lettre formelle.",
   },
   {
     sentence: "« Ce produit ne correspond pas à ma commande. ___, il présente un défaut visible. »",
     options: ["De surcroît", "Cependant", "En revanche", "Pourtant"],
     correctIndex: 0,
-    explanation: "\"De surcroît\" = moreover/what is more — renforce une accumulation de problèmes. Plus emphase que \"de plus\".",
+    explanation: "\"De surcroît\" : renforce une accumulation de problèmes, avec plus d'emphase que « de plus ».",
   },
 
   // ── OPINIONS ET POSITIONS ────────────────────────────────────────────────
@@ -204,13 +204,13 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "Pour une lettre formelle mais moins protocolaire, on peut conclure avec : « ___ »",
     options: ["Cordialement", "Bisous", "Amicalement", "À bientôt"],
     correctIndex: 0,
-    explanation: "\"Cordialement\" = regards/sincerely — clôture professionnelle standard. \"Bien cordialement\" est légèrement plus chaleureux.",
+    explanation: "\"Cordialement\" : clôture professionnelle standard. \"Bien cordialement\" est légèrement plus chaleureux.",
   },
   {
     sentence: "Pour un email professionnel légèrement plus personnel : « ___ »",
     options: ["Bien cordialement", "Veuillez agréer mes salutations distinguées", "Bisous", "Amicalement à toi"],
     correctIndex: 0,
-    explanation: "\"Bien cordialement\" = warm regards — plus chaleureux que \"cordialement\", moins formel que la formule avec \"agréer\". Très courant au TEF.",
+    explanation: "\"Bien cordialement\" : plus chaleureux que \"cordialement\", moins formel que la formule avec \"agréer\". Très courant au TEF.",
   },
 
   // ── EN CONCLUSION ────────────────────────────────────────────────────────
@@ -244,7 +244,7 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "« ___, j'ai rencontré un problème lors de la livraison de ma commande numéro 4521. »",
     options: ["Malheureusement", "Heureusement", "Pourtant", "Certes"],
     correctIndex: 0,
-    explanation: "\"Malheureusement\" = unfortunately — introduit le problème dans une lettre de réclamation. Permet d'adopter un ton poli malgré le mécontentement.",
+    explanation: "\"Malheureusement\" : introduit le problème dans une lettre de réclamation. Permet d'adopter un ton poli malgré le mécontentement.",
   },
   {
     sentence: "Pour indiquer ce que vous envoyez avec la lettre : « Vous ___ ci-joint une copie de mon contrat. »",
@@ -262,7 +262,7 @@ export const PHRASES_ECRIT: OrthographePhrase[] = [
     sentence: "Pour exprimer sa motivation : « Ce poste ___ particulièrement en raison de ses missions variées. »",
     options: ["m'intéresse", "me plaît beaucoup", "m'attire très", "m'enthousiasme"],
     correctIndex: 0,
-    explanation: "\"Ce poste m'intéresse\" = this position interests me — expression directe et professionnelle pour la lettre de motivation au TEF.",
+    explanation: "\"Ce poste m'intéresse\" : expression directe et professionnelle pour la lettre de motivation au TEF.",
   },
   {
     sentence: "« Je souhaite ___ ma candidature au poste de chargé de communication. »",

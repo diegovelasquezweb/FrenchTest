@@ -118,7 +118,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Y a-t-il ___ pour les étudiants ou les moins de 26 ans ?",
     options: ["un tarif réduit", "un tarif moins cher", "une réduction de tarif", "un tarif amoindri"],
     correctIndex: 0,
-    explanation: "\"un tarif réduit\" = discounted rate — expression fixe standard. \"Moins cher\" = familier. \"Réduction de tarif\" = moins idiomatique. \"Amoindri\" = registre littéraire.",
+    explanation: "\"un tarif réduit\" : expression fixe standard. \"Moins cher\" = familier. \"Réduction de tarif\" = moins idiomatique. \"Amoindri\" = registre littéraire.",
   },
   {
     sentence: "Proposez-vous ___ avant de souscrire à l'offre ?",
@@ -144,13 +144,13 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "___ quand la prochaine session est-elle prévue ?",
     options: ["À partir de", "Depuis", "Dès", "À partir"],
     correctIndex: 0,
-    explanation: "\"À partir de quand\" = from when (futur). \"Depuis quand\" = since when (passé). \"Dès quand\" est rare. \"À partir\" seul est incomplet.",
+    explanation: "\"À partir de quand\" introduit un point de départ dans le futur. \"Depuis quand\" renvoie à une action commencée dans le passé. \"Dès quand\" est rare, et \"à partir\" seul est incomplet.",
   },
   {
     sentence: "Jusqu'à ___ les inscriptions sont-elles ouvertes ?",
     options: ["quand", "quoi", "où", "quel"],
     correctIndex: 0,
-    explanation: "\"Jusqu'à quand\" = until when. \"Jusqu'à quoi\" = jusqu'à quelle chose. \"Jusqu'où\" = jusqu'à quel endroit.",
+    explanation: "\"Jusqu'à quand\" porte sur une limite temporelle. \"Jusqu'à quoi\" est maladroit ici, et \"jusqu'où\" renvoie à une limite spatiale.",
   },
 
   // ── Horaires ────────────────────────────────────────────────────────────

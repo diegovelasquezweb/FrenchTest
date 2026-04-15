@@ -13,7 +13,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Il ___ beaucoup travaillé pour réussir cet examen.",
     options: ["a", "à", "as", "â"],
     correctIndex: 0,
-    explanation: "\"a\" = verbe avoir (il a). \"à\" = préposition. Astuce : remplacez par \"avait\" — si ça marche, c'est \"a\".",
+    explanation: "\"a\" : si ça marche, c'est \"a\".",
   },
   {
     sentence: "Je vais ___ Paris la semaine prochaine.",
@@ -27,7 +27,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Je ne sais pas ___ il est allé ce matin.",
     options: ["où", "ou", "oû", "oux"],
     correctIndex: 0,
-    explanation: "\"où\" = lieu/pronom relatif. \"ou\" = choix (et/ou). Astuce : remplacez par \"ou bien\" — si ça ne marche pas, c'est \"où\".",
+    explanation: "\"où\" : si ça ne marche pas, c'est \"où\".",
   },
   {
     sentence: "Tu préfères le café ___ le thé ?",
@@ -41,7 +41,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Marie ___ très contente de son résultat.",
     options: ["est", "et", "ait", "ai"],
     correctIndex: 0,
-    explanation: "\"est\" = verbe être (il/elle est). Astuce : remplacez par \"était\" — si ça marche, c'est \"est\".",
+    explanation: "\"est\" : si ça marche, c'est \"est\".",
   },
   {
     sentence: "Le rapport ___ terminé depuis hier.",
@@ -61,13 +61,13 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Ils ___ décidé de remettre la réunion à jeudi.",
     options: ["ont", "on", "onts", "ons"],
     correctIndex: 0,
-    explanation: "\"ont\" = verbe avoir, 3ᵉ pl. (ils ont). \"on\" = pronom indéfini. Astuce : remplacez par \"avaient\" — si ça marche, c'est \"ont\".",
+    explanation: "\"ont\" : si ça marche, c'est \"ont\".",
   },
   {
     sentence: "___ m'a dit que la réunion était annulée.",
     options: ["On", "Ont", "Ons", "Onts"],
     correctIndex: 0,
-    explanation: "\"On\" = pronom indéfini (quelqu'un). \"Ont\" = verbe avoir, 3ᵉ pl. — ne s'emploie pas seul en début de phrase.",
+    explanation: "\"On\" : ne s'emploie pas seul en début de phrase.",
   },
 
   // ── son / sont ──────────────────────────────────────────────────────────
@@ -243,7 +243,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "___ partez-vous en vacances cette année ?",
     options: ["Quand", "Quant", "Qu'en", "Qu'and"],
     correctIndex: 0,
-    explanation: "\"Quand\" = when (temps). \"Quant\" s'utilise dans \"quant à\" (as for). \"Qu'en\" = que + en.",
+    explanation: "\"Quand\" introduit le temps. \"Quant\" s'utilise dans « quant à ». \"Qu'en\" correspond à « que + en ».",
   },
 
   // ── ma / m'a ────────────────────────────────────────────────────────────
