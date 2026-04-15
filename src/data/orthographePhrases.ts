@@ -13,7 +13,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Il ___ beaucoup travaillé pour réussir cet examen.",
     options: ["a", "à", "as", "â"],
     correctIndex: 0,
-    explanation: "\"a\" : si ça marche, c'est \"a\".",
+    explanation: "\"a\" = verbe avoir (il a). Test fiable : remplacez par \"avait\". Si la phrase reste correcte, c'est \"a\" sans accent.",
   },
   {
     sentence: "Je vais ___ Paris la semaine prochaine.",
@@ -41,7 +41,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Marie ___ très contente de son résultat.",
     options: ["est", "et", "ait", "ai"],
     correctIndex: 0,
-    explanation: "\"est\" : si ça marche, c'est \"est\".",
+    explanation: "\"est\" = verbe être (Marie est). Test : remplacez par \"était\". Si la phrase fonctionne, écrivez \"est\", pas \"et\".",
   },
   {
     sentence: "Le rapport ___ terminé depuis hier.",
@@ -61,7 +61,7 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     sentence: "Ils ___ décidé de remettre la réunion à jeudi.",
     options: ["ont", "on", "onts", "ons"],
     correctIndex: 0,
-    explanation: "\"ont\" : si ça marche, c'est \"ont\".",
+    explanation: "\"ont\" = verbe avoir au pluriel (ils ont). Test : remplacez par \"avaient\". Si ça fonctionne, c'est \"ont\".",
   },
   {
     sentence: "___ m'a dit que la réunion était annulée.",
@@ -290,5 +290,43 @@ export const ORTHOGRAPHE_PHRASES: OrthographePhrase[] = [
     options: ["Quelle", "Qu'elle", "Quel", "Quels"],
     correctIndex: 0,
     explanation: "\"Quelle\" = adjectif interrogatif féminin (la durée). \"Qu'elle\" = que + elle. \"Quel\" = masc. sing.",
+  },
+
+  // ── peu / peux / peut ───────────────────────────────────────────────────
+  {
+    sentence: "Je ___ vous envoyer le document avant midi.",
+    options: ["peux", "peu", "peut", "peuxx"],
+    correctIndex: 0,
+    explanation: "\"peux\" = verbe pouvoir, 1ʳᵉ personne (je peux). \"peut\" = 3ᵉ personne (il/elle peut). \"peu\" = adverbe de quantité.",
+  },
+  {
+    sentence: "Il ___ être absent demain matin.",
+    options: ["peut", "peux", "peu", "peuxt"],
+    correctIndex: 0,
+    explanation: "\"peut\" = verbe pouvoir, 3ᵉ personne (il peut). \"peux\" = je/tu.",
+  },
+
+  // ── foi / fois ──────────────────────────────────────────────────────────
+  {
+    sentence: "C'est la première ___ que je participe à ce type d'épreuve.",
+    options: ["fois", "foi", "foix", "foits"],
+    correctIndex: 0,
+    explanation: "\"fois\" = occurrence, nombre de répétitions. \"foi\" = croyance/confiance.",
+  },
+
+  // ── dû / du ─────────────────────────────────────────────────────────────
+  {
+    sentence: "J'ai ___ reporter le rendez-vous à cause d'un imprévu.",
+    options: ["dû", "du", "dus", "dût"],
+    correctIndex: 0,
+    explanation: "\"dû\" = participe passé de \"devoir\" (j'ai dû). \"du\" = article contracté (de + le).",
+  },
+
+  // ── près / prêt ─────────────────────────────────────────────────────────
+  {
+    sentence: "Je suis ___ à commencer l'entretien quand vous voulez.",
+    options: ["prêt", "près", "prêt", "pret"],
+    correctIndex: 0,
+    explanation: "\"prêt\" = ready (adjectif). \"près\" = proche de (préposition/adverbe de lieu).",
   },
 ];
