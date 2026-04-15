@@ -45,9 +45,22 @@ interface FlashcardViewProps {
   onBack?(): void;
   isFavorite?: boolean;
   onToggleFavorite?(): void;
+  autoAdvanceEnabled?: boolean;
+  autoAdvanceMs?: number;
 }
 
-export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFavorite, onToggleFavorite }: FlashcardViewProps) {
+export function FlashcardView({
+  card,
+  index,
+  total,
+  onRate,
+  onSkip,
+  onBack,
+  isFavorite,
+  onToggleFavorite,
+  autoAdvanceEnabled = false,
+  autoAdvanceMs = 20000,
+}: FlashcardViewProps) {
   const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const pending = useRef(false);
@@ -84,6 +97,14 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [triggerRate, triggerSkip]);
+
+  useEffect(() => {
+    if (!autoAdvanceEnabled || autoAdvanceMs <= 0) return;
+    const id = window.setTimeout(() => {
+      triggerSkip();
+    }, autoAdvanceMs);
+    return () => window.clearTimeout(id);
+  }, [card.id, autoAdvanceEnabled, autoAdvanceMs, triggerSkip]);
 
   const normalizedFront = card.front.trim().toLowerCase();
   const normalizedEn = card.translationEn.trim().toLowerCase();

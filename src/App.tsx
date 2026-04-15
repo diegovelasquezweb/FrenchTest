@@ -159,6 +159,25 @@ export default function App({ session }: { session: Session | null }) {
     setItem("tef-participe-hard-mode", participeHardMode ? "1" : "0");
   }, [participeHardMode]);
 
+  const [marathonAutoPlay, setMarathonAutoPlay] = useState<boolean>(() => {
+    try { return getItem("tef-marathon-autoplay") === "1"; }
+    catch { return false; }
+  });
+  const [marathonAutoSeconds, setMarathonAutoSeconds] = useState<number>(() => {
+    try {
+      const raw = Number(getItem("tef-marathon-autoplay-seconds") ?? "5");
+      return Number.isFinite(raw) ? Math.min(30, Math.max(1, Math.round(raw))) : 5;
+    } catch {
+      return 5;
+    }
+  });
+  useEffect(() => {
+    setItem("tef-marathon-autoplay", marathonAutoPlay ? "1" : "0");
+  }, [marathonAutoPlay]);
+  useEffect(() => {
+    setItem("tef-marathon-autoplay-seconds", String(marathonAutoSeconds));
+  }, [marathonAutoSeconds]);
+
   // Push on tab close / reload
   useEffect(() => {
     const handler = () => { void pushStore(); };
@@ -1826,7 +1845,73 @@ export default function App({ session }: { session: Session | null }) {
               {appMode === "marathon" && (
                 <>
                   {marathonDeck.state.phase === "session" && marathonDeck.currentCard && (
-                    <FlashcardView card={marathonDeck.currentCard} index={marathonDeck.progress.index} total={marathonDeck.progress.total} onRate={marathonDeck.rate} onSkip={marathonDeck.skip} onBack={marathonDeck.back} isFavorite={isFavoriteCard(marathonDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(marathonDeck.currentCard!.id)} />
+                    <>
+                      <div className="mx-auto mb-3 flex w-full max-w-xl items-end justify-end gap-2 text-[11px] text-(--color-muted)/85">
+                        <div className="flex items-end gap-2">
+                          <span className="leading-none">Auto</span>
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={marathonAutoPlay}
+                            aria-label={marathonAutoPlay ? "Désactiver le passage auto" : "Activer le passage auto"}
+                            onClick={() => setMarathonAutoPlay((v) => !v)}
+                            className={[
+                              "flex h-6 w-10 items-center rounded-full border p-0.5 transition-colors duration-200",
+                              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
+                              marathonAutoPlay
+                                ? "border-(--color-brand)/45 bg-(--color-brand)/18"
+                                : "border-(--color-ink)/20 bg-(--color-ink)/10",
+                            ].join(" ")}
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={[
+                                "flex h-4 w-4 items-center justify-center rounded-full transition-transform duration-200",
+                                marathonAutoPlay
+                                  ? "translate-x-[calc(40px-16px-4px)] bg-(--color-brand)"
+                                  : "translate-x-0 bg-(--color-ink)/70",
+                              ].join(" ")}
+                            />
+                          </button>
+                        </div>
+                        <div
+                          aria-hidden={!marathonAutoPlay}
+                          className={[
+                            "ml-1 flex w-12 items-end gap-1 transition-opacity duration-200",
+                            marathonAutoPlay ? "opacity-100" : "pointer-events-none opacity-0",
+                          ].join(" ")}
+                        >
+                          <div className="flex h-12 w-4 items-center justify-center">
+                            <input
+                              type="range"
+                              min={1}
+                              max={30}
+                              step={1}
+                              value={marathonAutoSeconds}
+                              onChange={(e) => setMarathonAutoSeconds(Number(e.target.value))}
+                              className="h-1 w-12 -rotate-90 accent-(--color-brand)"
+                              aria-label="Délai auto en secondes"
+                              disabled={!marathonAutoPlay}
+                            />
+                          </div>
+                          <span className="w-6 text-right text-[10px] leading-none font-medium text-(--color-muted)/75">
+                            {marathonAutoSeconds}s
+                          </span>
+                        </div>
+                      </div>
+                      <FlashcardView
+                        card={marathonDeck.currentCard}
+                        index={marathonDeck.progress.index}
+                        total={marathonDeck.progress.total}
+                        onRate={marathonDeck.rate}
+                        onSkip={marathonDeck.skip}
+                        onBack={marathonDeck.back}
+                        isFavorite={isFavoriteCard(marathonDeck.currentCard.id)}
+                        onToggleFavorite={() => toggleFavoriteCard(marathonDeck.currentCard!.id)}
+                        autoAdvanceEnabled={marathonAutoPlay}
+                        autoAdvanceMs={marathonAutoSeconds * 1000}
+                      />
+                    </>
                   )}
                   {marathonDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={marathonDeck.state.sessionResults} masteredCount={marathonDeck.masteredCount} totalCards={marathonDeck.totalCards} cards={marathonDeck.state.deck} onRestart={marathonDeck.restart} onHome={handleGoHome} />
