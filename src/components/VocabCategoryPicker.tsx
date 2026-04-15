@@ -1,4 +1,4 @@
-export type VocabCategory = "verbes" | "adjectifs" | "noms" | "expressions" | "genre" | "pièges" | "mix";
+export type VocabCategory = "verbes" | "adjectifs" | "noms" | "expressions" | "genre" | "erreurs" | "accents" | "mix";
 
 export interface VocabCategoryOption {
   id: VocabCategory;

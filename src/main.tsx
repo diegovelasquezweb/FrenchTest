@@ -6,8 +6,9 @@ import { LoginScreen } from "./components/LoginScreen";
 import { loadStore } from "./lib/store";
 import { exchangeCode, getSession, isGuest, redirectToGitHub, redirectToGoogle, enterGuestMode } from "./lib/auth";
 
-const root = document.getElementById("root");
-if (!root) throw new Error("Root element not found");
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Root element not found");
+const root = createRoot(rootElement);
 
 async function bootstrap() {
   // Handle GitHub OAuth callback (?code=... in URL)
@@ -31,13 +32,13 @@ async function bootstrap() {
   }
 
   if (session || guest) {
-    createRoot(root).render(
+    root.render(
       <StrictMode>
         <App />
       </StrictMode>
     );
   } else {
-    createRoot(root).render(
+    root.render(
       <StrictMode>
         <LoginScreen onGitHub={redirectToGitHub} onGoogle={redirectToGoogle} onGuest={() => { enterGuestMode(); window.location.reload(); }} />
       </StrictMode>

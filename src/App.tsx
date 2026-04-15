@@ -32,6 +32,7 @@ import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "./data/vocabulaireExtraCards";
 import { GENRE_CARDS } from "./data/genreCards";
 import { PIEGES_CARDS } from "./data/piegesCards";
+import { ACCENTS_CARDS } from "./data/accentsCards";
 import { TOURISTE_CARDS } from "./data/touristeCards";
 import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
@@ -59,7 +60,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "être-cards" | "être-quiz" | "être-guide";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -86,7 +87,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
 export default function App() {
   const { theme, toggle: toggleTheme } = useTheme();
   const [appMode, setAppMode] = useState<AppMode>("home");
-  const DEFAULT_FAVORITES = ["Participe passé"];
+  const DEFAULT_FAVORITES: string[] = [];
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const stored = getItem("tef-favorites");
@@ -141,7 +142,8 @@ export default function App() {
   const pVocabNoms = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "noms"), "tef-vocab-noms");
   const pVocabExpressions = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "expressions"), "tef-vocab-expressions");
   const pVocabGenre = useFlashcards(GENRE_CARDS, "tef-vocab-genre");
-  const pVocabPieges = useFlashcards(PIEGES_CARDS, "tef-vocab-pieges");
+  const pVocabErreurs = useFlashcards(PIEGES_CARDS, "tef-vocab-erreurs");
+  const pVocabAccents = useFlashcards(ACCENTS_CARDS, "tef-vocab-accents");
   const pVocabMix = useFlashcards(VOCAB_CARDS, "tef-vocab-mix");
 
   const vRestaurant   = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "restaurant"),   "tef-voyage-restaurant");
@@ -188,7 +190,8 @@ export default function App() {
     vocabCategory === "noms" ? pVocabNoms :
     vocabCategory === "expressions" ? pVocabExpressions :
     vocabCategory === "genre" ? pVocabGenre :
-    vocabCategory === "pièges" ? pVocabPieges :
+    vocabCategory === "erreurs" ? pVocabErreurs :
+    vocabCategory === "accents" ? pVocabAccents :
     pVocabMix;
 
   const liveRef = useRef<HTMLDivElement>(null);
@@ -373,7 +376,8 @@ export default function App() {
       cat === "noms" ? pVocabNoms :
       cat === "expressions" ? pVocabExpressions :
       cat === "genre" ? pVocabGenre :
-      cat === "pièges" ? pVocabPieges :
+      cat === "erreurs" ? pVocabErreurs :
+      cat === "accents" ? pVocabAccents :
       pVocabMix;
     deck.startSession();
   }
@@ -466,7 +470,8 @@ export default function App() {
     "Noms":              { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("noms"), icon: BookCheck },
     "Expressions":       { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("expressions"), icon: BookCheck },
     "Genre":             { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("genre"), icon: BookCheck },
-    "Pièges":            { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("pièges"), icon: BookCheck },
+    "Erreurs":           { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("erreurs"), icon: BookCheck },
+    "Accents":           { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("accents"), icon: BookCheck },
     "Mixte":             { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("mix"), icon: BookCheck },
     "Renseignements":    { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
@@ -586,7 +591,8 @@ export default function App() {
                 { label: "Noms",        mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("noms") },
                 { label: "Expressions", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("expressions") },
                 { label: "Genre",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("genre") },
-                { label: "Pièges",      mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("pièges") },
+                { label: "Erreurs",     mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("erreurs") },
+                { label: "Accents",     mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("accents") },
                 { label: "Mixte",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
               ],
             },
@@ -648,6 +654,7 @@ export default function App() {
             // Single-action groups render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
               const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
+              const isMarathon = group.id === "marathon";
               // Marathon & Vocabulaire are already pinned at top of sidebar — no need to favorite them.
               // const isFav = favorites.includes(group.label);
               return (
@@ -656,7 +663,11 @@ export default function App() {
                     type="button"
                     onClick={group.action.onClick}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-semibold transition-colors duration-150 ${
-                      isActive ? "bg-(--color-brand)/10 text-(--color-brand)" : "text-(--color-ink) hover:bg-(--color-ink)/6"
+                      isActive
+                        ? "bg-(--color-brand)/14 text-(--color-brand)"
+                        : isMarathon
+                          ? "text-(--color-ink) bg-(--color-brand)/6 border border-(--color-brand)/20 hover:bg-(--color-brand)/10"
+                          : "text-(--color-ink) hover:bg-(--color-ink)/6"
                     }`}
                   >
                     <group.action.icon size={16} className="shrink-0" />
@@ -750,7 +761,8 @@ export default function App() {
                           label === "Noms" ? "noms" :
                           label === "Expressions" ? "expressions" :
                           label === "Genre" ? "genre" :
-                          label === "Pièges" ? "pièges" :
+                          label === "Erreurs" ? "erreurs" :
+                          label === "Accents" ? "accents" :
                           label === "Mixte" ? "mix" : null
                         )
                       ) && (
@@ -900,14 +912,14 @@ export default function App() {
                 </div>
 
                 {/* Marathon — direct button. */}
-                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                <div className="w-full rounded overflow-hidden border border-(--color-brand)/25 bg-(--color-brand)/6 shadow-sm">
                   {[
                     { label: "Marathon", Icon: Gamepad2, onClick: handleStartMarathon },
                   ].map(({ label, Icon, onClick }, i) => {
                     // const isFav = favorites.includes(label); // favorite disabled for Marathon
                     return (
                       <div key={label} className={`relative ${i > 0 ? "border-t border-(--color-ink)/8" : ""}`}>
-                        <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
+                        <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/12 hover:text-(--color-brand) active:bg-(--color-brand)/18">
                           <Icon size={16} className="shrink-0" />
                           {label}
                         </button>
@@ -998,7 +1010,8 @@ export default function App() {
                         { label: "Noms",        onClick: () => handleSelectVocabCategory("noms") },
                         { label: "Expressions", onClick: () => handleSelectVocabCategory("expressions") },
                         { label: "Genre",       onClick: () => handleSelectVocabCategory("genre") },
-                        { label: "Pièges",      onClick: () => handleSelectVocabCategory("pièges") },
+                        { label: "Erreurs",     onClick: () => handleSelectVocabCategory("erreurs") },
+                        { label: "Accents",     onClick: () => handleSelectVocabCategory("accents") },
                         { label: "Mixte",       onClick: () => handleSelectVocabCategory("mix") },
                       ],
                     },
@@ -1460,7 +1473,8 @@ export default function App() {
                         { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
                         { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
                         { id: "genre", icon: "⚥", label: "Genre", totalCards: pVocabGenre.totalCards, masteredCount: pVocabGenre.masteredCount, onClick: () => handleSelectVocabCategory("genre") },
-                        { id: "pièges", icon: "⚠️", label: "Pièges", totalCards: pVocabPieges.totalCards, masteredCount: pVocabPieges.masteredCount, onClick: () => handleSelectVocabCategory("pièges") },
+                        { id: "erreurs", icon: "⚠️", label: "Erreurs", totalCards: pVocabErreurs.totalCards, masteredCount: pVocabErreurs.masteredCount, onClick: () => handleSelectVocabCategory("erreurs") },
+                        { id: "accents", icon: "À", label: "Accents", totalCards: pVocabAccents.totalCards, masteredCount: pVocabAccents.masteredCount, onClick: () => handleSelectVocabCategory("accents") },
                         { id: "mix", icon: "🗂️", label: "Mixte", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
                       ]}
                     />
