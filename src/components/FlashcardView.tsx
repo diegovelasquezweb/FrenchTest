@@ -79,11 +79,18 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
       if (e.key === "ArrowLeft"  || e.key === "1") { e.preventDefault(); triggerRate(0); }
       if (e.key === "ArrowUp"    || e.key === "2") { e.preventDefault(); triggerRate(1); }
       if (e.key === "ArrowDown"  || e.key === " " || e.key === "4") { e.preventDefault(); triggerSkip(); }
-      if (e.key === "Backspace") { e.preventDefault(); onBack?.(); }
+      if (e.key === "Backspace" || e.key === "Escape") { e.preventDefault(); onBack?.(); }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [triggerRate, triggerSkip]);
+
+  const normalizedFront = card.front.trim().toLowerCase();
+  const normalizedEn = card.translationEn.trim().toLowerCase();
+  const normalizedEs = card.translationEs.trim().toLowerCase();
+  const isPlaceholderPair = normalizedEn === normalizedFront && normalizedEs === normalizedFront;
+  const hasEnTranslation = card.translationEn.trim().length > 0 && !isPlaceholderPair;
+  const hasEsTranslation = card.translationEs.trim().length > 0 && !isPlaceholderPair;
 
   return (
     <div className="mx-auto w-full max-w-xl">
@@ -217,16 +224,22 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
             </button>
           </div>
 
-          <div className="mt-4 flex flex-col gap-1 border-t border-(--color-ink)/8 pt-3">
-            <p className="text-xs text-(--color-muted)" lang="en">
-              <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ENG</span>
-              {card.translationEn}
-            </p>
-            <p className="text-xs text-(--color-muted)" lang="es">
-              <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ESP</span>
-              {card.translationEs}
-            </p>
-          </div>
+          {(hasEnTranslation || hasEsTranslation) && (
+            <div className="mt-4 flex flex-col gap-1 border-t border-(--color-ink)/8 pt-3">
+              {hasEnTranslation && (
+                <p className="text-xs text-(--color-muted)" lang="en">
+                  <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ENG</span>
+                  {card.translationEn}
+                </p>
+              )}
+              {hasEsTranslation && (
+                <p className="text-xs text-(--color-muted)" lang="es">
+                  <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ESP</span>
+                  {card.translationEs}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </SwipeCard>
     </div>

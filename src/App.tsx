@@ -29,6 +29,7 @@ import { getSession, clearSession } from "./lib/auth";
 import { QuizPhase } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
+import { VOCABULAIRE_EXTRA_CARDS } from "./data/vocabulaireExtraCards";
 import { TOURISTE_CARDS } from "./data/touristeCards";
 import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
@@ -46,6 +47,8 @@ import { MrsVandertrampGuide } from "./components/MrsVandertrampGuide";
 import type { PatternsCategory } from "./components/PatternsCategoryPicker";
 import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
+import type { VocabCategory } from "./components/VocabCategoryPicker";
+import { VocabCategoryPicker } from "./components/VocabCategoryPicker";
 
 const QUESTION_COUNT = 10;
 
@@ -130,7 +133,12 @@ export default function App() {
   const pOralMonologue     = useFlashcards(FLASHCARDS.filter(c => c.category === "oral-persuasion"),     "tef-p-oral-monologue");
   const pEcritFaitsDivers  = useFlashcards(FLASHCARDS.filter(c => c.category === "écrit-faits-divers"),  "tef-p-ecrit-faits-divers");
   const pEcritArgumentatif = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"),       "tef-p-ecrit-argumentatif");
-  const vocabulaire = useFlashcards(VOCABULAIRE_CARDS, "tef-vocabulaire-progress");
+  const VOCAB_CARDS = useMemo(() => [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS], []);
+  const pVocabVerbes = useFlashcards(VOCAB_CARDS.filter(c => !c.subCategory || c.subCategory === "verbes"), "tef-vocab-verbes");
+  const pVocabAdjectifs = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "adjectifs"), "tef-vocab-adjectifs");
+  const pVocabNoms = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "noms"), "tef-vocab-noms");
+  const pVocabExpressions = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "expressions"), "tef-vocab-expressions");
+  const pVocabMix = useFlashcards(VOCAB_CARDS, "tef-vocab-mix");
 
   const vRestaurant   = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "restaurant"),   "tef-voyage-restaurant");
   const vTransport    = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "transport"),    "tef-voyage-transport");
@@ -141,6 +149,7 @@ export default function App() {
 
   const [patternsCategory, setPatternsCategory] = useState<PatternsCategory | null>(null);
   const [voyageCategory, setVoyageCategory] = useState<VoyageCategory | null>(null);
+  const [vocabCategory, setVocabCategory] = useState<VocabCategory | null>(null);
   const [openGroups, setOpenGroups] = useState<string[]>(["favoris"]);
 
   // On desktop, never show the home landing — land users directly in Marathon.
@@ -168,6 +177,13 @@ export default function App() {
     voyageCategory === "shopping"    ? vShopping    :
     voyageCategory === "orientation" ? vOrientation :
     vUrgences;
+
+  const activeVocabDeck =
+    vocabCategory === "verbes" ? pVocabVerbes :
+    vocabCategory === "adjectifs" ? pVocabAdjectifs :
+    vocabCategory === "noms" ? pVocabNoms :
+    vocabCategory === "expressions" ? pVocabExpressions :
+    pVocabMix;
 
   const liveRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -289,7 +305,7 @@ export default function App() {
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
-    if (appMode === "vocabulaire") vocabulaire.goHome();
+    if (appMode === "vocabulaire") { activeVocabDeck.goHome(); setVocabCategory(null); }
     if (appMode === "touriste") { activeTouristeDeck.goHome(); setVoyageCategory(null); }
     if (appMode === "mes-patterns") mesPatterns.goHome();
     if (appMode === "être-cards") pEtreAvoir.goHome();
@@ -314,7 +330,7 @@ export default function App() {
   function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
   function handleStartEtreGuide()    { setAppMode("être-guide"); }
   function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
-  function handleStartVocabulaire()  { vocabulaire.startSession(); setAppMode("vocabulaire"); }
+  function handleStartVocabulaire()  { setVocabCategory(null); setAppMode("vocabulaire"); }
 
   function handleSelectVoyageCategory(cat: VoyageCategory) {
     setVoyageCategory(cat);
@@ -339,6 +355,18 @@ export default function App() {
       cat === "ecrit-faits-divers" ? pEcritFaitsDivers    :
       cat === "ecrit-argumentatif" ? pEcritArgumentatif   :
       flashcards;
+    deck.startSession();
+  }
+
+  function handleSelectVocabCategory(cat: VocabCategory) {
+    setVocabCategory(cat);
+    setAppMode("vocabulaire");
+    const deck =
+      cat === "verbes" ? pVocabVerbes :
+      cat === "adjectifs" ? pVocabAdjectifs :
+      cat === "noms" ? pVocabNoms :
+      cat === "expressions" ? pVocabExpressions :
+      pVocabMix;
     deck.startSession();
   }
 
@@ -425,6 +453,11 @@ export default function App() {
     "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
     "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
+    "Verbes":            { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("verbes"), icon: BookCheck },
+    "Adjectifs":         { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("adjectifs"), icon: BookCheck },
+    "Noms":              { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("noms"), icon: BookCheck },
+    "Expressions":       { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("expressions"), icon: BookCheck },
+    "Mix":               { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("mix"), icon: BookCheck },
     "Renseignements":    { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
@@ -445,11 +478,12 @@ export default function App() {
   function FlashcardHeader() {
     const deck =
       appMode === "patterns"      ? activeDeck      :
-      appMode === "vocabulaire"   ? vocabulaire      :
+      appMode === "vocabulaire"   ? activeVocabDeck :
       appMode === "mes-patterns"  ? mesPatterns      :
       appMode === "être-cards"    ? pEtreAvoir       :
       activeTouristeDeck;
     if (appMode === "patterns" && patternsCategory === null) return null;
+    if (appMode === "vocabulaire" && vocabCategory === null) return null;
     if (appMode === "touriste" && voyageCategory === null) return null;
     return (
       <div className="flex items-center gap-6">
@@ -486,9 +520,13 @@ export default function App() {
             {
               id: "paires",
               label: "Paires",
-              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
-              special: "single" as const,
-              action: { mode: "vocabulaire" as const, onClick: handleStartVocabulaire, icon: Gamepad2 as LucideIcon },
+              items: [
+                { label: "Verbes", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("verbes") },
+                { label: "Adjectifs", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("adjectifs") },
+                { label: "Noms", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("noms") },
+                { label: "Expressions", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("expressions") },
+                { label: "Mix", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
+              ],
             },
             {
               id: "favoris",
@@ -595,7 +633,7 @@ export default function App() {
                 ? ""
                 : "pt-2 border-t border-(--color-ink)/16";
 
-            // Single-action groups (Marathon, Paires) render as a direct button, not a collapsible group
+            // Single-action groups render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
               const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
               // Marathon & Paires are already pinned at top of sidebar — no need to favorite them.
@@ -692,6 +730,14 @@ export default function App() {
                           label === "Faits divers" ? "ecrit-faits-divers" :
                           label === "Argumentatif" ? "ecrit-argumentatif" :
                           label === "Connecteurs" ? "connecteurs" : null
+                        )
+                      ) && (
+                        mode !== "vocabulaire" || vocabCategory === (
+                          label === "Verbes" ? "verbes" :
+                          label === "Adjectifs" ? "adjectifs" :
+                          label === "Noms" ? "noms" :
+                          label === "Expressions" ? "expressions" :
+                          label === "Mix" ? "mix" : null
                         )
                       ) && (
                         mode !== "touriste" || voyageCategory === (
@@ -839,13 +885,12 @@ export default function App() {
                   <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
                 </div>
 
-                {/* Marathon & Paires — direct buttons, no accordion. Already pinned, not favoritable. */}
+                {/* Marathon — direct button. */}
                 <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {[
                     { label: "Marathon", Icon: Gamepad2, onClick: handleStartMarathon },
-                    { label: "Paires",   Icon: Gamepad2, onClick: handleStartVocabulaire },
                   ].map(({ label, Icon, onClick }, i) => {
-                    // const isFav = favorites.includes(label); // favorite disabled for Marathon/Paires
+                    // const isFav = favorites.includes(label); // favorite disabled for Marathon
                     return (
                       <div key={label} className={`relative ${i > 0 ? "border-t border-(--color-ink)/8" : ""}`}>
                         <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15">
@@ -930,6 +975,17 @@ export default function App() {
 
                 <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {([
+                    {
+                      id: "paires",
+                      label: "Paires",
+                      items: [
+                        { label: "Verbes",      onClick: () => handleSelectVocabCategory("verbes") },
+                        { label: "Adjectifs",   onClick: () => handleSelectVocabCategory("adjectifs") },
+                        { label: "Noms",        onClick: () => handleSelectVocabCategory("noms") },
+                        { label: "Expressions", onClick: () => handleSelectVocabCategory("expressions") },
+                        { label: "Mix",         onClick: () => handleSelectVocabCategory("mix") },
+                      ],
+                    },
                     {
                       id: "oral",
                       label: "Oral",
@@ -1380,11 +1436,22 @@ export default function App() {
               {/* VOCABULAIRE */}
               {appMode === "vocabulaire" && (
                 <>
-                  {vocabulaire.state.phase === "session" && vocabulaire.currentCard && (
-                    <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} onRate={vocabulaire.rate} onSkip={vocabulaire.skip} onBack={vocabulaire.back} />
+                  {vocabCategory === null && (
+                    <VocabCategoryPicker
+                      options={[
+                        { id: "verbes", icon: "🔁", label: "Verbes", totalCards: pVocabVerbes.totalCards, masteredCount: pVocabVerbes.masteredCount, onClick: () => handleSelectVocabCategory("verbes") },
+                        { id: "adjectifs", icon: "🎯", label: "Adjectifs", totalCards: pVocabAdjectifs.totalCards, masteredCount: pVocabAdjectifs.masteredCount, onClick: () => handleSelectVocabCategory("adjectifs") },
+                        { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
+                        { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
+                        { id: "mix", icon: "🗂️", label: "Mix", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
+                      ]}
+                    />
                   )}
-                  {vocabulaire.state.phase === "complete" && (
-                    <FlashcardResults sessionResults={vocabulaire.state.sessionResults} masteredCount={vocabulaire.masteredCount} totalCards={vocabulaire.totalCards} cards={vocabulaire.state.deck} onRestart={vocabulaire.restart} onHome={handleGoHome} />
+                  {vocabCategory !== null && activeVocabDeck.state.phase === "session" && activeVocabDeck.currentCard && (
+                    <FlashcardView card={activeVocabDeck.currentCard} index={activeVocabDeck.progress.index} total={activeVocabDeck.progress.total} onRate={activeVocabDeck.rate} onSkip={activeVocabDeck.skip} onBack={activeVocabDeck.back} />
+                  )}
+                  {vocabCategory !== null && activeVocabDeck.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={activeVocabDeck.state.sessionResults} masteredCount={activeVocabDeck.masteredCount} totalCards={activeVocabDeck.totalCards} cards={activeVocabDeck.state.deck} onRestart={activeVocabDeck.restart} onHome={handleGoHome} />
                   )}
                 </>
               )}
