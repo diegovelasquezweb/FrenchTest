@@ -130,6 +130,9 @@ export function BaseQuizCard({
         )}
       </SwipeCard>
 
+      {/* Mobile spacer so fixed bottom CTA doesn't cover card content */}
+      {isRevealed && <div className="h-24 md:hidden" aria-hidden="true" />}
+
       {/* Mobile: sticky bar pinned to bottom of viewport */}
       {isRevealed && (
         <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-(--color-ink)/8 bg-(--color-bg)/90 px-4 py-3 backdrop-blur-sm">

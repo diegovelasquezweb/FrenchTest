@@ -16,7 +16,7 @@ interface OrthographeQuizCardProps {
 function SentenceDisplay({ sentence, filled }: { sentence: string; filled?: string }) {
   const parts = sentence.split("___");
   return (
-    <p className="text-lg font-medium leading-relaxed text-(--color-ink)" lang="fr">
+    <p className="text-base font-medium leading-relaxed text-(--color-ink) sm:text-lg" lang="fr">
       {parts[0]}
       <span className="inline-block min-w-12 border-b-2 border-(--color-brand) px-1 text-center font-bold text-(--color-brand)">
         {filled ?? "\u00A0\u00A0\u00A0\u00A0"}

@@ -6,13 +6,13 @@ function verb(auxiliary: "avoir" | "être", participle: string): Verb {
   return {
     infinitive: "test",
     translation: "test",
+    translationEs: "test",
     participle,
     auxiliary,
-    confusers: [],
-    imparfaitStem: "test",
-    futurStem: "test",
-    conditionnelStem: "test",
-    presentForms: { je: "", tu: "", il: "", nous: "", vous: "", ils: "" },
+    ending: "-é",
+    irregular: false,
+    confusers: ["", "", ""],
+    confuserTenses: ["présent", "imparfait", "futur"],
   };
 }
 

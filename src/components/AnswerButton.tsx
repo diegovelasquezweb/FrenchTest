@@ -31,6 +31,9 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           ? `Option ${shortcut} : ${label} — incorrecte`
           : `Option ${shortcut} : ${label}`;
 
+    const rightIndicator = state === "correct" ? "✓" : state === "wrong" ? "✗" : String(shortcut);
+    const hideOnMobile = state === "default";
+
     return (
       <button
         ref={ref}
@@ -47,9 +50,15 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           stateClasses[state],
         ].join(" ")}
       >
-        <span lang="fr">{label}</span>
-        <span className="shrink-0 text-xs font-semibold tabular-nums opacity-40" aria-hidden="true">
-          {state === "correct" ? "✓" : state === "wrong" ? "✗" : shortcut}
+        <span lang="fr" className="text-sm sm:text-base">{label}</span>
+        <span
+          className={[
+            "shrink-0 text-xs font-semibold tabular-nums opacity-40",
+            hideOnMobile ? "hidden md:inline" : "inline",
+          ].join(" ")}
+          aria-hidden="true"
+        >
+          {rightIndicator}
         </span>
       </button>
     );

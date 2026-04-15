@@ -202,7 +202,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
             >
               <span className="inline-block h-3 w-3 rounded-full bg-red-500" aria-hidden="true" />
               <span className="leading-tight">Pas du tout</span>
-              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">1</span>
+              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">1</span>
             </button>
             <button
               type="button"
@@ -211,7 +211,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
             >
               <span className="inline-block h-3 w-3 rounded-full bg-yellow-400" aria-hidden="true" />
               <span className="leading-tight">Hésité</span>
-              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">2</span>
+              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">2</span>
             </button>
             <button
               type="button"
@@ -220,7 +220,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
             >
               <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" aria-hidden="true" />
               <span className="leading-tight">Savais</span>
-              <span className="tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">3</span>
+              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">3</span>
             </button>
           </div>
 
