@@ -19,7 +19,7 @@ export function MrsVandertrampGuide() {
   return (
     <div className="mx-auto w-full max-w-lg">
       <ol className="flex flex-col gap-1.5">
-        {VERBS.map(({ letter, verb, participle, translationEn, note }, i) => (
+        {VERBS.map(({ letter, verb, participle, note }, i) => (
           <li
             key={i}
             className="flex items-center gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-3 shadow-sm"

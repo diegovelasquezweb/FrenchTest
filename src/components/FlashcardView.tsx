@@ -42,11 +42,12 @@ interface FlashcardViewProps {
   total: number;
   onRate(r: FlashcardRating): void;
   onSkip(): void;
+  onBack?(): void;
   isFavorite?: boolean;
   onToggleFavorite?(): void;
 }
 
-export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, onToggleFavorite }: FlashcardViewProps) {
+export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFavorite, onToggleFavorite }: FlashcardViewProps) {
   const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const pending = useRef(false);
@@ -78,6 +79,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
       if (e.key === "ArrowLeft"  || e.key === "1") { e.preventDefault(); triggerRate(0); }
       if (e.key === "ArrowUp"    || e.key === "2") { e.preventDefault(); triggerRate(1); }
       if (e.key === "ArrowDown"  || e.key === " " || e.key === "4") { e.preventDefault(); triggerSkip(); }
+      if (e.key === "Backspace") { e.preventDefault(); onBack?.(); }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -87,6 +89,16 @@ export function FlashcardView({ card, index, total, onRate, onSkip, isFavorite, 
     <div className="mx-auto w-full max-w-xl">
       {/* Progress + nav */}
       <div className="mb-4 flex items-center justify-center gap-3">
+        {onBack && index > 0 ? (
+          <button
+            type="button"
+            aria-label="Carte précédente"
+            onClick={onBack}
+            className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          >
+            ←
+          </button>
+        ) : <span className="h-6 w-6" />}
         <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
           {index + 1} / {total}
         </p>

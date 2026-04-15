@@ -1240,7 +1240,7 @@ export default function App() {
               {appMode === "être-cards" && (
                 <>
                   {pEtreAvoir.state.phase === "session" && pEtreAvoir.currentCard && (
-                    <FlashcardView card={pEtreAvoir.currentCard} index={pEtreAvoir.progress.index} total={pEtreAvoir.progress.total} onRate={pEtreAvoir.rate} onSkip={pEtreAvoir.skip} />
+                    <FlashcardView card={pEtreAvoir.currentCard} index={pEtreAvoir.progress.index} total={pEtreAvoir.progress.total} onRate={pEtreAvoir.rate} onSkip={pEtreAvoir.skip} onBack={pEtreAvoir.back} />
                   )}
                   {pEtreAvoir.state.phase === "complete" && (
                     <FlashcardResults sessionResults={pEtreAvoir.state.sessionResults} masteredCount={pEtreAvoir.masteredCount} totalCards={pEtreAvoir.totalCards} cards={pEtreAvoir.state.deck} onRestart={pEtreAvoir.restart} onHome={handleGoHome} />
@@ -1270,7 +1270,7 @@ export default function App() {
               {appMode === "patterns" && (
                 <>
                   {patternsCategory !== null && activeDeck.state.phase === "session" && activeDeck.currentCard && (
-                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} onRate={activeDeck.rate} onSkip={activeDeck.skip} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
+                    <FlashcardView card={activeDeck.currentCard} index={activeDeck.progress.index} total={activeDeck.progress.total} onRate={activeDeck.rate} onSkip={activeDeck.skip} onBack={activeDeck.back} isFavorite={isFavoriteCard(activeDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeDeck.currentCard!.id)} />
                   )}
                   {patternsCategory !== null && activeDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeDeck.state.sessionResults} masteredCount={activeDeck.masteredCount} totalCards={activeDeck.totalCards} cards={activeDeck.state.deck} onRestart={activeDeck.restart} onHome={handleGoHome} />
@@ -1339,7 +1339,7 @@ export default function App() {
                     </div>
                   )}
                   {mesPatterns.state.phase === "session" && mesPatterns.currentCard && (
-                    <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} onRate={mesPatterns.rate} onSkip={mesPatterns.skip} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
+                    <FlashcardView card={mesPatterns.currentCard} index={mesPatterns.progress.index} total={mesPatterns.progress.total} onRate={mesPatterns.rate} onSkip={mesPatterns.skip} onBack={mesPatterns.back} isFavorite={isFavoriteCard(mesPatterns.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesPatterns.currentCard!.id)} />
                   )}
                   {mesPatterns.state.phase === "complete" && (
                     <FlashcardResults sessionResults={mesPatterns.state.sessionResults} masteredCount={mesPatterns.masteredCount} totalCards={mesPatterns.totalCards} cards={mesPatterns.state.deck} onRestart={mesPatterns.restart} onHome={handleGoHome} />
@@ -1351,7 +1351,7 @@ export default function App() {
               {appMode === "vocabulaire" && (
                 <>
                   {vocabulaire.state.phase === "session" && vocabulaire.currentCard && (
-                    <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} onRate={vocabulaire.rate} onSkip={vocabulaire.skip} />
+                    <FlashcardView card={vocabulaire.currentCard} index={vocabulaire.progress.index} total={vocabulaire.progress.total} onRate={vocabulaire.rate} onSkip={vocabulaire.skip} onBack={vocabulaire.back} />
                   )}
                   {vocabulaire.state.phase === "complete" && (
                     <FlashcardResults sessionResults={vocabulaire.state.sessionResults} masteredCount={vocabulaire.masteredCount} totalCards={vocabulaire.totalCards} cards={vocabulaire.state.deck} onRestart={vocabulaire.restart} onHome={handleGoHome} />
@@ -1363,7 +1363,7 @@ export default function App() {
               {appMode === "touriste" && (
                 <>
                   {activeTouristeDeck.state.phase === "session" && activeTouristeDeck.currentCard && (
-                    <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} onRate={activeTouristeDeck.rate} onSkip={activeTouristeDeck.skip} />
+                    <FlashcardView card={activeTouristeDeck.currentCard} index={activeTouristeDeck.progress.index} total={activeTouristeDeck.progress.total} onRate={activeTouristeDeck.rate} onSkip={activeTouristeDeck.skip} onBack={activeTouristeDeck.back} />
                   )}
                   {activeTouristeDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeTouristeDeck.state.sessionResults} masteredCount={activeTouristeDeck.masteredCount} totalCards={activeTouristeDeck.totalCards} cards={activeTouristeDeck.state.deck} onRestart={activeTouristeDeck.restart} onHome={handleGoHome} />
