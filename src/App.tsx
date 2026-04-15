@@ -3,7 +3,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
-  Gamepad2, FlaskConical, BookCheck, Columns3,
+  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -27,6 +27,7 @@ import { useTheme } from "./hooks/useTheme";
 import { getItem, setItem, pushStore } from "./lib/store";
 import { getSession, clearSession } from "./lib/auth";
 import { QuizPhase } from "./types";
+import type { Flashcard } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "./data/vocabulaireExtraCards";
@@ -52,15 +53,42 @@ import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
 import type { VocabCategory } from "./components/VocabCategoryPicker";
 import { VocabCategoryPicker } from "./components/VocabCategoryPicker";
+import type { MarathonCategoryId, MarathonGroupId } from "./components/MarathonCategoryPicker";
+import { MarathonCategoryPicker, ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
+import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
 
 const QUESTION_COUNT = 10;
+
+const ALL_VOCAB = [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS];
+
+const MARATHON_SOURCES: Record<MarathonCategoryId, Flashcard[]> = {
+  "oral-interaction":   FLASHCARDS.filter(c => c.category === "oral"),
+  "oral-monologue":     FLASHCARDS.filter(c => c.category === "oral-persuasion"),
+  "ecrit-faits-divers": FLASHCARDS.filter(c => c.category === "écrit-faits-divers"),
+  "connecteurs":        FLASHCARDS.filter(c => c.category === "connecteurs"),
+  "argumentation":      FLASHCARDS.filter(c => c.category === "argumentation"),
+  "mrs-vandertramp":    FLASHCARDS.filter(c => c.category === "être-avoir"),
+  "vocab-verbes":       ALL_VOCAB.filter(c => !c.subCategory || c.subCategory === "verbes"),
+  "vocab-adjectifs":    ALL_VOCAB.filter(c => c.subCategory === "adjectifs"),
+  "vocab-noms":         ALL_VOCAB.filter(c => c.subCategory === "noms"),
+  "vocab-expressions":  ALL_VOCAB.filter(c => c.subCategory === "expressions"),
+  "vocab-genre":        GENRE_CARDS,
+  "vocab-erreurs":      PIEGES_CARDS,
+  "vocab-accents":      ACCENTS_CARDS,
+  "voyage-restaurant":  TOURISTE_CARDS.filter(c => c.subCategory === "restaurant"),
+  "voyage-transport":   TOURISTE_CARDS.filter(c => c.subCategory === "transport"),
+  "voyage-hebergement": TOURISTE_CARDS.filter(c => c.subCategory === "hebergement"),
+  "voyage-shopping":    TOURISTE_CARDS.filter(c => c.subCategory === "shopping"),
+  "voyage-orientation": TOURISTE_CARDS.filter(c => c.subCategory === "orientation"),
+  "voyage-urgences":    TOURISTE_CARDS.filter(c => c.subCategory === "urgences"),
+};
 
 /** Collapse verbose test labels to just "Test" when they're already inside their section group. */
 function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -83,6 +111,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "être-cards": "Être / avoir",
   "être-quiz": "Test être / avoir",
   "être-guide": "Liste des verbes",
+  marathon: "Marathon",
 };
 
 export default function App() {
@@ -158,6 +187,17 @@ export default function App() {
   const [patternsCategory, setPatternsCategory] = useState<PatternsCategory | null>(null);
   const [voyageCategory, setVoyageCategory] = useState<VoyageCategory | null>(null);
   const [vocabCategory, setVocabCategory] = useState<VocabCategory | null>(null);
+  const [marathonDrawerOpen, setMarathonDrawerOpen] = useState(false);
+  const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
+    () => new Set<MarathonCategoryId>([
+      "oral-interaction", "oral-monologue", "ecrit-faits-divers", "connecteurs", "argumentation",
+    ])
+  );
+  const marathonCards = useMemo(
+    () => Array.from(marathonCategories).flatMap(id => MARATHON_SOURCES[id] ?? []),
+    [marathonCategories]
+  );
+  const marathonDeck = useFlashcards(marathonCards, "tef-marathon");
   const [openGroups, setOpenGroups] = useState<string[]>(["favoris"]);
 
   // On desktop, never show the home landing — land users directly in Marathon.
@@ -165,9 +205,8 @@ export default function App() {
   useEffect(() => {
     if (appMode !== "home") return;
     if (!window.matchMedia("(min-width: 768px)").matches) return;
-    setPatternsCategory("all");
-    setAppMode("patterns");
-    flashcards.startSession();
+    marathonDeck.goHome();
+    setAppMode("marathon");
   }, [appMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const activeDeck =
@@ -322,6 +361,7 @@ export default function App() {
     if (appMode === "mes-vocab") mesVocab.goHome();
     if (appMode === "être-cards") pEtreAvoir.goHome();
     if (appMode === "être-quiz") etreQuiz.goHome();
+    if (appMode === "marathon") marathonDeck.goHome();
     setAppMode("home");
   }
 
@@ -342,7 +382,25 @@ export default function App() {
   function handleStartEtreCards()    { pEtreAvoir.startSession(); setAppMode("être-cards"); }
   function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
   function handleStartEtreGuide()    { setAppMode("être-guide"); }
-  function handleStartMarathon()     { setPatternsCategory("all"); setAppMode("patterns"); flashcards.startSession(); }
+  function handleStartMarathon()     { marathonDeck.goHome(); setAppMode("marathon"); }
+
+  function handleMarathonToggleCategory(id: MarathonCategoryId) {
+    setMarathonCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function handleMarathonToggleGroup(groupId: MarathonGroupId, ids: MarathonCategoryId[]) {
+    setMarathonCategories(prev => {
+      const allSelected = ids.every(id => prev.has(id));
+      const next = new Set(prev);
+      if (allSelected) ids.forEach(id => next.delete(id));
+      else ids.forEach(id => next.add(id));
+      return next;
+    });
+  }
   function handleStartVocabulaire()  { setVocabCategory(null); setAppMode("vocabulaire"); }
 
   function handleSelectVoyageCategory(cat: VoyageCategory) {
@@ -496,12 +554,14 @@ export default function App() {
   // ── Flashcard header helper ───────────────────────────────────────────────
   function FlashcardHeader() {
     const deck =
+      appMode === "marathon"      ? marathonDeck     :
       appMode === "patterns"      ? activeDeck      :
       appMode === "vocabulaire"   ? activeVocabDeck :
       appMode === "mes-patterns"  ? mesPatterns      :
       appMode === "mes-vocab"     ? mesVocab         :
       appMode === "être-cards"    ? pEtreAvoir       :
       activeTouristeDeck;
+    if (appMode === "marathon" && marathonDeck.state.phase === "idle") return null;
     if (appMode === "patterns" && patternsCategory === null) return null;
     if (appMode === "vocabulaire" && vocabCategory === null) return null;
     if (appMode === "touriste" && voyageCategory === null) return null;
@@ -517,7 +577,7 @@ export default function App() {
     );
   }
 
-  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns" || appMode === "mes-vocab" || appMode === "être-cards";
+  const isFlashcardMode = appMode === "marathon" || appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns" || appMode === "mes-vocab" || appMode === "être-cards";
 
   const VOCAB_CATEGORY_LABEL: Record<string, string> = {
     verbes: "Verbes", adjectifs: "Adjectifs", noms: "Noms",
@@ -544,7 +604,7 @@ export default function App() {
               label: "Marathon",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "patterns" as const, onClick: handleStartMarathon, icon: Gamepad2 as LucideIcon },
+              action: { mode: "marathon" as const, onClick: handleStartMarathon, icon: Gamepad2 as LucideIcon },
             },
             {
               id: "favoris",
@@ -675,7 +735,7 @@ export default function App() {
 
             // Single-action groups render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
-              const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
+              const isActive = appMode === group.action.mode;
               const isMarathon = group.id === "marathon";
               // Marathon & Vocabulaire are already pinned at top of sidebar — no need to favorite them.
               // const isFav = favorites.includes(group.label);
@@ -1407,6 +1467,104 @@ export default function App() {
 
               {/* VERBES ESSENTIELS */}
               {appMode === "verbes" && <EssentialVerbsGuide />}
+
+              {/* MARATHON */}
+              {appMode === "marathon" && (
+                <>
+                  {marathonDeck.state.phase === "idle" && (
+                    <>
+                      <div className="mx-auto w-full max-w-sm flex flex-col items-center gap-5">
+                        <div className="flex flex-col items-center gap-2 text-center">
+                          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-(--color-brand)/10">
+                            <Gamepad2 size={22} className="text-(--color-brand)" />
+                          </span>
+                          <p className="text-base font-bold text-(--color-ink)">Marathon</p>
+                          <p className="text-sm text-(--color-muted)">
+                            {marathonCards.length > 0
+                              ? `${marathonCards.length} cartes sélectionnées`
+                              : "Aucune carte sélectionnée"}
+                          </p>
+                        </div>
+
+                        <div className="flex w-full gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setMarathonDrawerOpen(true)}
+                            className="flex items-center gap-1.5 rounded-(--radius-button) border border-(--color-ink)/15 bg-(--color-surface) px-4 py-2 text-sm font-medium text-(--color-ink) hover:bg-(--color-ink)/5 transition-colors duration-150"
+                          >
+                            <SlidersHorizontal size={14} />
+                            Filtrer
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => marathonDeck.startSession()}
+                            disabled={marathonCards.length === 0}
+                            className="flex flex-1 items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-brand) px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <Gamepad2 size={15} />
+                            Commencer
+                          </button>
+                        </div>
+                      </div>
+
+                      <MarathonFilterDrawer
+                        open={marathonDrawerOpen}
+                        onClose={() => setMarathonDrawerOpen(false)}
+                        groups={[
+                          {
+                            id: "patterns",
+                            label: "Patterns",
+                            options: [
+                              { id: "oral-interaction",   label: "Oral — Interaction",  count: pOralInteraction.totalCards },
+                              { id: "oral-monologue",     label: "Oral — Monologue",    count: pOralMonologue.totalCards },
+                              { id: "ecrit-faits-divers", label: "Faits divers",         count: pEcritFaitsDivers.totalCards },
+                              { id: "connecteurs",        label: "Connecteurs",          count: pConnecteurs.totalCards },
+                              { id: "argumentation",      label: "Argumentation",        count: pEcritArgumentatif.totalCards },
+                              { id: "mrs-vandertramp",    label: "Mrs Vandertramp",      count: pEtreAvoir.totalCards },
+                            ],
+                          },
+                          {
+                            id: "vocabulaire",
+                            label: "Vocabulaire",
+                            options: [
+                              { id: "vocab-verbes",       label: "Verbes",       count: pVocabVerbes.totalCards },
+                              { id: "vocab-adjectifs",    label: "Adjectifs",    count: pVocabAdjectifs.totalCards },
+                              { id: "vocab-noms",         label: "Noms",         count: pVocabNoms.totalCards },
+                              { id: "vocab-expressions",  label: "Expressions",  count: pVocabExpressions.totalCards },
+                              { id: "vocab-genre",        label: "Genre",        count: pVocabGenre.totalCards },
+                              { id: "vocab-erreurs",      label: "Erreurs",      count: pVocabErreurs.totalCards },
+                              { id: "vocab-accents",      label: "Accents",      count: pVocabAccents.totalCards },
+                            ],
+                          },
+                          {
+                            id: "voyage",
+                            label: "Voyage",
+                            options: [
+                              { id: "voyage-restaurant",  label: "Restaurant",  count: vRestaurant.totalCards },
+                              { id: "voyage-transport",   label: "Transport",   count: vTransport.totalCards },
+                              { id: "voyage-hebergement", label: "Hébergement", count: vHebergement.totalCards },
+                              { id: "voyage-shopping",    label: "Shopping",    count: vShopping.totalCards },
+                              { id: "voyage-orientation", label: "Orientation", count: vOrientation.totalCards },
+                              { id: "voyage-urgences",    label: "Urgences",    count: vUrgences.totalCards },
+                            ],
+                          },
+                        ]}
+                        selectedCategories={marathonCategories}
+                        onToggle={handleMarathonToggleCategory}
+                        onToggleGroup={handleMarathonToggleGroup}
+                        totalSelectedCards={marathonCards.length}
+                      />
+                    </>
+                  )}
+                  {marathonDeck.state.phase === "session" && marathonDeck.currentCard && (
+                    <FlashcardView card={marathonDeck.currentCard} index={marathonDeck.progress.index} total={marathonDeck.progress.total} onRate={marathonDeck.rate} onSkip={marathonDeck.skip} onBack={marathonDeck.back} isFavorite={isFavoriteCard(marathonDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(marathonDeck.currentCard!.id)} />
+                  )}
+                  {marathonDeck.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={marathonDeck.state.sessionResults} masteredCount={marathonDeck.masteredCount} totalCards={marathonDeck.totalCards} cards={marathonDeck.state.deck} onRestart={marathonDeck.restart} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
 
               {/* PATTERNS */}
               {appMode === "patterns" && (
