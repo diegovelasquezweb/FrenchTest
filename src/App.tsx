@@ -21,6 +21,7 @@ import { useFavoriteCards } from "./hooks/useFavoriteCards";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { useEtreQuiz } from "./hooks/useEtreQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
+import { useSubjonctifQuiz } from "./hooks/useSubjonctifQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
@@ -46,6 +47,7 @@ import { OrthographeQuizCard } from "./components/OrthographeQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
+import { SubjonctifQuizCard } from "./components/SubjonctifQuizCard";
 import { PronominalQuizCard } from "./components/PronominalQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
@@ -96,7 +98,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -106,6 +108,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   orthographe: "Orthographe",
   phrases: "Test connecteurs",
   présent: "Présent",
+  subjonctif: "Subjonctif",
   écrit: "Test écrit",
   oral: "Test oral",
   patterns: "Parcours",
@@ -181,6 +184,7 @@ export default function App({ session }: { session: Session | null }) {
   const mesVocab = useFlashcards(favoriteVocabList, "tef-mes-vocab-progress");
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
+  const subjonctif = useSubjonctifQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
   const flashcards = useFlashcards(FLASHCARDS.filter(c => c.category !== "être-avoir"), "tef-flashcard-progress");
@@ -332,6 +336,10 @@ export default function App({ session }: { session: Session | null }) {
         if (présent.state.phase === QuizPhase.Answering || présent.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) présent.selectAnswer(d - 1); }
         if (présent.state.phase === QuizPhase.Feedback && e.key === "Enter") présent.nextQuestion();
       }
+      if (appMode === "subjonctif") {
+        if (subjonctif.state.phase === QuizPhase.Answering || subjonctif.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) subjonctif.selectAnswer(d - 1); }
+        if (subjonctif.state.phase === QuizPhase.Feedback && e.key === "Enter") subjonctif.nextQuestion();
+      }
       if (appMode === "écrit") {
         if (écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
         if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") écrit.nextQuestion();
@@ -343,7 +351,7 @@ export default function App({ session }: { session: Session | null }) {
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, écrit, oral]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, subjonctif, écrit, oral]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -367,6 +375,9 @@ export default function App({ session }: { session: Session | null }) {
     } else if (appMode === "présent" && présent.state.phase === QuizPhase.Feedback && présent.currentQuestion) {
       const correct = présent.currentQuestion.options[présent.currentQuestion.correctIndex] ?? "";
       setAnnouncement(présent.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "subjonctif" && subjonctif.state.phase === QuizPhase.Feedback && subjonctif.currentQuestion) {
+      const correct = subjonctif.currentQuestion.options[subjonctif.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(subjonctif.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else if (appMode === "écrit" && écrit.state.phase === QuizPhase.Feedback && écrit.currentQuestion) {
       const correct = écrit.currentQuestion.options[écrit.currentQuestion.correctIndex] ?? "";
       setAnnouncement(écrit.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
@@ -388,6 +399,7 @@ export default function App({ session }: { session: Session | null }) {
     orthographe.state.phase, orthographe.state.answerState, orthographe.currentQuestion,
     phrases.state.phase, phrases.state.answerState, phrases.currentQuestion,
     présent.state.phase, présent.state.answerState, présent.currentQuestion,
+    subjonctif.state.phase, subjonctif.state.answerState, subjonctif.currentQuestion,
     écrit.state.phase, écrit.state.answerState, écrit.currentQuestion,
     oral.state.phase, oral.state.answerState, oral.currentQuestion,
     etreQuiz.state.phase, etreQuiz.state.answerState, etreQuiz.currentQuestion,
@@ -404,6 +416,7 @@ export default function App({ session }: { session: Session | null }) {
     if (appMode === "difficiles") difficiles.goHome();
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
+    if (appMode === "subjonctif") subjonctif.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
@@ -432,6 +445,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartMesVocab()     { mesVocab.goHome(); setAppMode("mes-vocab"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
+  function handleStartSubjonctif()   { subjonctif.startQuiz();   setAppMode("subjonctif"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
   function handleStartVerbes()       { setAppMode("verbes"); }
@@ -549,6 +563,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "difficiles"    ? difficiles.state.phase
     : appMode === "phrases"       ? phrases.state.phase
     : appMode === "présent"       ? présent.state.phase
+    : appMode === "subjonctif"    ? subjonctif.state.phase
     : appMode === "écrit"         ? écrit.state.phase
     : appMode === "oral"          ? oral.state.phase
     : appMode === "être-quiz"     ? etreQuiz.state.phase
@@ -565,6 +580,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "difficiles"    ? difficiles.progress
     : appMode === "phrases"       ? phrases.progress
     : appMode === "présent"       ? présent.progress
+    : appMode === "subjonctif"    ? subjonctif.progress
     : appMode === "écrit"         ? écrit.progress
     : appMode === "oral"          ? oral.progress
     : appMode === "être-quiz"     ? etreQuiz.progress
@@ -581,6 +597,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "difficiles"    ? difficiles.state.score
     : appMode === "phrases"       ? phrases.state.score
     : appMode === "présent"       ? présent.state.score
+    : appMode === "subjonctif"    ? subjonctif.state.score
     : appMode === "écrit"         ? écrit.state.score
     : appMode === "oral"      ? oral.state.score
     : etreQuiz.state.score;
@@ -595,6 +612,7 @@ export default function App({ session }: { session: Session | null }) {
     { label: "Imparfait",          sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartImparfait },
     { label: "Participe passé",    sub: "Identifier la forme",   icon: BookCheck, onClick: handleStartParticipe },
     { label: "Présent",            sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartPresent },
+    { label: "Subjonctif",         sub: "Que je/tu/il...",       icon: BookCheck, onClick: handleStartSubjonctif },
     { label: "Connecteurs Quiz",   sub: "Expressions du TEF",    icon: FlaskConical, onClick: handleStartPhrases },
     { label: "Test écrit",         sub: "Lettres & expressions", icon: FlaskConical, onClick: handleStartEcrit },
     { label: "Test oral",          sub: "Poser des questions",   icon: FlaskConical, onClick: handleStartOral },
@@ -616,6 +634,7 @@ export default function App({ session }: { session: Session | null }) {
     "Imparfait":         { mode: "imparfait",    onClick: handleStartImparfait,    icon: BookCheck },
     "Participe passé":   { mode: "participe",    onClick: handleStartParticipe,    icon: BookCheck },
     "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
+    "Subjonctif":        { mode: "subjonctif",   onClick: handleStartSubjonctif,   icon: BookCheck },
     "Pronominales":      { mode: "pronominales", onClick: handleStartPronominales, icon: BookCheck },
     "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
     "Mes difficiles":    { mode: "difficiles",   onClick: handleStartDifficiles,   icon: Bookmark },
@@ -773,6 +792,7 @@ export default function App({ session }: { session: Session | null }) {
                 { label: "Participe passé",  mode: "participe"    as const, onClick: handleStartParticipe },
                 { label: "Imparfait",        mode: "imparfait"    as const, onClick: handleStartImparfait },
                 { label: "Présent",          mode: "présent"      as const, onClick: handleStartPresent },
+                { label: "Subjonctif",       mode: "subjonctif"   as const, onClick: handleStartSubjonctif },
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
                 { label: "Pronominales",     mode: "pronominales" as const, onClick: handleStartPronominales },
@@ -1309,6 +1329,7 @@ export default function App({ session }: { session: Session | null }) {
                         { label: "Participe passé", onClick: handleStartParticipe },
                         { label: "Imparfait",       onClick: handleStartImparfait },
                         { label: "Présent",         onClick: handleStartPresent },
+                        { label: "Subjonctif",      onClick: handleStartSubjonctif },
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },
                         { label: "Pronominales",    onClick: handleStartPronominales },
@@ -1517,6 +1538,7 @@ export default function App({ session }: { session: Session | null }) {
                       case "futur":        return <FuturQuizCard       {...common} question={wrapper.q} />;
                       case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
                       case "présent":      return <PresentQuizCard     {...common} question={wrapper.q} />;
+                      case "subjonctif":   return <SubjonctifQuizCard  {...common} question={wrapper.q} />;
                     }
                   })()}
                   {grammarTest.state.phase === QuizPhase.Complete && (
@@ -1656,6 +1678,18 @@ export default function App({ session }: { session: Session | null }) {
                   )}
                   {présent.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={présent.state.history.map(e => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))} score={présent.state.score} total={présent.progress.total} onRestart={présent.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* SUBJONCTIF */}
+              {appMode === "subjonctif" && (
+                <>
+                  {(subjonctif.state.phase === QuizPhase.Answering || subjonctif.state.phase === QuizPhase.Feedback) && subjonctif.currentQuestion && (
+                    <SubjonctifQuizCard question={subjonctif.currentQuestion} answerState={subjonctif.state.answerState} selectedIndex={subjonctif.state.selectedIndex} onSelect={subjonctif.selectAnswer} onNext={subjonctif.nextQuestion} questionNumber={subjonctif.progress.index + 1} total={subjonctif.progress.total} isWeak={isWeak(subjonctif.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(subjonctif.currentQuestion!.verb.infinitive)} />
+                  )}
+                  {subjonctif.state.phase === QuizPhase.Complete && (
+                    <ResultScreen history={subjonctif.state.history.map(e => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))} score={subjonctif.state.score} total={subjonctif.progress.total} onRestart={subjonctif.restartQuiz} onHome={handleGoHome} />
                   )}
                 </>
               )}

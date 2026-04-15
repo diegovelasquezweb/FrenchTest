@@ -5,6 +5,7 @@ import type {
   FuturQuestion,
   ConditionnelQuestion,
   PresentQuestion,
+  SubjonctifQuestion,
   Verb,
 } from "../types";
 import { AnswerState, QuizPhase } from "../types";
@@ -13,6 +14,7 @@ import { buildImparfaitQuestions } from "../lib/imparfaitQuestions";
 import { buildFuturQuestions } from "../lib/futurQuestions";
 import { buildConditionnelQuestions } from "../lib/conditionnelQuestions";
 import { buildPresentQuestion } from "../lib/presentQuestions";
+import { buildSubjonctifQuestion } from "../lib/subjonctifQuestions";
 import { generateDistractors } from "../lib/distractors";
 import { fisherYates } from "../lib/shuffle";
 
@@ -21,7 +23,8 @@ export type GrammarQuizQuestion =
   | { source: "imparfait";    q: ImparfaitQuestion }
   | { source: "futur";        q: FuturQuestion }
   | { source: "conditionnel"; q: ConditionnelQuestion }
-  | { source: "présent";      q: PresentQuestion };
+  | { source: "présent";      q: PresentQuestion }
+  | { source: "subjonctif";   q: SubjonctifQuestion };
 
 interface GrammarQuizState {
   phase: QuizPhase;
@@ -65,7 +68,7 @@ function buildParticipeQuestion(verb: Verb, rng: () => number): QuizQuestion {
 }
 
 function buildMixedQuestions(count: number, rng: () => number): GrammarQuizQuestion[] {
-  const sources: GrammarQuizQuestion["source"][] = ["participe", "imparfait", "présent", "futur", "conditionnel"];
+  const sources: GrammarQuizQuestion["source"][] = ["participe", "imparfait", "présent", "futur", "conditionnel", "subjonctif"];
   const bag: GrammarQuizQuestion[] = [];
 
   const shuffledVerbs = fisherYates([...VERBS], rng);
@@ -94,6 +97,9 @@ function buildMixedQuestions(count: number, rng: () => number): GrammarQuizQuest
     } else if (source === "présent") {
       const q = buildPresentQuestion(verb, rng);
       if (q) bag.push({ source: "présent", q });
+    } else if (source === "subjonctif") {
+      const q = buildSubjonctifQuestion(verb, rng);
+      if (q) bag.push({ source: "subjonctif", q });
     }
   }
 

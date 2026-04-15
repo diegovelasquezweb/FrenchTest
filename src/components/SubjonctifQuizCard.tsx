@@ -1,20 +1,22 @@
-import type { PronominalQuestion } from "../lib/pronominalQuestions";
+import type { SubjonctifQuestion } from "../types";
 import { AnswerState } from "../types";
 import { BaseQuizCard } from "./BaseQuizCard";
-import { PronominalTable } from "./PronominalTable";
-import { PronominalWrongTable } from "./PronominalWrongTable";
+import { SubjonctifTable } from "./SubjonctifTable";
+import { SubjonctifWrongTable } from "./SubjonctifWrongTable";
 
-interface PronominalQuizCardProps {
-  question: PronominalQuestion;
+interface SubjonctifQuizCardProps {
+  question: SubjonctifQuestion;
   answerState: AnswerState;
   selectedIndex: number | null;
   onSelect(i: number): void;
   onNext(): void;
   questionNumber: number;
   total: number;
+  isWeak?: boolean;
+  onToggleWeak?(): void;
 }
 
-export function PronominalQuizCard({
+export function SubjonctifQuizCard({
   question,
   answerState,
   selectedIndex,
@@ -22,15 +24,20 @@ export function PronominalQuizCard({
   onNext,
   questionNumber,
   total,
-}: PronominalQuizCardProps) {
+  isWeak,
+  onToggleWeak,
+}: SubjonctifQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
       ? question.optionSubjects[selectedIndex]
       : undefined;
 
   const header = (
-    <div className="mb-6 text-center">
-      <p className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
+    <div className="mb-2 text-center">
+      <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+        Subjonctif présent
+      </p>
+      <p className="mt-2 text-3xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
         {question.verb.infinitive}
       </p>
       <p className="mt-1 text-sm text-(--color-muted)">
@@ -38,8 +45,8 @@ export function PronominalQuizCard({
         <span className="mx-2 opacity-40">·</span>
         <span lang="es">{question.verb.translationEs}</span>
       </p>
-      <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-(--color-muted)/60">
-        {question.tense}
+      <p className="mt-3 inline-block rounded-(--radius-button) bg-(--color-brand)/10 px-3 py-1 text-sm font-semibold text-(--color-brand)">
+        {question.targetSubject}
       </p>
     </div>
   );
@@ -47,13 +54,14 @@ export function PronominalQuizCard({
   const feedback = (
     <>
       {selectedIndex !== null && selectedIndex === question.correctIndex && (
-        <PronominalTable question={question} />
+        <SubjonctifTable verb={question.verb} />
       )}
       {wrongSubject !== undefined && selectedIndex !== null && (
-        <PronominalWrongTable
-          question={question}
+        <SubjonctifWrongTable
+          verb={question.verb}
           wrongForm={question.options[selectedIndex] ?? ""}
           wrongSubject={wrongSubject}
+          targetSubject={question.targetSubject}
         />
       )}
     </>
@@ -70,8 +78,8 @@ export function PronominalQuizCard({
       questionNumber={questionNumber}
       total={total}
       feedback={feedback}
-      optionsGridClassName="grid grid-cols-1 gap-3 sm:grid-cols-2"
-      cardPaddingClassName="p-4 sm:p-8"
+      isWeak={isWeak}
+      onToggleWeak={onToggleWeak}
     />
   );
 }

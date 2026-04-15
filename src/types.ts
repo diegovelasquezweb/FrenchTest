@@ -81,6 +81,14 @@ export interface ConditionnelQuestion {
   conditionnel3sg: string;
 }
 
+export interface SubjonctifQuestion {
+  verb: Verb;
+  options: string[];
+  correctIndex: number;
+  targetSubject: string;
+  optionSubjects: string[];
+}
+
 export enum AnswerState {
   Idle = "idle",
   Correct = "correct",

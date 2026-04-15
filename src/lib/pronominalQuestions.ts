@@ -1,15 +1,17 @@
 import { fisherYates } from "./shuffle";
 
-interface PronominalVerb {
+export interface PronominalVerb {
   infinitive: string; // "se réveiller"
   participle: string; // "réveillé"
   translation: string;
   translationEs: string;
 }
 
+export type PronominalTense = "présent" | "imparfait" | "futur" | "conditionnel" | "passé composé";
+
 export interface PronominalQuestion {
   verb: PronominalVerb;
-  tense: "présent" | "imparfait" | "futur" | "conditionnel" | "passé composé";
+  tense: PronominalTense;
   targetSubject: string;
   options: [string, string, string, string];
   correctIndex: 0 | 1 | 2 | 3;
@@ -176,7 +178,7 @@ function conjugatePasséComposé(participle: string, subject: string): string {
   return `${pronoun}${auxiliary} ${agreedParticiple}`;
 }
 
-function buildPronominalQuestion(verb: PronominalVerb, tense: string, rng: () => number): PronominalQuestion | null {
+function buildPronominalQuestion(verb: PronominalVerb, tense: PronominalTense, rng: () => number): PronominalQuestion | null {
   const validSubjects = [...SUBJECTS];
   const targetSubject = validSubjects[Math.floor(rng() * validSubjects.length)]!;
 
@@ -246,12 +248,45 @@ function buildPronominalQuestion(verb: PronominalVerb, tense: string, rng: () =>
 
   return {
     verb,
-    tense: tense as any,
+    tense,
     targetSubject,
     options: pool.map((x) => x.form) as [string, string, string, string],
     correctIndex: correctIndex as 0 | 1 | 2 | 3,
     optionSubjects: pool.map((x) => x.subject),
   };
+}
+
+export interface PronominalConjugationRow {
+  subject: string;
+  form: string;
+}
+
+export function buildPronominalConjugation(
+  verb: PronominalVerb,
+  tense: PronominalTense
+): PronominalConjugationRow[] {
+  return SUBJECTS.map((subject) => {
+    let form: string;
+    switch (tense) {
+      case "présent":
+        form = conjugatePrésent(verb.participle, subject);
+        break;
+      case "imparfait":
+        form = conjugateImparfait(verb.participle, subject);
+        break;
+      case "futur":
+        form = conjugateFutur(verb.participle, subject);
+        break;
+      case "conditionnel":
+        form = conjugateConditionnel(verb.participle, subject);
+        break;
+      case "passé composé":
+      default:
+        form = conjugatePasséComposé(verb.participle, subject);
+        break;
+    }
+    return { subject, form };
+  });
 }
 
 export function buildPronominalQuestions(count: number, rng: () => number): PronominalQuestion[] {

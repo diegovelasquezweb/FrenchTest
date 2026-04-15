@@ -50,7 +50,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           stateClasses[state],
         ].join(" ")}
       >
-        <span lang="fr" className="text-sm sm:text-base">{label}</span>
+        <span lang="fr" className="text-[13px] leading-snug sm:text-base">{label}</span>
         <span
           className={[
             "shrink-0 text-xs font-semibold tabular-nums opacity-40",
