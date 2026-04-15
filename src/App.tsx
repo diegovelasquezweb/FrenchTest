@@ -658,6 +658,7 @@ export default function App() {
               if (group.id === "favoris" && favorites.length === 0) return false;
               if (group.id === "difficiles" && weakVerbList.length === 0) return false;
               if (group.id === "mes-patterns" && favoriteCardList.length === 0) return false;
+              if (group.id === "mes-vocab" && favoriteVocabList.length === 0) return false;
               return true;
             })
             .map((group, idx) => {

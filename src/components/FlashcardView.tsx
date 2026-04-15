@@ -22,7 +22,7 @@ const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   argumentation: "Argumentatif",
   vocabulaire: "Vocabulaire",
   touriste: "Voyage",
-  "être-avoir": "MRS VANDERTRAMP",
+  "être-avoir": "Mrs Vandertramp",
 };
 
 const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
