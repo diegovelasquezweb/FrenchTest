@@ -1,3 +1,6 @@
+import { useTheme } from "../hooks/useTheme";
+import { ThemeToggle } from "./ThemeToggle";
+
 interface LoginScreenProps {
   onGitHub(): void;
   onGoogle(): void;
@@ -5,25 +8,18 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onGitHub, onGoogle, onGuest }: LoginScreenProps) {
+  const { theme, toggle } = useTheme();
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-(--color-bg) px-6">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle theme={theme} onToggle={toggle} />
+      </div>
       <div className="w-full max-w-sm rounded-(--radius-card) bg-(--color-surface) p-8 shadow-sm text-center">
         <p className="text-2xl font-extrabold tracking-tight text-(--color-ink) mb-1">🇨🇦 TEF Pratiquer</p>
         <p className="text-sm text-(--color-muted) mb-8">Connectez-vous pour sauvegarder votre progression</p>
 
         <div className="flex flex-col gap-3">
-          {/* GitHub */}
-          <button
-            type="button"
-            onClick={onGitHub}
-            className="flex w-full items-center justify-center gap-3 rounded-(--radius-button) bg-(--color-ink) px-5 py-3 text-sm font-semibold text-(--color-bg) transition-opacity duration-150 hover:opacity-80"
-          >
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-            </svg>
-            Continuer avec GitHub
-          </button>
-
           {/* Google */}
           <button
             type="button"
@@ -37,6 +33,18 @@ export function LoginScreen({ onGitHub, onGoogle, onGuest }: LoginScreenProps) {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             Continuer avec Google
+          </button>
+
+          {/* GitHub */}
+          <button
+            type="button"
+            onClick={onGitHub}
+            className="flex w-full items-center justify-center gap-3 rounded-(--radius-button) bg-(--color-ink) px-5 py-3 text-sm font-semibold text-(--color-bg) transition-opacity duration-150 hover:opacity-80"
+          >
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            Continuer avec GitHub
           </button>
 
           {/* Guest */}
