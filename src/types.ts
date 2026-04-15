@@ -89,6 +89,14 @@ export interface SubjonctifQuestion {
   optionSubjects: string[];
 }
 
+export interface PlusQueParfaitQuestion {
+  verb: Verb;
+  options: string[];
+  correctIndex: number;
+  targetSubject: string;
+  optionSubjects: string[];
+}
+
 export enum AnswerState {
   Idle = "idle",
   Correct = "correct",

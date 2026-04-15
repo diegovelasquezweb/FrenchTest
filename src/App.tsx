@@ -21,6 +21,7 @@ import { useFavoriteCards } from "./hooks/useFavoriteCards";
 import { usePhrasesQuiz } from "./hooks/usePhrasesQuiz";
 import { useEtreQuiz } from "./hooks/useEtreQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
+import { usePlusQueParfaitQuiz } from "./hooks/usePlusQueParfaitQuiz";
 import { useSubjonctifQuiz } from "./hooks/useSubjonctifQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
@@ -47,6 +48,7 @@ import { OrthographeQuizCard } from "./components/OrthographeQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
+import { PlusQueParfaitQuizCard } from "./components/PlusQueParfaitQuizCard";
 import { SubjonctifQuizCard } from "./components/SubjonctifQuizCard";
 import { PronominalQuizCard } from "./components/PronominalQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
@@ -98,7 +100,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "plus-que-parfait" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -109,6 +111,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   phrases: "Test connecteurs",
   présent: "Présent",
   subjonctif: "Subjonctif",
+  "plus-que-parfait": "Plus-que-parfait",
   écrit: "Test écrit",
   oral: "Test oral",
   patterns: "Parcours",
@@ -184,6 +187,7 @@ export default function App({ session }: { session: Session | null }) {
   const mesVocab = useFlashcards(favoriteVocabList, "tef-mes-vocab-progress");
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
+  const plusQueParfait = usePlusQueParfaitQuiz();
   const subjonctif = useSubjonctifQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
@@ -340,6 +344,10 @@ export default function App({ session }: { session: Session | null }) {
         if (subjonctif.state.phase === QuizPhase.Answering || subjonctif.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) subjonctif.selectAnswer(d - 1); }
         if (subjonctif.state.phase === QuizPhase.Feedback && e.key === "Enter") subjonctif.nextQuestion();
       }
+      if (appMode === "plus-que-parfait") {
+        if (plusQueParfait.state.phase === QuizPhase.Answering || plusQueParfait.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) plusQueParfait.selectAnswer(d - 1); }
+        if (plusQueParfait.state.phase === QuizPhase.Feedback && e.key === "Enter") plusQueParfait.nextQuestion();
+      }
       if (appMode === "écrit") {
         if (écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
         if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") écrit.nextQuestion();
@@ -351,7 +359,7 @@ export default function App({ session }: { session: Session | null }) {
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, subjonctif, écrit, oral]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, subjonctif, plusQueParfait, écrit, oral]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -378,6 +386,9 @@ export default function App({ session }: { session: Session | null }) {
     } else if (appMode === "subjonctif" && subjonctif.state.phase === QuizPhase.Feedback && subjonctif.currentQuestion) {
       const correct = subjonctif.currentQuestion.options[subjonctif.currentQuestion.correctIndex] ?? "";
       setAnnouncement(subjonctif.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "plus-que-parfait" && plusQueParfait.state.phase === QuizPhase.Feedback && plusQueParfait.currentQuestion) {
+      const correct = plusQueParfait.currentQuestion.options[plusQueParfait.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(plusQueParfait.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else if (appMode === "écrit" && écrit.state.phase === QuizPhase.Feedback && écrit.currentQuestion) {
       const correct = écrit.currentQuestion.options[écrit.currentQuestion.correctIndex] ?? "";
       setAnnouncement(écrit.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
@@ -400,6 +411,7 @@ export default function App({ session }: { session: Session | null }) {
     phrases.state.phase, phrases.state.answerState, phrases.currentQuestion,
     présent.state.phase, présent.state.answerState, présent.currentQuestion,
     subjonctif.state.phase, subjonctif.state.answerState, subjonctif.currentQuestion,
+    plusQueParfait.state.phase, plusQueParfait.state.answerState, plusQueParfait.currentQuestion,
     écrit.state.phase, écrit.state.answerState, écrit.currentQuestion,
     oral.state.phase, oral.state.answerState, oral.currentQuestion,
     etreQuiz.state.phase, etreQuiz.state.answerState, etreQuiz.currentQuestion,
@@ -417,6 +429,7 @@ export default function App({ session }: { session: Session | null }) {
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
     if (appMode === "subjonctif") subjonctif.goHome();
+    if (appMode === "plus-que-parfait") plusQueParfait.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
@@ -446,6 +459,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartSubjonctif()   { subjonctif.startQuiz();   setAppMode("subjonctif"); }
+  function handleStartPlusQueParfait() { plusQueParfait.startQuiz(); setAppMode("plus-que-parfait"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
   function handleStartVerbes()       { setAppMode("verbes"); }
@@ -564,6 +578,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "phrases"       ? phrases.state.phase
     : appMode === "présent"       ? présent.state.phase
     : appMode === "subjonctif"    ? subjonctif.state.phase
+    : appMode === "plus-que-parfait" ? plusQueParfait.state.phase
     : appMode === "écrit"         ? écrit.state.phase
     : appMode === "oral"          ? oral.state.phase
     : appMode === "être-quiz"     ? etreQuiz.state.phase
@@ -581,6 +596,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "phrases"       ? phrases.progress
     : appMode === "présent"       ? présent.progress
     : appMode === "subjonctif"    ? subjonctif.progress
+    : appMode === "plus-que-parfait" ? plusQueParfait.progress
     : appMode === "écrit"         ? écrit.progress
     : appMode === "oral"          ? oral.progress
     : appMode === "être-quiz"     ? etreQuiz.progress
@@ -598,6 +614,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "phrases"       ? phrases.state.score
     : appMode === "présent"       ? présent.state.score
     : appMode === "subjonctif"    ? subjonctif.state.score
+    : appMode === "plus-que-parfait" ? plusQueParfait.state.score
     : appMode === "écrit"         ? écrit.state.score
     : appMode === "oral"      ? oral.state.score
     : etreQuiz.state.score;
@@ -613,6 +630,7 @@ export default function App({ session }: { session: Session | null }) {
     { label: "Participe passé",    sub: "Identifier la forme",   icon: BookCheck, onClick: handleStartParticipe },
     { label: "Présent",            sub: "Conjuguer par sujet",   icon: BookCheck, onClick: handleStartPresent },
     { label: "Subjonctif",         sub: "Que je/tu/il...",       icon: BookCheck, onClick: handleStartSubjonctif },
+    { label: "Plus-que-parfait",   sub: "Auxiliaire à l'imparfait", icon: BookCheck, onClick: handleStartPlusQueParfait },
     { label: "Connecteurs Quiz",   sub: "Expressions du TEF",    icon: FlaskConical, onClick: handleStartPhrases },
     { label: "Test écrit",         sub: "Lettres & expressions", icon: FlaskConical, onClick: handleStartEcrit },
     { label: "Test oral",          sub: "Poser des questions",   icon: FlaskConical, onClick: handleStartOral },
@@ -635,6 +653,7 @@ export default function App({ session }: { session: Session | null }) {
     "Participe passé":   { mode: "participe",    onClick: handleStartParticipe,    icon: BookCheck },
     "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
     "Subjonctif":        { mode: "subjonctif",   onClick: handleStartSubjonctif,   icon: BookCheck },
+    "Plus-que-parfait":  { mode: "plus-que-parfait", onClick: handleStartPlusQueParfait, icon: BookCheck },
     "Orthographe":       { mode: "orthographe",  onClick: handleStartOrthographe,  icon: BookCheck },
     "Pronominales":      { mode: "pronominales", onClick: handleStartPronominales, icon: BookCheck },
     "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
@@ -794,6 +813,7 @@ export default function App({ session }: { session: Session | null }) {
                 { label: "Imparfait",        mode: "imparfait"    as const, onClick: handleStartImparfait },
                 { label: "Présent",          mode: "présent"      as const, onClick: handleStartPresent },
                 { label: "Subjonctif",       mode: "subjonctif"   as const, onClick: handleStartSubjonctif },
+                { label: "Plus-que-parfait", mode: "plus-que-parfait" as const, onClick: handleStartPlusQueParfait },
                 { label: "Orthographe",      mode: "orthographe" as const, onClick: handleStartOrthographe },
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
@@ -1332,6 +1352,7 @@ export default function App({ session }: { session: Session | null }) {
                         { label: "Imparfait",       onClick: handleStartImparfait },
                         { label: "Présent",         onClick: handleStartPresent },
                         { label: "Subjonctif",      onClick: handleStartSubjonctif },
+                        { label: "Plus-que-parfait", onClick: handleStartPlusQueParfait },
                         { label: "Orthographe", onClick: handleStartOrthographe },
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },
@@ -1519,7 +1540,7 @@ export default function App({ session }: { session: Session | null }) {
                 </>
               )}
 
-              {/* GRAMMAR TEST — mixed 5-tense quiz */}
+              {/* GRAMMAR TEST — mixed tense quiz */}
               {appMode === "grammar-test" && (
                 <>
                   {(grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) && grammarTest.currentQuestion && (() => {
@@ -1542,6 +1563,7 @@ export default function App({ session }: { session: Session | null }) {
                       case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
                       case "présent":      return <PresentQuizCard     {...common} question={wrapper.q} />;
                       case "subjonctif":   return <SubjonctifQuizCard  {...common} question={wrapper.q} />;
+                      case "plus-que-parfait": return <PlusQueParfaitQuizCard {...common} question={wrapper.q} />;
                     }
                   })()}
                   {grammarTest.state.phase === QuizPhase.Complete && (
@@ -1693,6 +1715,18 @@ export default function App({ session }: { session: Session | null }) {
                   )}
                   {subjonctif.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={subjonctif.state.history.map(e => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))} score={subjonctif.state.score} total={subjonctif.progress.total} onRestart={subjonctif.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* PLUS-QUE-PARFAIT */}
+              {appMode === "plus-que-parfait" && (
+                <>
+                  {(plusQueParfait.state.phase === QuizPhase.Answering || plusQueParfait.state.phase === QuizPhase.Feedback) && plusQueParfait.currentQuestion && (
+                    <PlusQueParfaitQuizCard question={plusQueParfait.currentQuestion} answerState={plusQueParfait.state.answerState} selectedIndex={plusQueParfait.state.selectedIndex} onSelect={plusQueParfait.selectAnswer} onNext={plusQueParfait.nextQuestion} questionNumber={plusQueParfait.progress.index + 1} total={plusQueParfait.progress.total} isWeak={isWeak(plusQueParfait.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(plusQueParfait.currentQuestion!.verb.infinitive)} />
+                  )}
+                  {plusQueParfait.state.phase === QuizPhase.Complete && (
+                    <ResultScreen history={plusQueParfait.state.history.map(e => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))} score={plusQueParfait.state.score} total={plusQueParfait.progress.total} onRestart={plusQueParfait.restartQuiz} onHome={handleGoHome} />
                   )}
                 </>
               )}

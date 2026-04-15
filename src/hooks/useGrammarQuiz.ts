@@ -6,6 +6,7 @@ import type {
   ConditionnelQuestion,
   PresentQuestion,
   SubjonctifQuestion,
+  PlusQueParfaitQuestion,
   Verb,
 } from "../types";
 import { AnswerState, QuizPhase } from "../types";
@@ -15,6 +16,7 @@ import { buildFuturQuestions } from "../lib/futurQuestions";
 import { buildConditionnelQuestions } from "../lib/conditionnelQuestions";
 import { buildPresentQuestion } from "../lib/presentQuestions";
 import { buildSubjonctifQuestion } from "../lib/subjonctifQuestions";
+import { buildPlusQueParfaitQuestion } from "../lib/plusQueParfaitQuestions";
 import { generateDistractors } from "../lib/distractors";
 import { fisherYates } from "../lib/shuffle";
 
@@ -24,7 +26,8 @@ export type GrammarQuizQuestion =
   | { source: "futur";        q: FuturQuestion }
   | { source: "conditionnel"; q: ConditionnelQuestion }
   | { source: "présent";      q: PresentQuestion }
-  | { source: "subjonctif";   q: SubjonctifQuestion };
+  | { source: "subjonctif";   q: SubjonctifQuestion }
+  | { source: "plus-que-parfait"; q: PlusQueParfaitQuestion };
 
 interface GrammarQuizState {
   phase: QuizPhase;
@@ -68,7 +71,7 @@ function buildParticipeQuestion(verb: Verb, rng: () => number): QuizQuestion {
 }
 
 function buildMixedQuestions(count: number, rng: () => number): GrammarQuizQuestion[] {
-  const sources: GrammarQuizQuestion["source"][] = ["participe", "imparfait", "présent", "futur", "conditionnel", "subjonctif"];
+  const sources: GrammarQuizQuestion["source"][] = ["participe", "imparfait", "présent", "futur", "conditionnel", "subjonctif", "plus-que-parfait"];
   const bag: GrammarQuizQuestion[] = [];
 
   const shuffledVerbs = fisherYates([...VERBS], rng);
@@ -100,6 +103,9 @@ function buildMixedQuestions(count: number, rng: () => number): GrammarQuizQuest
     } else if (source === "subjonctif") {
       const q = buildSubjonctifQuestion(verb, rng);
       if (q) bag.push({ source: "subjonctif", q });
+    } else if (source === "plus-que-parfait") {
+      const q = buildPlusQueParfaitQuestion(verb, rng);
+      if (q) bag.push({ source: "plus-que-parfait", q });
     }
   }
 
