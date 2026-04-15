@@ -4,7 +4,7 @@ import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
   Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal,
-  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren,
+  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, NotebookPen,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { VERBS } from "./data/verbs";
@@ -57,6 +57,8 @@ import { VocabListView } from "./components/VocabListView";
 import type { MarathonCategoryId, MarathonGroupId } from "./components/MarathonCategoryPicker";
 import { ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
 import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
+import { NotesView } from "./components/NotesView";
+import type { UserNote } from "./components/NotesView";
 
 const QUESTION_COUNT = 10;
 
@@ -89,7 +91,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -114,6 +116,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "être-quiz": "Test être / avoir",
   "être-guide": "Liste des verbes",
   marathon: "Marathon",
+  "mes-notes": "Mes notes",
 };
 
 export default function App() {
@@ -202,6 +205,25 @@ export default function App() {
     [marathonCategories]
   );
   const marathonDeck = useFlashcards(marathonCards, "tef-marathon");
+  const [userNotes, setUserNotes] = useState<UserNote[]>(() => {
+    try {
+      const stored = getItem("tef-notes");
+      return stored ? (JSON.parse(stored) as UserNote[]) : [];
+    } catch { return []; }
+  });
+
+  useEffect(() => {
+    setItem("tef-notes", JSON.stringify(userNotes));
+  }, [userNotes]);
+
+  function handleAddNote(text: string, note: string) {
+    setUserNotes(prev => [{ id: crypto.randomUUID(), text, note, createdAt: Date.now() }, ...prev]);
+  }
+
+  function handleDeleteNote(id: string) {
+    setUserNotes(prev => prev.filter(n => n.id !== id));
+  }
+
   const [openGroups, setOpenGroups] = useState<string[]>(["favoris"]);
 
   // On desktop, never show the home landing — land users directly in Marathon.
@@ -387,6 +409,7 @@ export default function App() {
   function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
   function handleStartEtreGuide()    { setAppMode("être-guide"); }
   function handleStartMarathon()     { marathonDeck.startSession(); setAppMode("marathon"); }
+  function handleStartMesNotes()     { setAppMode("mes-notes"); }
 
   function handleMarathonToggleCategory(id: MarathonCategoryId) {
     setMarathonCategories(prev => {
@@ -771,6 +794,13 @@ export default function App() {
               special: "single" as const,
               action: { mode: "verbes" as const, onClick: handleStartVerbes, icon: Columns3 as LucideIcon },
             },
+            {
+              id: "mes-notes",
+              label: "Mes notes",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "mes-notes" as const, onClick: handleStartMesNotes, icon: NotebookPen as LucideIcon },
+            },
           ] as const)
             .filter((group) => {
               if (group.id === "favoris" && favorites.length === 0) return false;
@@ -784,7 +814,7 @@ export default function App() {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab";
+            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab" || group.id === "mes-notes";
             const separatorClass = idx === 0
               ? ""
               : noSeparatorBefore
@@ -825,6 +855,11 @@ export default function App() {
                     {group.id === "mes-vocab" && favoriteVocabList.length > 0 && (
                       <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
                         {favoriteVocabList.length}
+                      </span>
+                    )}
+                    {group.id === "mes-notes" && userNotes.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
+                        {userNotes.length}
                       </span>
                     )}
                   </button>
@@ -1257,6 +1292,20 @@ export default function App() {
                   >
                     <Columns3 size={16} className="shrink-0" />
                     Verbes essentiels
+                  </button>
+                </div>
+
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartMesNotes}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <NotebookPen size={16} className="shrink-0" />
+                    Mes notes
+                    {userNotes.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{userNotes.length}</span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -1736,6 +1785,11 @@ export default function App() {
                     <FlashcardResults sessionResults={mesVocab.state.sessionResults} masteredCount={mesVocab.masteredCount} totalCards={mesVocab.totalCards} cards={mesVocab.state.deck} onRestart={mesVocab.restart} onHome={handleGoHome} />
                   )}
                 </>
+              )}
+
+              {/* MES NOTES */}
+              {appMode === "mes-notes" && (
+                <NotesView notes={userNotes} onAdd={handleAddNote} onDelete={handleDeleteNote} />
               )}
 
               {/* VOCABULAIRE */}

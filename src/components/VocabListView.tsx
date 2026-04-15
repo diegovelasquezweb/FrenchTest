@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Bookmark, Search } from "lucide-react";
 import type { Flashcard } from "../types";
 
@@ -51,6 +51,9 @@ export function VocabListView({
   onToggleFavorite,
   onPractice,
 }: VocabListViewProps) {
+  const [activeLetter, setActiveLetter] = useState<string>("A");
+  const [isIndexOpen, setIsIndexOpen] = useState(false);
+
   const filtered = useMemo(() => {
     const q = normalize(query);
     const base = q.length === 0
@@ -75,6 +78,14 @@ export function VocabListView({
   const availableLetters = new Set(
     LETTERS.filter((letter) => (groups.get(letter)?.length ?? 0) > 0)
   );
+  const availableLetterList = LETTERS.filter((letter) => availableLetters.has(letter));
+
+  useEffect(() => {
+    if (availableLetterList.length === 0) return;
+    if (!availableLetters.has(activeLetter)) {
+      setActiveLetter(availableLetterList[0]);
+    }
+  }, [activeLetter, availableLetterList, availableLetters]);
 
   return (
     <div className="mx-auto w-full max-w-4xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
@@ -88,33 +99,50 @@ export function VocabListView({
             className="w-full rounded border border-(--color-ink)/12 bg-(--color-bg) py-2.5 pl-9 pr-3 text-sm text-(--color-ink) outline-none transition-colors focus:border-(--color-brand)/40 focus:ring-2 focus:ring-(--color-brand)/20"
           />
         </div>
-        <p className="mt-2 text-xs text-(--color-muted)">
-          {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
-        </p>
-      </div>
-
-      <div className="sticky top-0 z-10 border-b border-(--color-ink)/8 bg-(--color-surface)/95 px-3 py-2 backdrop-blur-sm sm:px-6">
-        <div className="flex flex-wrap gap-1.5">
-          {LETTERS.map((letter) => {
-            const enabled = availableLetters.has(letter);
-            return (
-              <button
-                key={letter}
-                type="button"
-                disabled={!enabled}
-                onClick={() => document.getElementById(`vocab-index-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                className={`h-6 min-w-6 rounded px-1 text-[11px] font-semibold transition-colors ${
-                  enabled
-                    ? "bg-(--color-ink)/7 text-(--color-ink) hover:bg-(--color-brand)/14 hover:text-(--color-brand)"
-                    : "bg-(--color-ink)/4 text-(--color-muted)/50 cursor-not-allowed"
-                }`}
-              >
-                {letter}
-              </button>
-            );
-          })}
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="text-xs text-(--color-muted)">
+            {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsIndexOpen((v) => !v)}
+            className="px-1 h-7 text-xs text-(--color-muted) underline underline-offset-2 hover:text-(--color-ink) transition-colors duration-150"
+          >
+            {isIndexOpen ? "masquer l’indice" : "afficher l’indice"}
+          </button>
         </div>
       </div>
+
+      {isIndexOpen && (
+        <div className="border-b border-(--color-ink)/8 bg-(--color-surface) px-3 py-2 sm:px-6">
+          <div className="flex flex-wrap gap-1.5">
+            {LETTERS.map((letter) => {
+              const enabled = availableLetters.has(letter);
+              const isActive = activeLetter === letter && enabled;
+              return (
+                <button
+                  key={letter}
+                  type="button"
+                  disabled={!enabled}
+                  onClick={() => {
+                    setActiveLetter(letter);
+                    document.getElementById(`vocab-index-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className={`h-6 min-w-6 rounded px-1 text-[11px] font-semibold transition-colors ${
+                    isActive
+                      ? "bg-(--color-brand)/16 text-(--color-brand)"
+                      : enabled
+                      ? "bg-(--color-ink)/7 text-(--color-ink) hover:bg-(--color-brand)/14 hover:text-(--color-brand)"
+                      : "bg-(--color-ink)/4 text-(--color-muted)/50 cursor-not-allowed"
+                  }`}
+                >
+                  {letter}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="max-h-[65vh] overflow-y-auto px-3 py-3 sm:px-6">
         {filtered.length === 0 ? (
@@ -124,8 +152,8 @@ export function VocabListView({
         ) : (
           <div className="space-y-4">
             {LETTERS.filter((letter) => availableLetters.has(letter)).map((letter) => (
-              <section key={letter} id={`vocab-index-${letter}`} className="scroll-mt-20">
-                <div className="mb-2 sticky top-0 z-[1] bg-(--color-surface)/95 backdrop-blur-sm py-1">
+              <section key={letter} id={`vocab-index-${letter}`}>
+                <div className="mb-2 py-1">
                   <span className="inline-flex h-6 min-w-6 items-center justify-center rounded bg-(--color-brand)/12 px-2 text-xs font-bold text-(--color-brand)">
                     {letter}
                   </span>
