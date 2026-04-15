@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { getItem, setItem } from "../lib/store";
 
 type Theme = "light" | "dark";
 
+const THEME_KEY = "tef-theme";
+
 function getInitialTheme(): Theme {
-  const stored = localStorage.getItem("theme");
+  const stored = getItem(THEME_KEY);
   if (stored === "light" || stored === "dark") return stored;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -13,7 +16,7 @@ export function useTheme() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    setItem(THEME_KEY, theme);
   }, [theme]);
 
   function toggle() {
