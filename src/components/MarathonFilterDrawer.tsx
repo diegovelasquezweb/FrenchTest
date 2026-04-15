@@ -1,6 +1,6 @@
-import { X } from "lucide-react";
+import { X, SquareCheck, Square } from "lucide-react";
 import { useEffect } from "react";
-import { MarathonCategoryPicker } from "./MarathonCategoryPicker";
+import { MarathonCategoryPicker, ALL_MARATHON_CATEGORY_IDS } from "./MarathonCategoryPicker";
 import type { MarathonCategoryId, MarathonGroupId, MarathonGroup } from "./MarathonCategoryPicker";
 
 interface MarathonFilterDrawerProps {
@@ -10,6 +10,9 @@ interface MarathonFilterDrawerProps {
   selectedCategories: Set<MarathonCategoryId>;
   onToggle(id: MarathonCategoryId): void;
   onToggleGroup(groupId: MarathonGroupId, ids: MarathonCategoryId[]): void;
+  onSelectAll(): void;
+  onUnselectAll(): void;
+  onDefault(): void;
   totalSelectedCards: number;
 }
 
@@ -20,6 +23,9 @@ export function MarathonFilterDrawer({
   selectedCategories,
   onToggle,
   onToggleGroup,
+  onSelectAll,
+  onUnselectAll,
+  onDefault,
   totalSelectedCards,
 }: MarathonFilterDrawerProps) {
   useEffect(() => {
@@ -58,6 +64,44 @@ export function MarathonFilterDrawer({
           </button>
         </div>
 
+        {/* Select all / Unselect all */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-(--color-ink)/8 shrink-0 bg-(--color-bg)/40">
+          <p className="text-xs text-(--color-muted)">
+            {totalSelectedCards > 0 ? `${totalSelectedCards} cartes` : "Aucune carte"}
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={onDefault}
+              title="Réinitialiser aux catégories par défaut"
+              aria-label="Défaut"
+              className="px-1 h-7 text-xs text-(--color-muted) underline underline-offset-2 hover:text-(--color-ink) transition-colors duration-150"
+            >
+              défaut
+            </button>
+            <button
+              type="button"
+              onClick={onSelectAll}
+              disabled={selectedCategories.size === ALL_MARATHON_CATEGORY_IDS.length}
+              title="Tout sélectionner"
+              aria-label="Tout sélectionner"
+              className="flex h-7 w-7 items-center justify-center rounded text-(--color-brand) hover:bg-(--color-brand)/10 transition-colors duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <SquareCheck size={15} />
+            </button>
+            <button
+              type="button"
+              onClick={onUnselectAll}
+              disabled={selectedCategories.size <= 1}
+              title="Tout désélectionner"
+              aria-label="Tout désélectionner"
+              className="flex h-7 w-7 items-center justify-center rounded text-(--color-muted) hover:bg-(--color-ink)/8 hover:text-(--color-ink) transition-colors duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <Square size={15} />
+            </button>
+          </div>
+        </div>
+
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-3 py-3">
           <MarathonCategoryPicker
@@ -66,15 +110,6 @@ export function MarathonFilterDrawer({
             onToggle={onToggle}
             onToggleGroup={onToggleGroup}
           />
-        </div>
-
-        {/* Footer */}
-        <div className="shrink-0 px-5 py-4 border-t border-(--color-ink)/8">
-          <p className="text-xs text-(--color-muted) text-center">
-            {totalSelectedCards > 0
-              ? `${totalSelectedCards} cartes sélectionnées`
-              : "Aucune carte sélectionnée"}
-          </p>
         </div>
       </div>
     </>
