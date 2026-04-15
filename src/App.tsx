@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
+import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
   Gamepad2, FlaskConical, BookCheck, Columns3,
@@ -734,14 +735,37 @@ export default function App() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-(--color-ink)/8 flex items-center justify-between">
-          <span className="text-xs text-(--color-muted)">{getSession()?.login}</span>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => { clearSession(); window.location.reload(); }} className="text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150">
-              Déconnexion
-            </button>
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          </div>
+        <div className="border-t border-(--color-ink)/8 flex items-center justify-between px-4 py-3">
+          {(() => {
+            const session = getSession();
+            const login = session?.login ?? "Invité";
+            const initial = login[0]?.toUpperCase() ?? "?";
+            return (
+              <Popover.Root>
+                <Popover.Trigger asChild>
+                  <button type="button" className="flex items-center gap-2 rounded-lg px-1 py-1 hover:bg-(--color-ink)/5 transition-colors duration-150">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-(--color-brand)/15 text-xs font-bold text-(--color-brand)">
+                      {initial}
+                    </span>
+                    <span className="text-xs font-medium text-(--color-ink) max-w-24 truncate">{login}</span>
+                  </button>
+                </Popover.Trigger>
+                <Popover.Portal>
+                  <Popover.Content side="top" align="start" sideOffset={8} className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8">
+                    <button
+                      type="button"
+                      onClick={() => { clearSession(); window.location.reload(); }}
+                      className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/8 transition-colors duration-150"
+                    >
+                      Déconnexion
+                    </button>
+                    <Popover.Arrow className="fill-(--color-surface)" />
+                  </Popover.Content>
+                </Popover.Portal>
+              </Popover.Root>
+            );
+          })()}
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
       </aside>
 
