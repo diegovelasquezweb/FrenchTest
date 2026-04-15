@@ -53,6 +53,7 @@ import type { VoyageCategory } from "./components/VoyageCategoryPicker";
 import { ThemeToggle } from "./components/ThemeToggle";
 import type { VocabCategory } from "./components/VocabCategoryPicker";
 import { VocabCategoryPicker } from "./components/VocabCategoryPicker";
+import { VocabListView } from "./components/VocabListView";
 import type { MarathonCategoryId, MarathonGroupId } from "./components/MarathonCategoryPicker";
 import { MarathonCategoryPicker, ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
 import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
@@ -88,7 +89,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -102,6 +103,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   oral: "Test oral",
   patterns: "Parcours",
   vocabulaire: "Vocabulaire",
+  "vocabulaire-liste": "Liste vocabulaire",
   touriste: "Voyage",
   "grammar-test": "Test grammaire",
   difficiles: "Mes difficiles",
@@ -168,6 +170,7 @@ export default function App() {
   const pEcritFaitsDivers  = useFlashcards(FLASHCARDS.filter(c => c.category === "écrit-faits-divers"),  "tef-p-ecrit-faits-divers");
   const pEcritArgumentatif = useFlashcards(FLASHCARDS.filter(c => c.category === "argumentation"),       "tef-p-ecrit-argumentatif");
   const VOCAB_CARDS = useMemo(() => [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS], []);
+  const ALL_VOCAB_CARDS = useMemo(() => [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS, ...GENRE_CARDS, ...PIEGES_CARDS, ...ACCENTS_CARDS], []);
   const pVocabVerbes = useFlashcards(VOCAB_CARDS.filter(c => !c.subCategory || c.subCategory === "verbes"), "tef-vocab-verbes");
   const pVocabAdjectifs = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "adjectifs"), "tef-vocab-adjectifs");
   const pVocabNoms = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "noms"), "tef-vocab-noms");
@@ -187,6 +190,7 @@ export default function App() {
   const [patternsCategory, setPatternsCategory] = useState<PatternsCategory | null>(null);
   const [voyageCategory, setVoyageCategory] = useState<VoyageCategory | null>(null);
   const [vocabCategory, setVocabCategory] = useState<VocabCategory | null>(null);
+  const [vocabListQuery, setVocabListQuery] = useState("");
   const [marathonDrawerOpen, setMarathonDrawerOpen] = useState(false);
   const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
     () => new Set<MarathonCategoryId>([
@@ -423,6 +427,7 @@ export default function App() {
     });
   }
   function handleStartVocabulaire()  { setVocabCategory(null); setAppMode("vocabulaire"); }
+  function handleStartVocabList()    { setVocabListQuery(""); setAppMode("vocabulaire-liste"); }
 
   function handleSelectVoyageCategory(cat: VoyageCategory) {
     setVoyageCategory(cat);
@@ -463,6 +468,20 @@ export default function App() {
       cat === "accents" ? pVocabAccents :
       pVocabMix;
     deck.startSession();
+  }
+
+  function handlePracticeFromVocabList(card: Flashcard) {
+    const sub = card.subCategory;
+    const cat: VocabCategory =
+      sub === "adjectifs" ? "adjectifs" :
+      sub === "noms" ? "noms" :
+      sub === "expressions" ? "expressions" :
+      sub === "genre" ? "genre" :
+      sub === "erreurs" ? "erreurs" :
+      sub === "accents" ? "accents" :
+      sub === "verbes" ? "verbes" :
+      "mix";
+    handleSelectVocabCategory(cat);
   }
 
   const activePhase =
@@ -548,6 +567,7 @@ export default function App() {
     "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
     "Vocabulaire":       { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
+    "Liste vocabulaire": { mode: "vocabulaire-liste", onClick: handleStartVocabList, icon: SlidersHorizontal },
     "Verbes":            { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("verbes"), icon: BookCheck },
     "Adjectifs":         { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("adjectifs"), icon: BookCheck },
     "Noms":              { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("noms"), icon: BookCheck },
@@ -712,6 +732,7 @@ export default function App() {
                 { label: "Erreurs",     mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("erreurs") },
                 { label: "Accents",     mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("accents") },
                 { label: "Mixte",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
+                { label: "Liste vocabulaire", mode: "vocabulaire-liste" as const, onClick: handleStartVocabList },
               ],
             },
             {
@@ -1137,6 +1158,7 @@ export default function App() {
                         { label: "Erreurs",     onClick: () => handleSelectVocabCategory("erreurs") },
                         { label: "Accents",     onClick: () => handleSelectVocabCategory("accents") },
                         { label: "Mixte",       onClick: () => handleSelectVocabCategory("mix") },
+                        { label: "Liste vocabulaire", onClick: handleStartVocabList },
                       ],
                     },
                     {
@@ -1526,7 +1548,7 @@ export default function App() {
                           { id: "oral-monologue",     label: "Persuasion",      count: pOralMonologue.totalCards },
                           { id: "ecrit-faits-divers", label: "Faits divers",         count: pEcritFaitsDivers.totalCards },
                           { id: "connecteurs",        label: "Connecteurs",          count: pConnecteurs.totalCards },
-                          { id: "argumentation",      label: "Argumentation",        count: pEcritArgumentatif.totalCards },
+                          { id: "argumentation",      label: "Argumentatif",         count: pEcritArgumentatif.totalCards },
                           { id: "mrs-vandertramp",    label: "Mrs Vandertramp",      count: pEtreAvoir.totalCards },
                         ],
                       },
@@ -1720,18 +1742,30 @@ export default function App() {
               {appMode === "vocabulaire" && (
                 <>
                   {vocabCategory === null && (
-                    <VocabCategoryPicker
-                      options={[
-                        { id: "verbes", icon: "🔁", label: "Verbes", totalCards: pVocabVerbes.totalCards, masteredCount: pVocabVerbes.masteredCount, onClick: () => handleSelectVocabCategory("verbes") },
-                        { id: "adjectifs", icon: "🎯", label: "Adjectifs", totalCards: pVocabAdjectifs.totalCards, masteredCount: pVocabAdjectifs.masteredCount, onClick: () => handleSelectVocabCategory("adjectifs") },
-                        { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
-                        { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
-                        { id: "genre", icon: "⚥", label: "Genre", totalCards: pVocabGenre.totalCards, masteredCount: pVocabGenre.masteredCount, onClick: () => handleSelectVocabCategory("genre") },
-                        { id: "erreurs", icon: "⚠️", label: "Erreurs", totalCards: pVocabErreurs.totalCards, masteredCount: pVocabErreurs.masteredCount, onClick: () => handleSelectVocabCategory("erreurs") },
-                        { id: "accents", icon: "À", label: "Accents", totalCards: pVocabAccents.totalCards, masteredCount: pVocabAccents.masteredCount, onClick: () => handleSelectVocabCategory("accents") },
-                        { id: "mix", icon: "🗂️", label: "Mixte", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
-                      ]}
-                    />
+                    <div className="mx-auto w-full max-w-lg">
+                      <div className="mb-4 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={handleStartVocabList}
+                          className="inline-flex items-center gap-2 rounded border border-(--color-ink)/12 bg-(--color-surface) px-3 py-2 text-xs font-semibold text-(--color-ink) transition-colors hover:bg-(--color-ink)/6"
+                        >
+                          <SlidersHorizontal size={14} />
+                          Liste vocabulaire
+                        </button>
+                      </div>
+                      <VocabCategoryPicker
+                        options={[
+                          { id: "verbes", icon: "🔁", label: "Verbes", totalCards: pVocabVerbes.totalCards, masteredCount: pVocabVerbes.masteredCount, onClick: () => handleSelectVocabCategory("verbes") },
+                          { id: "adjectifs", icon: "🎯", label: "Adjectifs", totalCards: pVocabAdjectifs.totalCards, masteredCount: pVocabAdjectifs.masteredCount, onClick: () => handleSelectVocabCategory("adjectifs") },
+                          { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
+                          { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
+                          { id: "genre", icon: "⚥", label: "Genre", totalCards: pVocabGenre.totalCards, masteredCount: pVocabGenre.masteredCount, onClick: () => handleSelectVocabCategory("genre") },
+                          { id: "erreurs", icon: "⚠️", label: "Erreurs", totalCards: pVocabErreurs.totalCards, masteredCount: pVocabErreurs.masteredCount, onClick: () => handleSelectVocabCategory("erreurs") },
+                          { id: "accents", icon: "À", label: "Accents", totalCards: pVocabAccents.totalCards, masteredCount: pVocabAccents.masteredCount, onClick: () => handleSelectVocabCategory("accents") },
+                          { id: "mix", icon: "🗂️", label: "Mixte", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
+                        ]}
+                      />
+                    </div>
                   )}
                   {vocabCategory !== null && activeVocabDeck.state.phase === "session" && activeVocabDeck.currentCard && (
                     <FlashcardView card={activeVocabDeck.currentCard} index={activeVocabDeck.progress.index} total={activeVocabDeck.progress.total} onRate={activeVocabDeck.rate} onSkip={activeVocabDeck.skip} onBack={activeVocabDeck.back} isFavorite={isFavoriteCard(activeVocabDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeVocabDeck.currentCard!.id)} />
@@ -1740,6 +1774,17 @@ export default function App() {
                     <FlashcardResults sessionResults={activeVocabDeck.state.sessionResults} masteredCount={activeVocabDeck.masteredCount} totalCards={activeVocabDeck.totalCards} cards={activeVocabDeck.state.deck} onRestart={activeVocabDeck.restart} onHome={handleGoHome} />
                   )}
                 </>
+              )}
+
+              {appMode === "vocabulaire-liste" && (
+                <VocabListView
+                  cards={ALL_VOCAB_CARDS}
+                  query={vocabListQuery}
+                  onQueryChange={setVocabListQuery}
+                  isFavoriteCard={isFavoriteCard}
+                  onToggleFavorite={toggleFavoriteCard}
+                  onPractice={handlePracticeFromVocabList}
+                />
               )}
 
               {/* TOURISTE */}
