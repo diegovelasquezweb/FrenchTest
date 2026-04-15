@@ -24,6 +24,7 @@ import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
 import { getItem, setItem, pushStore } from "./lib/store";
+import { getSession, clearSession } from "./lib/auth";
 import { QuizPhase } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
@@ -734,8 +735,13 @@ export default function App() {
         </nav>
 
         <div className="p-4 border-t border-(--color-ink)/8 flex items-center justify-between">
-          <span className="text-xs text-(--color-muted)">TEF Canada.</span>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <span className="text-xs text-(--color-muted)">{getSession()?.login}</span>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => { clearSession(); window.location.reload(); }} className="text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150">
+              Déconnexion
+            </button>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
         </div>
       </aside>
 
