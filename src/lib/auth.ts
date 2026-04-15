@@ -1,35 +1,45 @@
-const WORKER_URL      = import.meta.env.VITE_SYNC_URL          as string | undefined;
-const GITHUB_CLIENT   = import.meta.env.VITE_GITHUB_CLIENT_ID  as string | undefined;
-const GOOGLE_CLIENT   = import.meta.env.VITE_GOOGLE_CLIENT_ID  as string | undefined;
-const SESSION_KEY = "tef-session";
+const WORKER_URL    = import.meta.env.VITE_SYNC_URL         as string | undefined;
+const GITHUB_CLIENT = import.meta.env.VITE_GITHUB_CLIENT_ID as string | undefined;
+const GOOGLE_CLIENT = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
 export interface Session {
   token: string;
   login: string;
 }
 
-export function getSession(): Session | null {
-  try {
-    const stored = localStorage.getItem(SESSION_KEY);
-    return stored ? (JSON.parse(stored) as Session) : null;
-  } catch { return null; }
-}
+// Token lives only in memory — never touches localStorage or cookies.
+// Cleared automatically when the tab closes.
+let _session: Session | null = null;
 
-export function saveSession(session: Session): void {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-}
+export function getSession(): Session | null { return _session; }
+export function setSession(s: Session): void { _session = s; }
+export function clearSession(): void { _session = null; }
 
-export function clearSession(): void {
-  localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem("tef-guest");
+export function isGuest(): boolean {
+  return localStorage.getItem("tef-guest") === "1";
 }
 
 export function enterGuestMode(): void {
   localStorage.setItem("tef-guest", "1");
 }
 
-export function isGuest(): boolean {
-  return localStorage.getItem("tef-guest") === "1";
+export function clearGuestMode(): void {
+  localStorage.removeItem("tef-guest");
+}
+
+export async function logout(): Promise<void> {
+  const token = _session?.token;
+  clearSession();
+  clearGuestMode();
+  if (!WORKER_URL || !token) return;
+  try {
+    await fetch(`${WORKER_URL}/logout`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch {
+    // offline — session already cleared in memory
+  }
 }
 
 export function redirectToGitHub(): void {
@@ -64,6 +74,6 @@ export async function exchangeCode(code: string, provider: string): Promise<Sess
   if (!res.ok) throw new Error("Auth failed");
   const data = await res.json() as { token: string; login: string };
   const session: Session = { token: data.token, login: data.login };
-  saveSession(session);
+  setSession(session);
   return session;
 }

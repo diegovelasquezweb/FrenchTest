@@ -11,7 +11,6 @@ if (!rootElement) throw new Error("Root element not found");
 const root = createRoot(rootElement);
 
 async function bootstrap() {
-  // Handle GitHub OAuth callback (?code=... in URL)
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   const provider = params.get("state") ?? "github";
@@ -20,7 +19,7 @@ async function bootstrap() {
     try {
       await exchangeCode(code, provider);
     } catch {
-      // Auth failed — will show login screen
+      // Auth failed — show login screen
     }
   }
 
@@ -34,13 +33,17 @@ async function bootstrap() {
   if (session || guest) {
     root.render(
       <StrictMode>
-        <App />
+        <App session={session} />
       </StrictMode>
     );
   } else {
     root.render(
       <StrictMode>
-        <LoginScreen onGitHub={redirectToGitHub} onGoogle={redirectToGoogle} onGuest={() => { enterGuestMode(); window.location.reload(); }} />
+        <LoginScreen
+          onGitHub={redirectToGitHub}
+          onGoogle={redirectToGoogle}
+          onGuest={() => { enterGuestMode(); window.location.reload(); }}
+        />
       </StrictMode>
     );
   }

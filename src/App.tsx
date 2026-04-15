@@ -3,7 +3,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
-  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal,
+  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, NotebookPen, MessageCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -25,7 +25,8 @@ import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
 import { getItem, setItem, pushStore } from "./lib/store";
-import { getSession, clearSession } from "./lib/auth";
+import { logout, isGuest } from "./lib/auth";
+import type { Session } from "./lib/auth";
 import { QuizPhase } from "./types";
 import type { Flashcard } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
@@ -120,7 +121,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "mes-notes": "Mes notes",
 };
 
-export default function App() {
+export default function App({ session }: { session: Session | null }) {
   const { theme, toggle: toggleTheme } = useTheme();
   const [appMode, setAppMode] = useState<AppMode>("home");
   const DEFAULT_FAVORITES: string[] = [];
@@ -1004,26 +1005,21 @@ export default function App() {
           })}
         </nav>
 
-        {(() => {
-          const session = getSession();
-          if (!session) return null;
-          return (
-            <div className="px-4 py-2 border-t border-(--color-ink)/8">
-              <button
-                type="button"
-                onClick={() => setAiChatOpen(true)}
-                className="w-full flex items-center gap-2.5 rounded px-3 py-2 text-sm font-medium text-(--color-muted) transition-colors duration-150 hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
-              >
-                <MessageCircle size={15} className="shrink-0" />
-                Demander à l'IA
-              </button>
-            </div>
-          );
-        })()}
+        {session && (
+          <div className="px-4 py-2 border-t border-(--color-ink)/8">
+            <button
+              type="button"
+              onClick={() => setAiChatOpen(true)}
+              className="w-full flex items-center gap-2.5 rounded px-3 py-2 text-sm font-medium text-(--color-muted) transition-colors duration-150 hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
+            >
+              <MessageCircle size={15} className="shrink-0" />
+              Demander à l'IA
+            </button>
+          </div>
+        )}
         <div className="border-t border-(--color-ink)/8 flex items-center justify-between px-4 py-3">
           {(() => {
-            const session = getSession();
-            const login = session?.login ?? "Invité";
+            const login = session?.login ?? (isGuest() ? "Invité" : "?");
             const initial = login[0]?.toUpperCase() ?? "?";
             return (
               <Popover.Root>
@@ -1039,7 +1035,7 @@ export default function App() {
                   <Popover.Content side="top" align="start" sideOffset={8} className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8">
                     <button
                       type="button"
-                      onClick={() => { clearSession(); window.location.reload(); }}
+                      onClick={() => { void logout().then(() => window.location.reload()); }}
                       className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/8 transition-colors duration-150"
                     >
                       Déconnexion
@@ -1353,12 +1349,31 @@ export default function App() {
               {/* PARTICIPE */}
               {appMode === "participe" && (
                 <>
-                  <div className="mx-auto mb-3 w-full max-w-xl rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-4 py-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-(--color-ink)">Mode difficile</p>
-                        <p className="text-xs text-(--color-muted)">Retire les verbes réguliers en -er (→ -é) avec « avoir ».</p>
-                      </div>
+                  <div className="mx-auto mb-3 w-full max-w-xl">
+                    <div className="flex items-center justify-end gap-1.5 text-[11px] text-(--color-muted)/85">
+                      <span>Mode difficile</span>
+                      <Popover.Root>
+                        <Popover.Trigger asChild>
+                          <button
+                            type="button"
+                            aria-label="Aide mode difficile"
+                            className="inline-flex h-[18px] w-[18px] items-center justify-center rounded text-(--color-muted)/85 transition-colors hover:bg-(--color-ink)/8 hover:text-(--color-ink)"
+                          >
+                            <HelpCircle size={12} />
+                          </button>
+                        </Popover.Trigger>
+                        <Popover.Portal>
+                          <Popover.Content
+                            side="bottom"
+                            align="end"
+                            sideOffset={8}
+                            className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-2 text-xs text-(--color-muted) shadow-lg"
+                          >
+                            Retire les verbes réguliers en -er (→ -é) avec « avoir ».
+                            <Popover.Arrow className="fill-(--color-surface)" />
+                          </Popover.Content>
+                        </Popover.Portal>
+                      </Popover.Root>
                       <button
                         type="button"
                         role="switch"
@@ -1369,15 +1384,21 @@ export default function App() {
                           setParticipeHardMode(next);
                           participe.startQuiz(next ? PARTICIPE_HARD_VERBS : VERBS);
                         }}
-                        className="flex h-7 w-12 items-center rounded-full border border-(--color-btn-border) bg-(--color-btn-bg) p-0.5 shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                        className={[
+                          "flex h-6 w-10 items-center rounded-full border p-0.5 transition-colors duration-200",
+                          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
+                          participeHardMode
+                            ? "border-(--color-brand)/45 bg-(--color-brand)/18"
+                            : "border-(--color-ink)/20 bg-(--color-ink)/10",
+                        ].join(" ")}
                       >
                         <span
                           aria-hidden="true"
                           className={[
-                            "flex h-5 w-5 items-center justify-center rounded-full transition-transform duration-200",
+                            "flex h-4 w-4 items-center justify-center rounded-full transition-transform duration-200",
                             participeHardMode
-                              ? "translate-x-[calc(48px-20px-4px)] bg-(--color-brand)"
-                              : "translate-x-0 bg-(--color-surface) shadow-sm",
+                              ? "translate-x-[calc(40px-16px-4px)] bg-(--color-brand)"
+                              : "translate-x-0 bg-(--color-ink)/70",
                           ].join(" ")}
                         />
                       </button>

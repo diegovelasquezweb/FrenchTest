@@ -1,6 +1,6 @@
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, PUT, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
@@ -40,10 +40,7 @@ async function authGitHub(code, env) {
   if (!tokenData.access_token) return null;
 
   const userRes = await fetch("https://api.github.com/user", {
-    headers: {
-      Authorization: `Bearer ${tokenData.access_token}`,
-      "User-Agent": "tef-sync-worker",
-    },
+    headers: { Authorization: `Bearer ${tokenData.access_token}`, "User-Agent": "tef-sync-worker" },
   });
   const user = await userRes.json();
   if (!user.id) return null;
@@ -94,8 +91,17 @@ export default {
 
       if (!result) return json({ error: "Auth failed" }, 401);
 
-      const sessionToken = await createSession(env, result.userId);
-      return json({ token: sessionToken, login: result.login });
+      const token = await createSession(env, result.userId);
+      await env.TEF_SYNC.put(`user:${result.userId}:profile`, JSON.stringify({ login: result.login }));
+      return json({ token, login: result.login });
+    }
+
+    // ── POST /logout ───────────────────────────────────────────────────────
+    if (request.method === "POST" && url.pathname === "/logout") {
+      const header = request.headers.get("Authorization") ?? "";
+      const token = header.startsWith("Bearer ") ? header.slice(7) : "";
+      if (token) await env.TEF_SYNC.delete(`session:${token}`);
+      return json({ ok: true });
     }
 
     // ── Authenticated routes ───────────────────────────────────────────────
@@ -104,14 +110,16 @@ export default {
 
     const dataKey = `user:${userId}:data`;
 
-    if (request.method === "GET") {
+    // ── GET / (data sync) ──────────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/") {
       const data = await env.TEF_SYNC.get(dataKey);
       return new Response(data ?? "{}", {
         headers: { ...CORS, "Content-Type": "application/json" },
       });
     }
 
-    if (request.method === "PUT") {
+    // ── PUT / (data sync) ──────────────────────────────────────────────────
+    if (request.method === "PUT" && url.pathname === "/") {
       const body = await request.text();
       await env.TEF_SYNC.put(dataKey, body);
       return json({ ok: true });
@@ -131,9 +139,7 @@ export default {
       if (!key || typeof key !== "string" || !key.startsWith("sk-ant-")) {
         return json({ error: "Invalid Anthropic API key" }, 400);
       }
-      await env.TEF_SYNC.put(`user:${userId}:aikey`, key, {
-        expirationTtl: 60 * 60 * 24 * 365,
-      });
+      await env.TEF_SYNC.put(`user:${userId}:aikey`, key, { expirationTtl: 60 * 60 * 24 * 365 });
       return json({ ok: true });
     }
 
