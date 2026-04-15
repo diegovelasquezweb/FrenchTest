@@ -1,14 +1,14 @@
-import { useReducer, useCallback } from "react";
+import { useReducer, useCallback, useRef } from "react";
 import type { Verb, QuizQuestion, QuizState } from "../types";
 import { AnswerState, QuizPhase } from "../types";
 import { fisherYates } from "../lib/shuffle";
 import { generateDistractors } from "../lib/distractors";
 
 type QuizAction =
-  | { type: "START" }
+  | { type: "START"; verbs: Verb[] }
   | { type: "SELECT"; payload: number }
   | { type: "NEXT" }
-  | { type: "RESTART" }
+  | { type: "RESTART"; verbs: Verb[] }
   | { type: "HOME" };
 
 function buildQuestions(
@@ -37,7 +37,7 @@ const initialState: QuizState = {
   everWrong: false,
 };
 
-function makeReducer(verbs: Verb[], questionCount: number) {
+function makeReducer(questionCount: number) {
   return function reducer(state: QuizState, action: QuizAction): QuizState {
     switch (action.type) {
       case "HOME": {
@@ -48,7 +48,7 @@ function makeReducer(verbs: Verb[], questionCount: number) {
         return {
           ...initialState,
           phase: QuizPhase.Answering,
-          questions: buildQuestions(verbs, questionCount, Math.random),
+          questions: buildQuestions(action.verbs, questionCount, Math.random),
         };
       }
       case "SELECT": {
@@ -103,7 +103,7 @@ function makeReducer(verbs: Verb[], questionCount: number) {
 
 export interface UseQuizReturn {
   state: QuizState;
-  startQuiz(): void;
+  startQuiz(customVerbs?: Verb[]): void;
   selectAnswer(index: number): void;
   nextQuestion(): void;
   restartQuiz(): void;
@@ -113,15 +113,20 @@ export interface UseQuizReturn {
 }
 
 export function useQuiz(verbs: Verb[], questionCount = 10): UseQuizReturn {
-  const [state, dispatch] = useReducer(makeReducer(verbs, questionCount), initialState);
+  const [state, dispatch] = useReducer(makeReducer(questionCount), initialState);
+  const lastVerbs = useRef<Verb[]>(verbs);
 
-  const startQuiz = useCallback(() => dispatch({ type: "START" }), []);
+  const startQuiz = useCallback((customVerbs?: Verb[]) => {
+    const selected = (customVerbs && customVerbs.length > 0) ? customVerbs : verbs;
+    lastVerbs.current = selected;
+    dispatch({ type: "START", verbs: selected });
+  }, [verbs]);
   const selectAnswer = useCallback(
     (index: number) => dispatch({ type: "SELECT", payload: index }),
     []
   );
   const nextQuestion = useCallback(() => dispatch({ type: "NEXT" }), []);
-  const restartQuiz = useCallback(() => dispatch({ type: "RESTART" }), []);
+  const restartQuiz = useCallback(() => dispatch({ type: "RESTART", verbs: lastVerbs.current }), []);
   const goHome = useCallback(() => dispatch({ type: "HOME" }), []);
 
   const currentQuestion =

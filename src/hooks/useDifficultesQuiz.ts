@@ -103,7 +103,11 @@ function reducer(state: DifficultesState, action: DifficultesAction): Difficulte
       return {
         ...initialState,
         phase: QuizPhase.Answering,
-        questions: buildDifficultesQuestions(action.verbs, TOTAL_QUESTIONS, Math.random),
+        questions: buildDifficultesQuestions(
+          action.verbs,
+          Math.min(TOTAL_QUESTIONS, action.verbs.length),
+          Math.random
+        ),
       };
     case "SELECT": {
       if (state.phase === QuizPhase.Feedback) {

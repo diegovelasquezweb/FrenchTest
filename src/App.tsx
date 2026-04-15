@@ -4,7 +4,7 @@ import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
   Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal,
-  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, NotebookPen,
+  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, NotebookPen, MessageCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { VERBS } from "./data/verbs";
@@ -59,6 +59,7 @@ import { ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
 import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
 import { NotesView } from "./components/NotesView";
 import type { UserNote } from "./components/NotesView";
+import { AiChatDrawer } from "./components/AiChatDrawer";
 
 const QUESTION_COUNT = 10;
 
@@ -136,6 +137,14 @@ export default function App() {
     setItem("tef-favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  const [participeHardMode, setParticipeHardMode] = useState<boolean>(() => {
+    try { return getItem("tef-participe-hard-mode") === "1"; }
+    catch { return false; }
+  });
+  useEffect(() => {
+    setItem("tef-participe-hard-mode", participeHardMode ? "1" : "0");
+  }, [participeHardMode]);
+
   // Push on tab close / reload
   useEffect(() => {
     const handler = () => { void pushStore(); };
@@ -149,6 +158,10 @@ export default function App() {
   }
 
   const participe = useQuiz(VERBS, QUESTION_COUNT);
+  const PARTICIPE_HARD_VERBS = useMemo(
+    () => VERBS.filter(v => !(v.ending === "-é" && v.auxiliary === "avoir")),
+    []
+  );
   const imparfait = useImparfaitQuiz();
   const conditionnel = useConditionnelQuiz();
   const futur = useFuturQuiz();
@@ -195,6 +208,7 @@ export default function App() {
   const [vocabCategory, setVocabCategory] = useState<VocabCategory | null>(null);
   const [vocabListQuery, setVocabListQuery] = useState("");
   const [marathonDrawerOpen, setMarathonDrawerOpen] = useState(false);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
   const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
     () => new Set<MarathonCategoryId>([
       "oral-interaction", "oral-monologue", "ecrit-faits-divers", "connecteurs", "argumentation",
@@ -391,7 +405,10 @@ export default function App() {
     setAppMode("home");
   }
 
-  function handleStartParticipe()    { participe.startQuiz();    setAppMode("participe"); }
+  function handleStartParticipe()    {
+    participe.startQuiz(participeHardMode ? PARTICIPE_HARD_VERBS : VERBS);
+    setAppMode("participe");
+  }
   function handleStartImparfait()    { imparfait.startQuiz();    setAppMode("imparfait"); }
   function handleStartConditionnel() { conditionnel.startQuiz(); setAppMode("conditionnel"); }
   function handleStartFutur()        { futur.startQuiz();        setAppMode("futur"); }
@@ -987,6 +1004,22 @@ export default function App() {
           })}
         </nav>
 
+        {(() => {
+          const session = getSession();
+          if (!session) return null;
+          return (
+            <div className="px-4 py-2 border-t border-(--color-ink)/8">
+              <button
+                type="button"
+                onClick={() => setAiChatOpen(true)}
+                className="w-full flex items-center gap-2.5 rounded px-3 py-2 text-sm font-medium text-(--color-muted) transition-colors duration-150 hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
+              >
+                <MessageCircle size={15} className="shrink-0" />
+                Demander à l'IA
+              </button>
+            </div>
+          );
+        })()}
         <div className="border-t border-(--color-ink)/8 flex items-center justify-between px-4 py-3">
           {(() => {
             const session = getSession();
@@ -1320,6 +1353,36 @@ export default function App() {
               {/* PARTICIPE */}
               {appMode === "participe" && (
                 <>
+                  <div className="mx-auto mb-3 w-full max-w-xl rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-4 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-(--color-ink)">Mode difficile</p>
+                        <p className="text-xs text-(--color-muted)">Retire les verbes réguliers en -er (→ -é) avec « avoir ».</p>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={participeHardMode}
+                        aria-label={participeHardMode ? "Désactiver le mode difficile" : "Activer le mode difficile"}
+                        onClick={() => {
+                          const next = !participeHardMode;
+                          setParticipeHardMode(next);
+                          participe.startQuiz(next ? PARTICIPE_HARD_VERBS : VERBS);
+                        }}
+                        className="flex h-7 w-12 items-center rounded-full border border-(--color-btn-border) bg-(--color-btn-bg) p-0.5 shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={[
+                            "flex h-5 w-5 items-center justify-center rounded-full transition-transform duration-200",
+                            participeHardMode
+                              ? "translate-x-[calc(48px-20px-4px)] bg-(--color-brand)"
+                              : "translate-x-0 bg-(--color-surface) shadow-sm",
+                          ].join(" ")}
+                        />
+                      </button>
+                    </div>
+                  </div>
                   {(participe.state.phase === QuizPhase.Answering || participe.state.phase === QuizPhase.Feedback) && participe.currentQuestion && (
                     <QuizCard question={participe.currentQuestion} answerState={participe.state.answerState} selectedIndex={participe.state.selectedIndex} onSelect={participe.selectAnswer} onNext={participe.nextQuestion} questionNumber={participe.progress.index + 1} total={participe.progress.total} isWeak={isWeak(participe.currentQuestion.verb.infinitive)} onToggleWeak={() => toggleWeak(participe.currentQuestion!.verb.infinitive)} />
                   )}
@@ -1858,6 +1921,8 @@ export default function App() {
           )}
         </main>
       </div>
+
+      <AiChatDrawer open={aiChatOpen} onClose={() => setAiChatOpen(false)} />
     </div>
   );
 }

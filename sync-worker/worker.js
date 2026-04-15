@@ -117,6 +117,70 @@ export default {
       return json({ ok: true });
     }
 
+    // ── GET /aikey ─────────────────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/aikey") {
+      const key = await env.TEF_SYNC.get(`user:${userId}:aikey`);
+      return json({ configured: key !== null });
+    }
+
+    // ── PUT /aikey ─────────────────────────────────────────────────────────
+    if (request.method === "PUT" && url.pathname === "/aikey") {
+      let body;
+      try { body = await request.json(); } catch { return json({ error: "Invalid body" }, 400); }
+      const { key } = body;
+      if (!key || typeof key !== "string" || !key.startsWith("sk-ant-")) {
+        return json({ error: "Invalid Anthropic API key" }, 400);
+      }
+      await env.TEF_SYNC.put(`user:${userId}:aikey`, key, {
+        expirationTtl: 60 * 60 * 24 * 365,
+      });
+      return json({ ok: true });
+    }
+
+    // ── DELETE /aikey ──────────────────────────────────────────────────────
+    if (request.method === "DELETE" && url.pathname === "/aikey") {
+      await env.TEF_SYNC.delete(`user:${userId}:aikey`);
+      return json({ ok: true });
+    }
+
+    // ── POST /chat ─────────────────────────────────────────────────────────
+    if (request.method === "POST" && url.pathname === "/chat") {
+      const apiKey = await env.TEF_SYNC.get(`user:${userId}:aikey`);
+      if (!apiKey) return json({ error: "No API key configured" }, 402);
+
+      let body;
+      try { body = await request.json(); } catch { return json({ error: "Invalid body" }, 400); }
+
+      const { messages } = body;
+      if (!Array.isArray(messages)) return json({ error: "messages required" }, 400);
+
+      const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1024,
+          system: `Tu es un assistant spécialisé dans le français langue seconde et la préparation au TEF Canada.
+Tu aides avec: traduction (français ↔ anglais/espagnol), correction grammaticale, vocabulaire TEF, expressions idiomatiques, conjugaison et accord.
+Réponds toujours en français sauf si l'utilisateur écrit en anglais ou espagnol.
+Sois concis et pédagogique.`,
+          messages,
+        }),
+      });
+
+      if (!anthropicRes.ok) {
+        const err = await anthropicRes.json().catch(() => ({}));
+        return json({ error: err.error?.message ?? "Anthropic error" }, anthropicRes.status);
+      }
+
+      const data = await anthropicRes.json();
+      return json({ content: data.content[0]?.text ?? "" });
+    }
+
     return json({ error: "Method not allowed" }, 405);
   },
 };
