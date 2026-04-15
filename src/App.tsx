@@ -79,6 +79,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   difficiles: "Mes difficiles",
   verbes: "Verbes essentiels",
   "mes-patterns": "Mes patterns",
+  "mes-vocab": "Mon vocabulaire",
   "être-cards": "Être / avoir",
   "être-quiz": "Test être / avoir",
   "être-guide": "Liste des verbes",
@@ -120,9 +121,10 @@ export default function App() {
   const orthographe = useOrthographeQuiz();
   const grammarTest = useGrammarQuiz();
   const { isWeak, toggleWeak, weakVerbList } = useWeakVerbs();
-  const { isFavoriteCard, toggleFavoriteCard, favoriteCardList } = useFavoriteCards();
+  const { isFavoriteCard, toggleFavoriteCard, favoriteCardList, favoriteVocabList } = useFavoriteCards();
   const difficiles = useDifficultesQuiz();
   const mesPatterns = useFlashcards(favoriteCardList, "tef-mes-patterns-progress");
+  const mesVocab = useFlashcards(favoriteVocabList, "tef-mes-vocab-progress");
   const phrases = usePhrasesQuiz();
   const présent = usePresentQuiz();
   const écrit = useEcritQuiz();
@@ -317,6 +319,7 @@ export default function App() {
     if (appMode === "vocabulaire") { activeVocabDeck.goHome(); setVocabCategory(null); }
     if (appMode === "touriste") { activeTouristeDeck.goHome(); setVoyageCategory(null); }
     if (appMode === "mes-patterns") mesPatterns.goHome();
+    if (appMode === "mes-vocab") mesVocab.goHome();
     if (appMode === "être-cards") pEtreAvoir.goHome();
     if (appMode === "être-quiz") etreQuiz.goHome();
     setAppMode("home");
@@ -330,6 +333,7 @@ export default function App() {
   function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
   function handleStartDifficiles()   { difficiles.goHome(); setAppMode("difficiles"); }
   function handleStartMesPatterns()  { mesPatterns.goHome(); setAppMode("mes-patterns"); }
+  function handleStartMesVocab()     { mesVocab.goHome(); setAppMode("mes-vocab"); }
   function handleStartPhrases()      { phrases.startQuiz();      setAppMode("phrases"); }
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
@@ -495,6 +499,7 @@ export default function App() {
       appMode === "patterns"      ? activeDeck      :
       appMode === "vocabulaire"   ? activeVocabDeck :
       appMode === "mes-patterns"  ? mesPatterns      :
+      appMode === "mes-vocab"     ? mesVocab         :
       appMode === "être-cards"    ? pEtreAvoir       :
       activeTouristeDeck;
     if (appMode === "patterns" && patternsCategory === null) return null;
@@ -512,7 +517,16 @@ export default function App() {
     );
   }
 
-  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns" || appMode === "être-cards";
+  const isFlashcardMode = appMode === "patterns" || appMode === "vocabulaire" || appMode === "touriste" || appMode === "mes-patterns" || appMode === "mes-vocab" || appMode === "être-cards";
+
+  const VOCAB_CATEGORY_LABEL: Record<string, string> = {
+    verbes: "Verbes", adjectifs: "Adjectifs", noms: "Noms",
+    expressions: "Expressions", genre: "Genre", erreurs: "Erreurs",
+    accents: "Accents", mix: "Mixte",
+  };
+  const pageTitle = appMode === "vocabulaire" && vocabCategory
+    ? `Vocabulaire — ${VOCAB_CATEGORY_LABEL[vocabCategory]}`
+    : appMode !== "home" ? MODE_LABEL[appMode] : "";
 
   return (
     <div className="flex h-dvh overflow-hidden bg-(--color-bg)">
@@ -543,7 +557,7 @@ export default function App() {
               label: "Mes difficiles",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "difficiles" as const, onClick: handleStartDifficiles, icon: Target as LucideIcon },
+              action: { mode: "difficiles" as const, onClick: handleStartDifficiles, icon: Bookmark as LucideIcon },
             },
             {
               id: "mes-patterns",
@@ -551,6 +565,13 @@ export default function App() {
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
               action: { mode: "mes-patterns" as const, onClick: handleStartMesPatterns, icon: Bookmark as LucideIcon },
+            },
+            {
+              id: "mes-vocab",
+              label: "Mon vocabulaire",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "mes-vocab" as const, onClick: handleStartMesVocab, icon: Bookmark as LucideIcon },
             },
             {
               id: "oral",
@@ -644,7 +665,7 @@ export default function App() {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns";
+            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab";
             const separatorClass = idx === 0
               ? ""
               : noSeparatorBefore
@@ -680,6 +701,11 @@ export default function App() {
                     {group.id === "mes-patterns" && favoriteCardList.length > 0 && (
                       <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
                         {favoriteCardList.length}
+                      </span>
+                    )}
+                    {group.id === "mes-vocab" && favoriteVocabList.length > 0 && (
+                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
+                        {favoriteVocabList.length}
                       </span>
                     )}
                   </button>
@@ -859,7 +885,7 @@ export default function App() {
         {/* Desktop header — quiz/flashcard only */}
         {appMode !== "home" && (
           <header className="hidden md:flex items-center justify-between gap-4 border-b border-(--color-ink)/8 bg-(--color-surface) px-6 py-3">
-            <span className="text-sm font-semibold text-(--color-ink) shrink-0">{MODE_LABEL[appMode]}</span>
+            <span className="text-sm font-semibold text-(--color-ink) shrink-0">{pageTitle}</span>
             {showScoreBoard && <ScoreBoard score={activeScore} index={activeProgress.index} total={activeProgress.total} />}
             {isFlashcardMode && <FlashcardHeader />}
           </header>
@@ -941,7 +967,7 @@ export default function App() {
                     onClick={handleStartDifficiles}
                     className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
                   >
-                    <Target size={16} className="shrink-0" />
+                    <Bookmark size={16} className="shrink-0" />
                     Mes difficiles
                     <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
                   </button>
@@ -1207,7 +1233,7 @@ export default function App() {
                     <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
                       <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
                         <div className="flex items-center gap-2">
-                          <Target size={16} className="text-(--color-ink)" />
+                          <Bookmark size={16} className="text-(--color-ink)" />
                           <span className="text-sm font-semibold text-(--color-ink)">Mes difficiles</span>
                         </div>
                         {weakVerbList.length > 0 && (
@@ -1400,7 +1426,7 @@ export default function App() {
                     <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
                       <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
                         <div className="flex items-center gap-2">
-                          <Heart size={16} className="text-(--color-ink)" />
+                          <Bookmark size={16} className="text-(--color-ink)" />
                           <span className="text-sm font-semibold text-(--color-ink)">Mes patterns</span>
                         </div>
                         {favoriteCardList.length > 0 && (
@@ -1412,7 +1438,7 @@ export default function App() {
                         <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
                           <p className="text-sm font-medium text-(--color-ink)">Aucune phrase sauvegardée</p>
                           <p className="text-xs text-(--color-muted) max-w-xs">
-                            Pendant les Patterns, clique sur <span className="font-medium text-(--color-ink)">♡</span> pour ajouter une phrase ici.
+                            Pendant les Patterns, clique sur <span className="font-medium text-(--color-ink)">Sauvegarder</span> pour ajouter une phrase ici.
                           </p>
                           <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">
                             Commencer un exercice
@@ -1432,7 +1458,7 @@ export default function App() {
                                   aria-label={`Retirer "${card.front}"`}
                                   className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
                                 >
-                                  <Heart size={14} fill="currentColor" />
+                                  <Bookmark size={14} fill="currentColor" />
                                 </button>
                               </li>
                             ))}
@@ -1462,6 +1488,74 @@ export default function App() {
                 </>
               )}
 
+              {/* MON VOCABULAIRE */}
+              {appMode === "mes-vocab" && (
+                <>
+                  {mesVocab.state.phase === "idle" && (
+                    <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
+                      <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
+                        <div className="flex items-center gap-2">
+                          <Bookmark size={16} className="text-(--color-ink)" />
+                          <span className="text-sm font-semibold text-(--color-ink)">Mon vocabulaire</span>
+                        </div>
+                        {favoriteVocabList.length > 0 && (
+                          <span className="text-xs font-bold text-(--color-muted)">{favoriteVocabList.length}</span>
+                        )}
+                      </div>
+                      {favoriteVocabList.length === 0 ? (
+                        <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+                          <p className="text-sm font-medium text-(--color-ink)">Aucun mot sauvegardé</p>
+                          <p className="text-xs text-(--color-muted) max-w-xs">
+                            Dans Vocabulaire, clique sur <span className="font-medium text-(--color-ink)">Sauvegarder</span> pour ajouter des mots ici.
+                          </p>
+                          <button type="button" onClick={handleGoHome} className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150">
+                            Aller à Vocabulaire
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <ul className="divide-y divide-(--color-ink)/6 max-h-[60vh] overflow-y-auto">
+                            {favoriteVocabList.map(card => (
+                              <li key={card.id} className="flex items-center justify-between px-6 py-3 gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <span className="font-semibold text-(--color-ink) leading-snug line-clamp-2" lang="fr">{card.front}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleFavoriteCard(card.id)}
+                                  aria-label={`Retirer "${card.front}"`}
+                                  className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
+                                >
+                                  <Bookmark size={14} fill="currentColor" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="px-6 py-4 border-t border-(--color-ink)/8 flex items-center justify-between gap-3">
+                            <p className="text-xs text-(--color-muted)">
+                              {favoriteVocabList.length} mot{favoriteVocabList.length > 1 ? "s" : ""} · révision ciblée
+                            </p>
+                            <button
+                              type="button"
+                              onClick={mesVocab.startSession}
+                              className="rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150"
+                            >
+                              Commencer
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {mesVocab.state.phase === "session" && mesVocab.currentCard && (
+                    <FlashcardView card={mesVocab.currentCard} index={mesVocab.progress.index} total={mesVocab.progress.total} onRate={mesVocab.rate} onSkip={mesVocab.skip} onBack={mesVocab.back} isFavorite={isFavoriteCard(mesVocab.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(mesVocab.currentCard!.id)} />
+                  )}
+                  {mesVocab.state.phase === "complete" && (
+                    <FlashcardResults sessionResults={mesVocab.state.sessionResults} masteredCount={mesVocab.masteredCount} totalCards={mesVocab.totalCards} cards={mesVocab.state.deck} onRestart={mesVocab.restart} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
               {/* VOCABULAIRE */}
               {appMode === "vocabulaire" && (
                 <>
@@ -1480,7 +1574,7 @@ export default function App() {
                     />
                   )}
                   {vocabCategory !== null && activeVocabDeck.state.phase === "session" && activeVocabDeck.currentCard && (
-                    <FlashcardView card={activeVocabDeck.currentCard} index={activeVocabDeck.progress.index} total={activeVocabDeck.progress.total} onRate={activeVocabDeck.rate} onSkip={activeVocabDeck.skip} onBack={activeVocabDeck.back} />
+                    <FlashcardView card={activeVocabDeck.currentCard} index={activeVocabDeck.progress.index} total={activeVocabDeck.progress.total} onRate={activeVocabDeck.rate} onSkip={activeVocabDeck.skip} onBack={activeVocabDeck.back} isFavorite={isFavoriteCard(activeVocabDeck.currentCard.id)} onToggleFavorite={() => toggleFavoriteCard(activeVocabDeck.currentCard!.id)} />
                   )}
                   {vocabCategory !== null && activeVocabDeck.state.phase === "complete" && (
                     <FlashcardResults sessionResults={activeVocabDeck.state.sessionResults} masteredCount={activeVocabDeck.masteredCount} totalCards={activeVocabDeck.totalCards} cards={activeVocabDeck.state.deck} onRestart={activeVocabDeck.restart} onHome={handleGoHome} />

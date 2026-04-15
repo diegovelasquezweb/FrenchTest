@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
-import { Heart, HelpCircle } from "lucide-react";
+import { Bookmark, HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../types";
 import { SwipeCard } from "./SwipeCard";
 
@@ -168,7 +168,7 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
           <div className="flex justify-end mb-3">
             <button
               type="button"
-              aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              aria-label={isFavorite ? "Retirer des favoris" : "Sauvegarder"}
               className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
                 isFavorite
                   ? "text-(--color-ink) font-semibold"
@@ -176,8 +176,8 @@ export function FlashcardView({ card, index, total, onRate, onSkip, onBack, isFa
               }`}
               onClick={onToggleFavorite}
             >
-              <Heart size={13} fill={isFavorite ? "currentColor" : "none"} />
-              {isFavorite ? "Sauvegardé" : "Sauvegarder"}
+              <Bookmark size={13} fill={isFavorite ? "currentColor" : "none"} />
+              Sauvegarder
             </button>
           </div>
         )}
