@@ -805,7 +805,6 @@ export default function App() {
               {/* Mobile: accordion */}
               <div className="md:hidden flex-1 flex flex-col items-center justify-center gap-6 px-6 py-6">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <Target size={44} className="text-(--color-brand)" aria-hidden="true" />
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
                   <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
                 </div>
