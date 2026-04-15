@@ -21,7 +21,7 @@ const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
   connecteurs: "Connecteurs",
   argumentation: "Argumentatif",
   vocabulaire: "Vocabulaire",
-  touriste: "Touriste",
+  touriste: "Voyage",
   "être-avoir": "MRS VANDERTRAMP",
 };
 

@@ -226,10 +226,10 @@ export const FLASHCARDS: Flashcard[] = [
   },
   {
     id: "ecrit-02",
-    front: "Suite à notre entretien du…, je vous contacte pour…",
+    front: "À la suite de notre entretien du…, je vous contacte pour…",
     translationEn: "Following our interview on…, I am contacting you to…",
     translationEs: "Tras nuestra entrevista del…, le contacto para…",
-    usage: "\"Suite à\" = following. Formule de référence à un contact précédent.",
+    usage: "\"À la suite de\" = formule recommandée en registre écrit formel.",
     category: "argumentation",
   },
   {
@@ -1129,8 +1129,8 @@ export const FLASHCARDS: Flashcard[] = [
   {
     id: "pers-01",
     front: "Écoute, je suis tombé(e) sur une annonce qui pourrait vraiment t'intéresser.",
-    translationEn: "Listen, I found something you might really like…",
-    translationEs: "Mira, encontré algo que podría gustarte mucho…",
+    translationEn: "Listen, I came across an ad that might really interest you.",
+    translationEs: "Mira, me encontré con un anuncio que podría interesarte mucho.",
     usage: "Ouverture naturelle pour présenter un document. Registre informel — TU. Capte l'attention avant de montrer le doc.",
     category: "oral-persuasion",
   },
@@ -1169,8 +1169,8 @@ export const FLASHCARDS: Flashcard[] = [
   {
     id: "pers-06",
     front: "Je comprends ton hésitation, mais prends deux minutes : ça peut vraiment valoir le coup.",
-    translationEn: "I understand your hesitation, but think about it for a second…",
-    translationEs: "Entiendo tu reticencia, pero piénsalo un momento…",
+    translationEn: "I understand your hesitation, but take two minutes: it could really be worth it.",
+    translationEs: "Entiendo tu duda, pero tómate dos minutos: de verdad puede valer la pena.",
     usage: "Réponse aux objections de l'examinateur. Valide sans céder — structure pivot: reconnaître + rediriger.",
     category: "oral-persuasion",
   },

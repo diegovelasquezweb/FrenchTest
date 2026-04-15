@@ -69,8 +69,8 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   présent: "Présent",
   écrit: "Test écrit",
   oral: "Test oral",
-  patterns: "Patterns",
-  vocabulaire: "Paires",
+  patterns: "Parcours",
+  vocabulaire: "Vocabulaire",
   touriste: "Voyage",
   "grammar-test": "Test grammaire",
   difficiles: "Mes difficiles",
@@ -428,7 +428,7 @@ export default function App() {
     { label: "Test écrit",         sub: "Lettres & expressions", icon: FlaskConical, onClick: handleStartEcrit },
     { label: "Test oral",          sub: "Poser des questions",   icon: FlaskConical, onClick: handleStartOral },
     { label: "Marathon",           sub: "100 phrases clés",      icon: Gamepad2, onClick: handleStartMarathon },
-    { label: "Paires",             sub: "Antonymes & synonymes", icon: Gamepad2, onClick: handleStartVocabulaire },
+    { label: "Vocabulaire",        sub: "Antonymes & synonymes", icon: Gamepad2, onClick: handleStartVocabulaire },
     { label: "Voyage",             sub: "Phrases de voyage",     icon: Map, onClick: () => handleSelectVoyageCategory("restaurant") },
   ];
   const suggestions = useMemo(() => {
@@ -452,12 +452,12 @@ export default function App() {
     "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
     "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
-    "Paires":            { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
+    "Vocabulaire":       { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
     "Verbes":            { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("verbes"), icon: BookCheck },
     "Adjectifs":         { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("adjectifs"), icon: BookCheck },
     "Noms":              { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("noms"), icon: BookCheck },
     "Expressions":       { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("expressions"), icon: BookCheck },
-    "Mix":               { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("mix"), icon: BookCheck },
+    "Mixte":             { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("mix"), icon: BookCheck },
     "Renseignements":    { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
     "Faits divers":      { mode: "patterns",     onClick: () => handleSelectPatternsCategory("ecrit-faits-divers"), icon: BookCheck },
@@ -518,17 +518,6 @@ export default function App() {
               action: { mode: "patterns" as const, onClick: handleStartMarathon, icon: Gamepad2 as LucideIcon },
             },
             {
-              id: "paires",
-              label: "Paires",
-              items: [
-                { label: "Verbes", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("verbes") },
-                { label: "Adjectifs", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("adjectifs") },
-                { label: "Noms", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("noms") },
-                { label: "Expressions", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("expressions") },
-                { label: "Mix", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
-              ],
-            },
-            {
               id: "favoris",
               label: "Leçons favorites",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
@@ -579,6 +568,17 @@ export default function App() {
               ],
             },
             {
+              id: "vocabulaire",
+              label: "Vocabulaire",
+              items: [
+                { label: "Verbes",      mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("verbes") },
+                { label: "Adjectifs",   mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("adjectifs") },
+                { label: "Noms",        mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("noms") },
+                { label: "Expressions", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("expressions") },
+                { label: "Mixte",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
+              ],
+            },
+            {
               id: "connecteurs",
               label: "Connecteurs",
               items: [
@@ -626,7 +626,7 @@ export default function App() {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const noSeparatorBefore = group.id === "paires" || group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns";
+            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns";
             const separatorClass = idx === 0
               ? ""
               : noSeparatorBefore
@@ -636,7 +636,7 @@ export default function App() {
             // Single-action groups render as a direct button, not a collapsible group
             if ("special" in group && group.special === "single") {
               const isActive = appMode === group.action.mode && (group.id === "marathon" ? patternsCategory === "all" : true);
-              // Marathon & Paires are already pinned at top of sidebar — no need to favorite them.
+              // Marathon & Vocabulaire are already pinned at top of sidebar — no need to favorite them.
               // const isFav = favorites.includes(group.label);
               return (
                 <div key={group.id} className={`${separatorClass} group/item relative`}>
@@ -737,7 +737,7 @@ export default function App() {
                           label === "Adjectifs" ? "adjectifs" :
                           label === "Noms" ? "noms" :
                           label === "Expressions" ? "expressions" :
-                          label === "Mix" ? "mix" : null
+                          label === "Mixte" ? "mix" : null
                         )
                       ) && (
                         mode !== "touriste" || voyageCategory === (
@@ -976,14 +976,14 @@ export default function App() {
                 <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
                   {([
                     {
-                      id: "paires",
-                      label: "Paires",
+                      id: "vocabulaire",
+                      label: "Vocabulaire",
                       items: [
                         { label: "Verbes",      onClick: () => handleSelectVocabCategory("verbes") },
                         { label: "Adjectifs",   onClick: () => handleSelectVocabCategory("adjectifs") },
                         { label: "Noms",        onClick: () => handleSelectVocabCategory("noms") },
                         { label: "Expressions", onClick: () => handleSelectVocabCategory("expressions") },
-                        { label: "Mix",         onClick: () => handleSelectVocabCategory("mix") },
+                        { label: "Mixte",       onClick: () => handleSelectVocabCategory("mix") },
                       ],
                     },
                     {
@@ -1443,7 +1443,7 @@ export default function App() {
                         { id: "adjectifs", icon: "🎯", label: "Adjectifs", totalCards: pVocabAdjectifs.totalCards, masteredCount: pVocabAdjectifs.masteredCount, onClick: () => handleSelectVocabCategory("adjectifs") },
                         { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
                         { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
-                        { id: "mix", icon: "🗂️", label: "Mix", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
+                        { id: "mix", icon: "🗂️", label: "Mixte", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
                       ]}
                     />
                   )}

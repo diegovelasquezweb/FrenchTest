@@ -207,7 +207,7 @@ export const VOCABULAIRE_CARDS: Flashcard[] = [
     front: "prêter ↔ emprunter",
     translationEn: "to lend ↔ to borrow",
     translationEs: "prestar ↔ tomar prestado",
-    usage: "Je te prête mon livre. / Tu peux m'emprunter ta voiture ?",
+    usage: "Je te prête mon livre. / Est-ce que je peux t'emprunter ta voiture ?",
     category: "vocabulaire",
   },
   {

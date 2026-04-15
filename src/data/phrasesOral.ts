@@ -6,7 +6,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Je ___ voir votre annonce concernant vos cours de français.",
     options: ["viens de", "venais de", "suis venu de", "viens à"],
     correctIndex: 0,
-    explanation: "\"je viens de + inf.\" = passé récent (I just...). \"Venais de\" = imparfait (contexte passé narratif). \"Suis venu de\" = déplacement. \"Viens à\" n'existe pas ici.",
+    explanation: "\"Je viens de + infinitif\" exprime le passé récent. « Venais de » relève de l'imparfait ; « suis venu de » indique une provenance ; « viens à » est incorrect ici.",
   },
   {
     sentence: "Je me ___ de vous contacter au sujet de votre offre de formation.",
@@ -18,7 +18,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Je vous appelle au sujet ___ votre annonce parue cette semaine.",
     options: ["de", "à", "pour", "sur"],
     correctIndex: 0,
-    explanation: "\"au sujet de\" = regarding. Toujours suivi de \"de\". \"Au sujet à\" n'existe pas.",
+    explanation: "\"Au sujet de\" introduit le thème et se construit toujours avec « de ». La forme « au sujet à » est incorrecte.",
   },
   {
     sentence: "Je ___ intéressé(e) par votre offre de stage à l'étranger.",
@@ -68,7 +68,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Pourriez-vous me faire ___ d'une brochure par courrier électronique ?",
     options: ["parvenir", "parvenu", "parvenant", "parvenez"],
     correctIndex: 0,
-    explanation: "\"faire parvenir\" = to send / to forward (formule formelle). Après \"faire\", toujours l'infinitif. \"Parvenu\" = participe passé. \"Parvenant\" = gérondif.",
+    explanation: "\"Faire parvenir\" est une tournure formelle pour demander un envoi. Après « faire », on emploie l'infinitif ; « parvenu » et « parvenant » ne conviennent pas ici.",
   },
   {
     sentence: "Merci de me ___ dès que vous aurez les informations disponibles.",
@@ -94,13 +94,13 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Est-ce que le prix ___ les frais de matériel ?",
     options: ["comprend", "comprend de", "inclut à", "contient de"],
     correctIndex: 0,
-    explanation: "\"comprend\" = includes. Pas de préposition : \"le prix comprend + COD\". \"Comprend de\" et \"inclut à\" sont grammaticalement incorrects.",
+    explanation: "Le verbe « comprendre » s'emploie sans préposition : « le prix comprend + complément ». « Comprend de » et « inclut à » sont fautifs.",
   },
   {
     sentence: "Y a-t-il des frais ___ à prévoir en dehors du tarif de base ?",
     options: ["supplémentaires", "supplémentaire", "en plus", "additionnels"],
     correctIndex: 0,
-    explanation: "\"frais supplémentaires\" = expression fixe (additional fees). \"Supplémentaire\" = singulier. \"En plus\" = familier. \"Additionnels\" = anglicisme.",
+    explanation: "\"Frais supplémentaires\" est la formulation standard. « Supplémentaire » est au singulier ; « en plus » est trop familier ; « additionnels » est à éviter ici.",
   },
   {
     sentence: "Y a-t-il ___ pour essayer le service avant de s'abonner ?",
@@ -130,7 +130,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Outre les frais d'inscription, y a-t-il des coûts ___ ?",
     options: ["supplémentaires", "supplément", "en plus", "supplémentaire"],
     correctIndex: 0,
-    explanation: "\"coûts supplémentaires\" = additional costs (pluriel). \"Supplémentaire\" = singulier. \"Supplément\" = nom. \"En plus\" = familier.",
+    explanation: "\"Coûts supplémentaires\" est la forme correcte au pluriel. « Supplémentaire » est singulier, « supplément » est un nom, et « en plus » reste familier.",
   },
 
   // ── Durée et calendrier ─────────────────────────────────────────────────
@@ -158,7 +158,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Quels sont ___ de votre centre ?",
     options: ["les horaires", "les heurs", "les horairies", "les temps"],
     correctIndex: 0,
-    explanation: "\"les horaires\" = opening hours — terme standard. \"Les heurs\" n'existe pas. \"Horairies\" n'existe pas. \"Les temps\" = époques ou formes verbales.",
+    explanation: "\"Les horaires\" est le terme standard. « Heurs » et « horairies » n'existent pas ; « les temps » ne convient pas pour parler d'heures d'ouverture.",
   },
   {
     sentence: "Êtes-vous ___ les jours fériés et le week-end ?",
@@ -184,7 +184,7 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
     sentence: "Est-ce qu'il ___ des places disponibles pour la session de mars ?",
     options: ["reste", "restent", "y reste", "restes"],
     correctIndex: 0,
-    explanation: "\"Il reste des places\" = there are still spots (impersonnel + verbe sing.). \"Restent\" → \"les places restent\". \"Il y reste\" = doublon avec \"il\".",
+    explanation: "\"Il reste des places\" est la tournure impersonnelle correcte (verbe au singulier). « Restent » exigerait « les places restent » ; « il y reste » est fautif ici.",
   },
   {
     sentence: "Ce service est-il ___ aux personnes à mobilité réduite ?",

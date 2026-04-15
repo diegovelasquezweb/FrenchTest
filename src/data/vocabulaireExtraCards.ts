@@ -662,7 +662,7 @@ export const VOCABULAIRE_EXTRA_CARDS: Flashcard[] = [
     id: "voc-exp-004",
     front: "faire face à ↔ être confronté à",
     translationEn: "to face ↔ to be confronted with",
-    translationEs: "hacer frente a ↔ estar confrontado con",
+    translationEs: "hacer frente a ↔ estar enfrentado a",
     usage: "Nous devons faire face à la hausse des prix. / Les jeunes sont confrontés au chômage.",
     category: "vocabulaire",
     subCategory: "expressions",
