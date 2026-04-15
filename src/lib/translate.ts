@@ -1,7 +1,7 @@
 /**
  * Translate text using MyMemory API (completely free, no key required)
  */
-export async function translateWithDeepL(
+export async function translate(
   text: string,
   sourceLang: "ES" | "EN" | "FR"
 ): Promise<string | null> {
@@ -24,11 +24,6 @@ export async function translateWithDeepL(
     const translated = data.responseData?.translatedText ?? null;
 
     console.log(`[MyMemory] "${text}" (${source}→fr) = "${translated}"`);
-
-    // Reject translations that are just acronyms or clearly wrong
-    if (translated && translated.length > 0 && translated.toUpperCase() !== translated.toUpperCase()) {
-      return translated;
-    }
 
     return translated;
   } catch (error) {

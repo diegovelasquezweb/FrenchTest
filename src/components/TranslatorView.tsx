@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Loader, AlertCircle } from "lucide-react";
-import { translateWithDeepL } from "../lib/deepl";
+import { translate } from "../lib/translate";
 
 interface TranslationResult {
   word: string;
@@ -27,7 +27,7 @@ export function TranslatorView() {
 
     try {
       const langMap = { es: "ES" as const, en: "EN" as const, fr: "FR" as const };
-      const translated = await translateWithDeepL(word, langMap[sourceLanguage], "FR");
+      const translated = await translate(word, langMap[sourceLanguage]);
 
       // Reject translations that are identical to source, all-caps (API error), or too short
       const isValid =
