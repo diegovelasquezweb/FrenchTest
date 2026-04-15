@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import { LoginScreen } from "./components/LoginScreen";
 import { loadStore } from "./lib/store";
-import { exchangeCode, getSession, isGuest, redirectToGitHub, redirectToGoogle, enterGuestMode } from "./lib/auth";
+import { exchangeCode, getSession, isGuest, redirectToGitHub, redirectToGoogle, enterGuestMode, validateOAuthCallback } from "./lib/auth";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Root element not found");
@@ -12,14 +12,15 @@ const root = createRoot(rootElement);
 
 async function bootstrap() {
   const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
-  const provider = params.get("state") ?? "github";
+  const code  = params.get("code");
+  const state = params.get("state") ?? "";
   if (code) {
-    window.history.replaceState({}, "", window.location.pathname);
+    window.history.replaceState({}, "", "/");
     try {
+      const provider = validateOAuthCallback(state);
       await exchangeCode(code, provider);
     } catch {
-      // Auth failed — show login screen
+      // Auth failed or CSRF mismatch — show login screen
     }
   }
 

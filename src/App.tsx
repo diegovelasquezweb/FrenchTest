@@ -1062,7 +1062,35 @@ export default function App({ session }: { session: Session | null }) {
           ) : (
             <button type="button" onClick={handleGoHome} className="text-sm font-bold text-(--color-ink) hover:text-(--color-brand) transition-colors duration-150">🇨🇦 TEF Pratiquer</button>
           )}
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <div className="flex items-center gap-2">
+            {(() => {
+              const login = session?.login ?? (isGuest() ? "Invité" : "?");
+              const initial = login[0]?.toUpperCase() ?? "?";
+              return (
+                <Popover.Root>
+                  <Popover.Trigger asChild>
+                    <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-(--color-brand)/15 text-xs font-bold text-(--color-brand)">
+                      {initial}
+                    </button>
+                  </Popover.Trigger>
+                  <Popover.Portal>
+                    <Popover.Content side="bottom" align="end" sideOffset={8} className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8">
+                      <div className="px-3 py-1.5 text-xs font-medium text-(--color-muted)">{login}</div>
+                      <button
+                        type="button"
+                        onClick={() => { void logout().then(() => window.location.reload()); }}
+                        className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/8 transition-colors duration-150"
+                      >
+                        Déconnexion
+                      </button>
+                      <Popover.Arrow className="fill-(--color-surface)" />
+                    </Popover.Content>
+                  </Popover.Portal>
+                </Popover.Root>
+              );
+            })()}
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
         </div>
 
         {/* Desktop header — quiz/flashcard only */}
@@ -1114,7 +1142,7 @@ export default function App({ session }: { session: Session | null }) {
               </div>
 
               {/* Mobile: accordion */}
-              <div className="md:hidden flex-1 flex flex-col items-center justify-center gap-6 px-6 py-6">
+              <div className="md:hidden flex-1 flex flex-col items-center justify-center gap-2 px-6 py-6">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
                   <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
@@ -1141,36 +1169,6 @@ export default function App({ session }: { session: Session | null }) {
                     );
                   })}
                 </div>
-
-                {/* Mes difficiles mobile */}
-                {weakVerbList.length > 0 && (
-                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-                  <button
-                    type="button"
-                    onClick={handleStartDifficiles}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-                  >
-                    <Bookmark size={16} className="shrink-0" />
-                    Mes difficiles
-                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
-                  </button>
-                </div>
-                )}
-
-                {/* Mes patterns mobile */}
-                {favoriteCardList.length > 0 && (
-                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-                  <button
-                    type="button"
-                    onClick={handleStartMesPatterns}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-                  >
-                    <Bookmark size={16} className="shrink-0" />
-                    Mes patterns
-                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
-                  </button>
-                </div>
-                )}
 
                 {/* Favoris mobile */}
                 {favorites.length > 0 && (
@@ -1206,6 +1204,36 @@ export default function App({ session }: { session: Session | null }) {
                       })}
                     </div>
                   </div>
+                )}
+
+                {/* Mes difficiles mobile */}
+                {weakVerbList.length > 0 && (
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartDifficiles}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <Bookmark size={16} className="shrink-0" />
+                    Mes difficiles
+                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
+                  </button>
+                </div>
+                )}
+
+                {/* Mes patterns mobile */}
+                {favoriteCardList.length > 0 && (
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartMesPatterns}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <Bookmark size={16} className="shrink-0" />
+                    Mes patterns
+                    <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
+                  </button>
+                </div>
                 )}
 
                 <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">

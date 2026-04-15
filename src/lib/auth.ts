@@ -44,20 +44,35 @@ export async function logout(): Promise<void> {
 
 export function redirectToGitHub(): void {
   if (!GITHUB_CLIENT) return;
-  const params = new URLSearchParams({ client_id: GITHUB_CLIENT, scope: "read:user", state: "github" });
+  const nonce = crypto.randomUUID();
+  sessionStorage.setItem("oauth-nonce", nonce);
+  sessionStorage.setItem("oauth-provider", "github");
+  const params = new URLSearchParams({ client_id: GITHUB_CLIENT, scope: "read:user", state: nonce });
   window.location.href = `https://github.com/login/oauth/authorize?${params}`;
 }
 
 export function redirectToGoogle(): void {
   if (!GOOGLE_CLIENT) return;
+  const nonce = crypto.randomUUID();
+  sessionStorage.setItem("oauth-nonce", nonce);
+  sessionStorage.setItem("oauth-provider", "google");
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT,
     redirect_uri: `${window.location.origin}/auth/callback`,
     response_type: "code",
     scope: "openid email profile",
-    state: "google",
+    state: nonce,
   });
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+}
+
+export function validateOAuthCallback(state: string): string {
+  const nonce    = sessionStorage.getItem("oauth-nonce");
+  const provider = sessionStorage.getItem("oauth-provider");
+  sessionStorage.removeItem("oauth-nonce");
+  sessionStorage.removeItem("oauth-provider");
+  if (!nonce || state !== nonce) throw new Error("CSRF validation failed");
+  return provider ?? "github";
 }
 
 export async function exchangeCode(code: string, provider: string): Promise<Session> {
