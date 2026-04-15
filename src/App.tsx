@@ -55,7 +55,7 @@ import type { VocabCategory } from "./components/VocabCategoryPicker";
 import { VocabCategoryPicker } from "./components/VocabCategoryPicker";
 import { VocabListView } from "./components/VocabListView";
 import type { MarathonCategoryId, MarathonGroupId } from "./components/MarathonCategoryPicker";
-import { MarathonCategoryPicker, ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
+import { ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
 import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
 
 const QUESTION_COUNT = 10;
@@ -413,7 +413,7 @@ export default function App() {
     });
   }
 
-  function handleMarathonToggleGroup(groupId: MarathonGroupId, ids: MarathonCategoryId[]) {
+  function handleMarathonToggleGroup(_groupId: MarathonGroupId, ids: MarathonCategoryId[]) {
     setMarathonCategories(prev => {
       const allSelected = ids.every(id => prev.has(id));
       const next = new Set(prev);
