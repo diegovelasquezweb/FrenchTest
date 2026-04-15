@@ -4,7 +4,7 @@ import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
   Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle,
-  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, NotebookPen, MessageCircle,
+  UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, MessageCircle, Globe,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { VERBS } from "./data/verbs";
@@ -831,18 +831,11 @@ export default function App({ session }: { session: Session | null }) {
               action: { mode: "verbes" as const, onClick: handleStartVerbes, icon: Columns3 as LucideIcon },
             },
             {
-              id: "mes-notes",
-              label: "Mes notes",
-              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
-              special: "single" as const,
-              action: { mode: "mes-notes" as const, onClick: handleStartMesNotes, icon: NotebookPen as LucideIcon },
-            },
-            {
               id: "traductor",
               label: "Traducteur",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
-              action: { mode: "traductor" as const, onClick: handleStartTraductor, icon: BookCheck as LucideIcon },
+              action: { mode: "traductor" as const, onClick: handleStartTraductor, icon: Globe as LucideIcon },
             },
           ] as const)
             .filter((group) => {
@@ -857,7 +850,7 @@ export default function App({ session }: { session: Session | null }) {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab" || group.id === "mes-notes";
+            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab" || group.id === "traductor";
             const separatorClass = idx === 0
               ? ""
               : noSeparatorBefore
@@ -898,11 +891,6 @@ export default function App({ session }: { session: Session | null }) {
                     {group.id === "mes-vocab" && favoriteVocabList.length > 0 && (
                       <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
                         {favoriteVocabList.length}
-                      </span>
-                    )}
-                    {group.id === "mes-notes" && userNotes.length > 0 && (
-                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">
-                        {userNotes.length}
                       </span>
                     )}
                   </button>
@@ -1058,6 +1046,15 @@ export default function App({ session }: { session: Session | null }) {
                 </Popover.Trigger>
                 <Popover.Portal>
                   <Popover.Content side="top" align="start" sideOffset={8} className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8">
+                    {session && (
+                      <button
+                        type="button"
+                        onClick={handleStartMesNotes}
+                        className="w-full px-3 py-2 text-left text-sm text-(--color-ink) hover:bg-(--color-ink)/5 transition-colors duration-150"
+                      >
+                        Mes notes
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => { void logout().then(() => window.location.reload()); }}
@@ -1101,6 +1098,15 @@ export default function App({ session }: { session: Session | null }) {
                   <Popover.Portal>
                     <Popover.Content side="bottom" align="end" sideOffset={8} className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8">
                       <div className="px-3 py-1.5 text-xs font-medium text-(--color-muted)">{login}</div>
+                      {session && (
+                        <button
+                          type="button"
+                          onClick={handleStartMesNotes}
+                          className="w-full px-3 py-2 text-left text-sm text-(--color-ink) hover:bg-(--color-ink)/5 transition-colors duration-150"
+                        >
+                          Mes notes
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => { void logout().then(() => window.location.reload()); }}
@@ -1375,20 +1381,6 @@ export default function App({ session }: { session: Session | null }) {
                   >
                     <Columns3 size={16} className="shrink-0" />
                     Verbes essentiels
-                  </button>
-                </div>
-
-                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-                  <button
-                    type="button"
-                    onClick={handleStartMesNotes}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-                  >
-                    <NotebookPen size={16} className="shrink-0" />
-                    Mes notes
-                    {userNotes.length > 0 && (
-                      <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{userNotes.length}</span>
-                    )}
                   </button>
                 </div>
               </div>
