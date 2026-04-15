@@ -3,7 +3,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
-  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle,
+  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle, PenSquare,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, MessageCircle, Globe,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -54,6 +54,7 @@ import { PronominalQuizCard } from "./components/PronominalQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
 import { EssentialVerbsGuide } from "./components/EssentialVerbsGuide";
+import { TerminaisonsGuide } from "./components/TerminaisonsGuide";
 import { MrsVandertrampGuide } from "./components/MrsVandertrampGuide";
 import type { PatternsCategory } from "./components/PatternsCategoryPicker";
 import type { VoyageCategory } from "./components/VoyageCategoryPicker";
@@ -100,7 +101,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "plus-que-parfait" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "plus-que-parfait" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "terminaisons" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -122,6 +123,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   pronominales: "Pronominales",
   difficiles: "Mes difficiles",
   verbes: "Verbes essentiels",
+  terminaisons: "Terminaisons verbales",
   "mes-patterns": "Mes patterns",
   "mes-vocab": "Mon vocabulaire",
   "être-cards": "Être / avoir",
@@ -463,6 +465,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
   function handleStartVerbes()       { setAppMode("verbes"); }
+  function handleStartTerminaisons() { setAppMode("terminaisons"); }
   function handleStartEtreCards()    { pEtreAvoir.startSession(); setAppMode("être-cards"); }
   function handleStartEtreQuiz()     { etreQuiz.startQuiz();      setAppMode("être-quiz"); }
   function handleStartEtreGuide()    { setAppMode("être-guide"); }
@@ -662,6 +665,7 @@ export default function App({ session }: { session: Session | null }) {
     "Test écrit":        { mode: "écrit",        onClick: handleStartEcrit,        icon: FlaskConical },
     "Test oral":         { mode: "oral",         onClick: handleStartOral,         icon: FlaskConical },
     "Verbes essentiels": { mode: "verbes",       onClick: handleStartVerbes,       icon: Columns3 },
+    "Terminaisons verbales": { mode: "terminaisons", onClick: handleStartTerminaisons, icon: PenSquare },
     "Marathon":          { mode: "patterns",     onClick: handleStartMarathon,     icon: Gamepad2 },
     "Vocabulaire":       { mode: "vocabulaire",  onClick: handleStartVocabulaire,  icon: Gamepad2 },
     "Liste vocabulaire": { mode: "vocabulaire-liste", onClick: handleStartVocabList, icon: SlidersHorizontal },
@@ -873,6 +877,13 @@ export default function App({ session }: { session: Session | null }) {
               action: { mode: "verbes" as const, onClick: handleStartVerbes, icon: Columns3 as LucideIcon },
             },
             {
+              id: "terminaisons",
+              label: "Terminaisons verbales",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "terminaisons" as const, onClick: handleStartTerminaisons, icon: PenSquare as LucideIcon },
+            },
+            {
               id: "traductor",
               label: "Traducteur",
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
@@ -892,7 +903,7 @@ export default function App({ session }: { session: Session | null }) {
             const toggleGroup = () => setOpenGroups(prev =>
               prev.includes(group.id) ? prev.filter(g => g !== group.id) : [...prev, group.id]
             );
-            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab" || group.id === "traductor";
+            const noSeparatorBefore = group.id === "favoris" || group.id === "difficiles" || group.id === "mes-patterns" || group.id === "mes-vocab" || group.id === "terminaisons" || group.id === "traductor";
             const separatorClass = idx === 0
               ? ""
               : noSeparatorBefore
@@ -1428,6 +1439,17 @@ export default function App({ session }: { session: Session | null }) {
                     Verbes essentiels
                   </button>
                 </div>
+
+                <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+                  <button
+                    type="button"
+                    onClick={handleStartTerminaisons}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                  >
+                    <PenSquare size={16} className="shrink-0" />
+                    Terminaisons verbales
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -1796,6 +1818,9 @@ export default function App({ session }: { session: Session | null }) {
 
               {/* VERBES ESSENTIELS */}
               {appMode === "verbes" && <EssentialVerbsGuide />}
+
+              {/* TERMINAISONS */}
+              {appMode === "terminaisons" && <TerminaisonsGuide />}
 
               {/* MARATHON */}
               {appMode === "marathon" && (
