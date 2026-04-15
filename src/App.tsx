@@ -30,6 +30,8 @@ import { QuizPhase } from "./types";
 import { FLASHCARDS } from "./data/flashcards";
 import { VOCABULAIRE_CARDS } from "./data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "./data/vocabulaireExtraCards";
+import { GENRE_CARDS } from "./data/genreCards";
+import { PIEGES_CARDS } from "./data/piegesCards";
 import { TOURISTE_CARDS } from "./data/touristeCards";
 import { ScoreBoard } from "./components/ScoreBoard";
 import { QuizCard } from "./components/QuizCard";
@@ -138,6 +140,8 @@ export default function App() {
   const pVocabAdjectifs = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "adjectifs"), "tef-vocab-adjectifs");
   const pVocabNoms = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "noms"), "tef-vocab-noms");
   const pVocabExpressions = useFlashcards(VOCAB_CARDS.filter(c => c.subCategory === "expressions"), "tef-vocab-expressions");
+  const pVocabGenre = useFlashcards(GENRE_CARDS, "tef-vocab-genre");
+  const pVocabPieges = useFlashcards(PIEGES_CARDS, "tef-vocab-pieges");
   const pVocabMix = useFlashcards(VOCAB_CARDS, "tef-vocab-mix");
 
   const vRestaurant   = useFlashcards(TOURISTE_CARDS.filter(c => c.subCategory === "restaurant"),   "tef-voyage-restaurant");
@@ -183,6 +187,8 @@ export default function App() {
     vocabCategory === "adjectifs" ? pVocabAdjectifs :
     vocabCategory === "noms" ? pVocabNoms :
     vocabCategory === "expressions" ? pVocabExpressions :
+    vocabCategory === "genre" ? pVocabGenre :
+    vocabCategory === "pièges" ? pVocabPieges :
     pVocabMix;
 
   const liveRef = useRef<HTMLDivElement>(null);
@@ -366,6 +372,8 @@ export default function App() {
       cat === "adjectifs" ? pVocabAdjectifs :
       cat === "noms" ? pVocabNoms :
       cat === "expressions" ? pVocabExpressions :
+      cat === "genre" ? pVocabGenre :
+      cat === "pièges" ? pVocabPieges :
       pVocabMix;
     deck.startSession();
   }
@@ -457,6 +465,8 @@ export default function App() {
     "Adjectifs":         { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("adjectifs"), icon: BookCheck },
     "Noms":              { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("noms"), icon: BookCheck },
     "Expressions":       { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("expressions"), icon: BookCheck },
+    "Genre":             { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("genre"), icon: BookCheck },
+    "Pièges":            { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("pièges"), icon: BookCheck },
     "Mixte":             { mode: "vocabulaire",  onClick: () => handleSelectVocabCategory("mix"), icon: BookCheck },
     "Renseignements":    { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-interaction"),   icon: BookCheck },
     "Persuasion":         { mode: "patterns",     onClick: () => handleSelectPatternsCategory("oral-monologue"),     icon: BookCheck },
@@ -575,6 +585,8 @@ export default function App() {
                 { label: "Adjectifs",   mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("adjectifs") },
                 { label: "Noms",        mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("noms") },
                 { label: "Expressions", mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("expressions") },
+                { label: "Genre",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("genre") },
+                { label: "Pièges",      mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("pièges") },
                 { label: "Mixte",       mode: "vocabulaire" as const, onClick: () => handleSelectVocabCategory("mix") },
               ],
             },
@@ -737,6 +749,8 @@ export default function App() {
                           label === "Adjectifs" ? "adjectifs" :
                           label === "Noms" ? "noms" :
                           label === "Expressions" ? "expressions" :
+                          label === "Genre" ? "genre" :
+                          label === "Pièges" ? "pièges" :
                           label === "Mixte" ? "mix" : null
                         )
                       ) && (
@@ -983,6 +997,8 @@ export default function App() {
                         { label: "Adjectifs",   onClick: () => handleSelectVocabCategory("adjectifs") },
                         { label: "Noms",        onClick: () => handleSelectVocabCategory("noms") },
                         { label: "Expressions", onClick: () => handleSelectVocabCategory("expressions") },
+                        { label: "Genre",       onClick: () => handleSelectVocabCategory("genre") },
+                        { label: "Pièges",      onClick: () => handleSelectVocabCategory("pièges") },
                         { label: "Mixte",       onClick: () => handleSelectVocabCategory("mix") },
                       ],
                     },
@@ -1443,6 +1459,8 @@ export default function App() {
                         { id: "adjectifs", icon: "🎯", label: "Adjectifs", totalCards: pVocabAdjectifs.totalCards, masteredCount: pVocabAdjectifs.masteredCount, onClick: () => handleSelectVocabCategory("adjectifs") },
                         { id: "noms", icon: "🧩", label: "Noms", totalCards: pVocabNoms.totalCards, masteredCount: pVocabNoms.masteredCount, onClick: () => handleSelectVocabCategory("noms") },
                         { id: "expressions", icon: "💬", label: "Expressions", totalCards: pVocabExpressions.totalCards, masteredCount: pVocabExpressions.masteredCount, onClick: () => handleSelectVocabCategory("expressions") },
+                        { id: "genre", icon: "⚥", label: "Genre", totalCards: pVocabGenre.totalCards, masteredCount: pVocabGenre.masteredCount, onClick: () => handleSelectVocabCategory("genre") },
+                        { id: "pièges", icon: "⚠️", label: "Pièges", totalCards: pVocabPieges.totalCards, masteredCount: pVocabPieges.masteredCount, onClick: () => handleSelectVocabCategory("pièges") },
                         { id: "mix", icon: "🗂️", label: "Mixte", totalCards: pVocabMix.totalCards, masteredCount: pVocabMix.masteredCount, onClick: () => handleSelectVocabCategory("mix") },
                       ]}
                     />
