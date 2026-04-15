@@ -14,6 +14,7 @@ import { useConditionnelQuiz } from "./hooks/useConditionnelQuiz";
 import { useFuturQuiz } from "./hooks/useFuturQuiz";
 import { useOrthographeQuiz } from "./hooks/useOrthographeQuiz";
 import { useGrammarQuiz } from "./hooks/useGrammarQuiz";
+import { usePronominalQuiz } from "./hooks/usePronominalQuiz";
 import { useDifficultesQuiz } from "./hooks/useDifficultesQuiz";
 import { useWeakVerbs } from "./hooks/useWeakVerbs";
 import { useFavoriteCards } from "./hooks/useFavoriteCards";
@@ -45,6 +46,7 @@ import { OrthographeQuizCard } from "./components/OrthographeQuizCard";
 import { ResultScreen } from "./components/ResultScreen";
 import { OrthographeResultScreen } from "./components/OrthographeResultScreen";
 import { PresentQuizCard } from "./components/PresentQuizCard";
+import { PronominalQuizCard } from "./components/PronominalQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
 import { EssentialVerbsGuide } from "./components/EssentialVerbsGuide";
@@ -61,6 +63,7 @@ import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
 import { NotesView } from "./components/NotesView";
 import type { UserNote } from "./components/NotesView";
 import { AiChatDrawer } from "./components/AiChatDrawer";
+import { TranslatorView } from "./components/TranslatorView";
 
 const QUESTION_COUNT = 10;
 
@@ -93,7 +96,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -110,6 +113,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "vocabulaire-liste": "Liste vocabulaire",
   touriste: "Voyage",
   "grammar-test": "Test grammaire",
+  pronominales: "Pronominales",
   difficiles: "Mes difficiles",
   verbes: "Verbes essentiels",
   "mes-patterns": "Mes patterns",
@@ -119,6 +123,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   "être-guide": "Liste des verbes",
   marathon: "Marathon",
   "mes-notes": "Mes notes",
+  traductor: "Traducteur",
 };
 
 export default function App({ session }: { session: Session | null }) {
@@ -168,6 +173,7 @@ export default function App({ session }: { session: Session | null }) {
   const futur = useFuturQuiz();
   const orthographe = useOrthographeQuiz();
   const grammarTest = useGrammarQuiz();
+  const pronominales = usePronominalQuiz();
   const { isWeak, toggleWeak, weakVerbList } = useWeakVerbs();
   const { isFavoriteCard, toggleFavoriteCard, favoriteCardList, favoriteVocabList } = useFavoriteCards();
   const difficiles = useDifficultesQuiz();
@@ -306,6 +312,10 @@ export default function App({ session }: { session: Session | null }) {
         if (grammarTest.state.phase === QuizPhase.Answering || grammarTest.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) grammarTest.selectAnswer(d - 1); }
         if (grammarTest.state.phase === QuizPhase.Feedback && e.key === "Enter") grammarTest.nextQuestion();
       }
+      if (appMode === "pronominales") {
+        if (pronominales.state.phase === QuizPhase.Answering || pronominales.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) pronominales.selectAnswer(d - 1); }
+        if (pronominales.state.phase === QuizPhase.Feedback && e.key === "Enter") pronominales.nextQuestion();
+      }
       if (appMode === "difficiles") {
         if (difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) difficiles.selectAnswer(d - 1); }
         if (difficiles.state.phase === QuizPhase.Feedback && e.key === "Enter") difficiles.nextQuestion();
@@ -390,6 +400,7 @@ export default function App({ session }: { session: Session | null }) {
     if (appMode === "futur") futur.goHome();
     if (appMode === "orthographe") orthographe.goHome();
     if (appMode === "grammar-test") grammarTest.goHome();
+    if (appMode === "pronominales") pronominales.goHome();
     if (appMode === "difficiles") difficiles.goHome();
     if (appMode === "phrases") phrases.goHome();
     if (appMode === "présent") présent.goHome();
@@ -415,6 +426,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartFutur()        { futur.startQuiz();        setAppMode("futur"); }
   function handleStartOrthographe()  { orthographe.startQuiz();  setAppMode("orthographe"); }
   function handleStartGrammarTest()  { grammarTest.startQuiz();  setAppMode("grammar-test"); }
+  function handleStartPronominales() { pronominales.startQuiz(); setAppMode("pronominales"); }
   function handleStartDifficiles()   { difficiles.goHome(); setAppMode("difficiles"); }
   function handleStartMesPatterns()  { mesPatterns.goHome(); setAppMode("mes-patterns"); }
   function handleStartMesVocab()     { mesVocab.goHome(); setAppMode("mes-vocab"); }
@@ -428,6 +440,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartEtreGuide()    { setAppMode("être-guide"); }
   function handleStartMarathon()     { marathonDeck.startSession(); setAppMode("marathon"); }
   function handleStartMesNotes()     { setAppMode("mes-notes"); }
+  function handleStartTraductor()    { setAppMode("traductor"); }
 
   function handleMarathonToggleCategory(id: MarathonCategoryId) {
     setMarathonCategories(prev => {
@@ -532,6 +545,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "futur"         ? futur.state.phase
     : appMode === "orthographe"   ? orthographe.state.phase
     : appMode === "grammar-test"  ? grammarTest.state.phase
+    : appMode === "pronominales"  ? pronominales.state.phase
     : appMode === "difficiles"    ? difficiles.state.phase
     : appMode === "phrases"       ? phrases.state.phase
     : appMode === "présent"       ? présent.state.phase
@@ -547,6 +561,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "futur"         ? futur.progress
     : appMode === "orthographe"   ? orthographe.progress
     : appMode === "grammar-test"  ? grammarTest.progress
+    : appMode === "pronominales"  ? pronominales.progress
     : appMode === "difficiles"    ? difficiles.progress
     : appMode === "phrases"       ? phrases.progress
     : appMode === "présent"       ? présent.progress
@@ -562,6 +577,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "futur"         ? futur.state.score
     : appMode === "orthographe"   ? orthographe.state.score
     : appMode === "grammar-test"  ? grammarTest.state.score
+    : appMode === "pronominales"  ? pronominales.state.score
     : appMode === "difficiles"    ? difficiles.state.score
     : appMode === "phrases"       ? phrases.state.score
     : appMode === "présent"       ? présent.state.score
@@ -600,6 +616,7 @@ export default function App({ session }: { session: Session | null }) {
     "Imparfait":         { mode: "imparfait",    onClick: handleStartImparfait,    icon: BookCheck },
     "Participe passé":   { mode: "participe",    onClick: handleStartParticipe,    icon: BookCheck },
     "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
+    "Pronominales":      { mode: "pronominales", onClick: handleStartPronominales, icon: BookCheck },
     "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
     "Mes difficiles":    { mode: "difficiles",   onClick: handleStartDifficiles,   icon: Bookmark },
     "Test connecteurs":  { mode: "phrases",      onClick: handleStartPhrases,      icon: FlaskConical },
@@ -758,6 +775,7 @@ export default function App({ session }: { session: Session | null }) {
                 { label: "Présent",          mode: "présent"      as const, onClick: handleStartPresent },
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
+                { label: "Pronominales",     mode: "pronominales" as const, onClick: handleStartPronominales },
                 { label: "Test grammaire",   mode: "grammar-test" as const, onClick: handleStartGrammarTest },
               ],
             },
@@ -818,6 +836,13 @@ export default function App({ session }: { session: Session | null }) {
               items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
               special: "single" as const,
               action: { mode: "mes-notes" as const, onClick: handleStartMesNotes, icon: NotebookPen as LucideIcon },
+            },
+            {
+              id: "traductor",
+              label: "Traducteur",
+              items: [] as { label: string; mode: Exclude<AppMode, "home">; onClick: () => void }[],
+              special: "single" as const,
+              action: { mode: "traductor" as const, onClick: handleStartTraductor, icon: BookCheck as LucideIcon },
             },
           ] as const)
             .filter((group) => {
@@ -1280,6 +1305,7 @@ export default function App({ session }: { session: Session | null }) {
                         { label: "Présent",         onClick: handleStartPresent },
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },
+                        { label: "Pronominales",    onClick: handleStartPronominales },
                         { label: "Test grammaire",  onClick: handleStartGrammarTest },
                       ],
                     },
@@ -1503,6 +1529,26 @@ export default function App({ session }: { session: Session | null }) {
                   })()}
                   {grammarTest.state.phase === QuizPhase.Complete && (
                     <ResultScreen history={grammarTest.state.history} score={grammarTest.state.score} total={grammarTest.progress.total} onRestart={grammarTest.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* PRONOMINALES — pronominal verb conjugation quiz */}
+              {appMode === "pronominales" && (
+                <>
+                  {(pronominales.state.phase === QuizPhase.Answering || pronominales.state.phase === QuizPhase.Feedback) && pronominales.currentQuestion && (
+                    <PronominalQuizCard
+                      question={pronominales.currentQuestion}
+                      answerState={pronominales.state.answerState}
+                      selectedIndex={pronominales.state.selectedIndex}
+                      onSelect={pronominales.selectAnswer}
+                      onNext={pronominales.nextQuestion}
+                      questionNumber={pronominales.progress.index + 1}
+                      total={pronominales.progress.total}
+                    />
+                  )}
+                  {pronominales.state.phase === QuizPhase.Complete && (
+                    <ResultScreen history={[]} score={pronominales.state.score} total={pronominales.progress.total} onRestart={pronominales.restartQuiz} onHome={handleGoHome} />
                   )}
                 </>
               )}
@@ -1902,6 +1948,11 @@ export default function App({ session }: { session: Session | null }) {
               {/* MES NOTES */}
               {appMode === "mes-notes" && (
                 <NotesView notes={userNotes} onAdd={handleAddNote} onDelete={handleDeleteNote} />
+              )}
+
+              {/* TRADUCTOR */}
+              {appMode === "traductor" && (
+                <TranslatorView />
               )}
 
               {/* VOCABULAIRE */}
