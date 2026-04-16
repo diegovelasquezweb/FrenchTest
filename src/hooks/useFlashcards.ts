@@ -1,6 +1,7 @@
 import { useReducer, useCallback, useEffect } from "react";
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
 import { loadProgress, saveProgress, applyRating, buildDeck, totalMastered } from "../lib/flashcardProgress";
+import { fisherYates } from "../lib/shuffle";
 
 
 interface FlashcardsState {
@@ -30,7 +31,10 @@ function makeInitialState(storageKey: string): FlashcardsState {
   };
 }
 
-function makeReducer(cards: Flashcard[], storageKey: string) {
+function makeReducer(cards: Flashcard[], storageKey: string, randomize: boolean) {
+  function makeDeck(progress: Record<string, CardProgress>): Flashcard[] {
+    return randomize ? fisherYates([...cards], Math.random) : buildDeck(cards, progress);
+  }
   return function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsState {
     switch (action.type) {
       case "HOME":
@@ -39,7 +43,7 @@ function makeReducer(cards: Flashcard[], storageKey: string) {
         const emptyProgress: Record<string, CardProgress> = {};
         return {
           phase: "session",
-          deck: buildDeck(cards, emptyProgress),
+          deck: makeDeck(emptyProgress),
           currentIndex: 0,
           sessionResults: [],
           progress: emptyProgress,
@@ -50,7 +54,7 @@ function makeReducer(cards: Flashcard[], storageKey: string) {
         return {
           ...state,
           phase: "session",
-          deck: buildDeck(cards, state.progress),
+          deck: makeDeck(state.progress),
           currentIndex: 0,
           sessionResults: [],
         };
@@ -104,8 +108,8 @@ export interface UseFlashcardsReturn {
   goHome(): void;
 }
 
-export function useFlashcards(cards: Flashcard[], storageKey: string): UseFlashcardsReturn {
-  const reducer = makeReducer(cards, storageKey);
+export function useFlashcards(cards: Flashcard[], storageKey: string, randomize = false): UseFlashcardsReturn {
+  const reducer = makeReducer(cards, storageKey, randomize);
   const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(storageKey));
 
   useEffect(() => {

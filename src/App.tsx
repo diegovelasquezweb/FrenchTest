@@ -3,7 +3,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import * as Popover from "@radix-ui/react-popover";
 import {
   Bookmark, ChevronDown, ChevronRight, Heart, Target,
-  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle, PenSquare,
+  Gamepad2, FlaskConical, BookCheck, Columns3, SlidersHorizontal, HelpCircle, PenSquare, Settings,
   UtensilsCrossed, Bus, BedDouble, ShoppingBag, Map, Siren, MessageCircle, Globe,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -65,6 +65,7 @@ import { VocabListView } from "./components/VocabListView";
 import type { MarathonCategoryId, MarathonGroupId } from "./components/MarathonCategoryPicker";
 import { ALL_MARATHON_CATEGORY_IDS } from "./components/MarathonCategoryPicker";
 import { MarathonFilterDrawer } from "./components/MarathonFilterDrawer";
+import { MarathonSettingsDrawer } from "./components/MarathonSettingsDrawer";
 import { NotesView } from "./components/NotesView";
 import type { UserNote } from "./components/NotesView";
 import { AiChatDrawer } from "./components/AiChatDrawer";
@@ -244,6 +245,11 @@ export default function App({ session }: { session: Session | null }) {
   const [vocabCategory, setVocabCategory] = useState<VocabCategory | null>(null);
   const [vocabListQuery, setVocabListQuery] = useState("");
   const [marathonDrawerOpen, setMarathonDrawerOpen] = useState(false);
+  const [marathonSettingsOpen, setMarathonSettingsOpen] = useState(false);
+  const [marathonRandom, setMarathonRandom] = useState<boolean>(() => {
+    try { return getItem("tef-marathon-random") === "1"; }
+    catch { return false; }
+  });
   const [aiChatOpen, setAiChatOpen] = useState(false);
   const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
     () => new Set<MarathonCategoryId>([
@@ -254,7 +260,7 @@ export default function App({ session }: { session: Session | null }) {
     () => Array.from(marathonCategories).flatMap(id => MARATHON_SOURCES[id] ?? []),
     [marathonCategories]
   );
-  const marathonDeck = useFlashcards(marathonCards, "tef-marathon");
+  const marathonDeck = useFlashcards(marathonCards, "tef-marathon", marathonRandom);
   const [userNotes, setUserNotes] = useState<UserNote[]>(() => {
     try {
       const stored = getItem("tef-notes");
@@ -735,6 +741,10 @@ export default function App({ session }: { session: Session | null }) {
           <button type="button" onClick={() => setMarathonDrawerOpen(true)} className="flex items-center gap-1 text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150">
             <SlidersHorizontal size={12} />
             Filtrer
+          </button>
+          <button type="button" onClick={() => setMarathonSettingsOpen(true)} className="flex items-center gap-1 text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150">
+            <Settings size={12} />
+            Réglages
           </button>
         </div>
       </div>
@@ -1846,59 +1856,6 @@ export default function App({ session }: { session: Session | null }) {
                 <>
                   {marathonDeck.state.phase === "session" && marathonDeck.currentCard && (
                     <>
-                      <div className="mx-auto mb-3 flex w-full max-w-xl items-end justify-end gap-2 text-[11px] text-(--color-muted)/85">
-                        <div className="flex items-end gap-2">
-                          <span className="leading-none">Auto</span>
-                          <button
-                            type="button"
-                            role="switch"
-                            aria-checked={marathonAutoPlay}
-                            aria-label={marathonAutoPlay ? "Désactiver le passage auto" : "Activer le passage auto"}
-                            onClick={() => setMarathonAutoPlay((v) => !v)}
-                            className={[
-                              "flex h-6 w-10 items-center rounded-full border p-0.5 transition-colors duration-200",
-                              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
-                              marathonAutoPlay
-                                ? "border-(--color-brand)/45 bg-(--color-brand)/18"
-                                : "border-(--color-ink)/20 bg-(--color-ink)/10",
-                            ].join(" ")}
-                          >
-                            <span
-                              aria-hidden="true"
-                              className={[
-                                "flex h-4 w-4 items-center justify-center rounded-full transition-transform duration-200",
-                                marathonAutoPlay
-                                  ? "translate-x-[calc(40px-16px-4px)] bg-(--color-brand)"
-                                  : "translate-x-0 bg-(--color-ink)/70",
-                              ].join(" ")}
-                            />
-                          </button>
-                        </div>
-                        <div
-                          aria-hidden={!marathonAutoPlay}
-                          className={[
-                            "ml-1 flex w-12 items-end gap-1 transition-opacity duration-200",
-                            marathonAutoPlay ? "opacity-100" : "pointer-events-none opacity-0",
-                          ].join(" ")}
-                        >
-                          <div className="flex h-12 w-4 items-center justify-center">
-                            <input
-                              type="range"
-                              min={1}
-                              max={30}
-                              step={1}
-                              value={marathonAutoSeconds}
-                              onChange={(e) => setMarathonAutoSeconds(Number(e.target.value))}
-                              className="h-1 w-12 -rotate-90 accent-(--color-brand)"
-                              aria-label="Délai auto en secondes"
-                              disabled={!marathonAutoPlay}
-                            />
-                          </div>
-                          <span className="w-6 text-right text-[10px] leading-none font-medium text-(--color-muted)/75">
-                            {marathonAutoSeconds}s
-                          </span>
-                        </div>
-                      </div>
                       <FlashcardView
                         card={marathonDeck.currentCard}
                         index={marathonDeck.progress.index}
@@ -1965,6 +1922,16 @@ export default function App({ session }: { session: Session | null }) {
                     onSelectAll={handleMarathonSelectAll}
                     onUnselectAll={handleMarathonUnselectAll}
                     totalSelectedCards={marathonCards.length}
+                  />
+                  <MarathonSettingsDrawer
+                    open={marathonSettingsOpen}
+                    onClose={() => setMarathonSettingsOpen(false)}
+                    autoPlay={marathonAutoPlay}
+                    onAutoPlayChange={setMarathonAutoPlay}
+                    autoSeconds={marathonAutoSeconds}
+                    onAutoSecondsChange={setMarathonAutoSeconds}
+                    random={marathonRandom}
+                    onRandomChange={setMarathonRandom}
                   />
                 </>
               )}
