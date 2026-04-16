@@ -6,9 +6,10 @@ function corsHeaders(request, env) {
   const allowed = (env.ALLOWED_ORIGIN ?? "").split(",").map(s => s.trim()).filter(Boolean);
   if (!allowed.includes(origin)) return null;
   return {
-    "Access-Control-Allow-Origin":  origin,
-    "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Origin":      origin,
+    "Access-Control-Allow-Methods":     "GET, PUT, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers":     "Content-Type, Authorization",
+    "Access-Control-Allow-Credentials": "true",
     "Vary": "Origin",
   };
 }
@@ -28,11 +29,20 @@ async function createSession(env, userId) {
 }
 
 async function resolveSession(request, env) {
+  // 1. Bearer header (kept for backward compat during transition)
   const header = request.headers.get("Authorization") ?? "";
-  if (!header.startsWith("Bearer ")) return null;
-  const token = header.slice(7);
-  if (!/^[0-9a-f-]{36}$/.test(token)) return null;
-  return await env.TEF_SYNC.get(`session:${token}`);
+  if (header.startsWith("Bearer ")) {
+    const token = header.slice(7);
+    if (/^[0-9a-f-]{36}$/.test(token)) {
+      const userId = await env.TEF_SYNC.get(`session:${token}`);
+      if (userId) return userId;
+    }
+  }
+  // 2. httpOnly cookie
+  const cookie = request.headers.get("Cookie") ?? "";
+  const match  = cookie.match(/tef_token=([0-9a-f-]{36})/);
+  if (match) return await env.TEF_SYNC.get(`session:${match[1]}`);
+  return null;
 }
 
 // ── ENCRYPTION (AES-GCM) ──────────────────────────────────────────────────────
@@ -124,15 +134,35 @@ export default {
       if (!result) return json({ error: "Auth failed" }, 401, cors);
       const token = await createSession(env, result.userId);
       await env.TEF_SYNC.put(`user:${result.userId}:profile`, JSON.stringify({ login: result.login }));
-      return json({ token, login: result.login }, 200, cors);
+      return new Response(JSON.stringify({ login: result.login }), {
+        status: 200,
+        headers: {
+          ...cors,
+          "Content-Type": "application/json",
+          "Set-Cookie": `tef_token=${token}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${SESSION_TTL}`,
+        },
+      });
     }
 
     // ── POST /logout ─────────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/logout") {
+      // Delete session from KV (both Bearer and cookie paths)
       const header = request.headers.get("Authorization") ?? "";
-      const token  = header.startsWith("Bearer ") ? header.slice(7) : "";
-      if (token) await env.TEF_SYNC.delete(`session:${token}`);
-      return json({ ok: true }, 200, cors);
+      const bearer = header.startsWith("Bearer ") ? header.slice(7) : "";
+      if (bearer && /^[0-9a-f-]{36}$/.test(bearer)) {
+        await env.TEF_SYNC.delete(`session:${bearer}`);
+      }
+      const cookie = request.headers.get("Cookie") ?? "";
+      const match  = cookie.match(/tef_token=([0-9a-f-]{36})/);
+      if (match) await env.TEF_SYNC.delete(`session:${match[1]}`);
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: {
+          ...cors,
+          "Content-Type": "application/json",
+          "Set-Cookie": "tef_token=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0",
+        },
+      });
     }
 
     // ── Authenticated routes ─────────────────────────────────────────────────
@@ -140,6 +170,13 @@ export default {
     if (!userId) return json({ error: "Unauthorized" }, 401, cors);
 
     const dataKey = `user:${userId}:data`;
+
+    // ── GET /me ──────────────────────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/me") {
+      const profile = await env.TEF_SYNC.get(`user:${userId}:profile`);
+      const { login } = profile ? JSON.parse(profile) : { login: "unknown" };
+      return json({ login }, 200, cors);
+    }
 
     // ── GET / ────────────────────────────────────────────────────────────────
     if (request.method === "GET" && url.pathname === "/") {

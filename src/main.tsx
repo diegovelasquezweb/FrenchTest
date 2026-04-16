@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import { LoginScreen } from "./components/LoginScreen";
 import { loadStore } from "./lib/store";
-import { exchangeCode, getSession, isGuest, redirectToGitHub, redirectToGoogle, enterGuestMode, validateOAuthCallback } from "./lib/auth";
+import { exchangeCode, getSession, isGuest, redirectToGitHub, redirectToGoogle, enterGuestMode, validateOAuthCallback, restoreSession } from "./lib/auth";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Root element not found");
@@ -22,6 +22,9 @@ async function bootstrap() {
     } catch {
       // Auth failed or CSRF mismatch — show login screen
     }
+  } else {
+    // No OAuth callback — try to rehidrate session from httpOnly cookie
+    await restoreSession();
   }
 
   const session = getSession();

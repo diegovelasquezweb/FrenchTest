@@ -1,14 +1,9 @@
-import { getSession, isGuest } from "./auth";
+import { isGuest } from "./auth";
 
 const WORKER_URL = import.meta.env.VITE_SYNC_URL as string | undefined;
 const TEF_PREFIX = "tef-";
 
 const cache: Record<string, string> = {};
-
-function headers(): HeadersInit {
-  const session = getSession();
-  return { "Content-Type": "application/json", Authorization: `Bearer ${session?.token ?? ""}` };
-}
 
 export function getItem(key: string): string | null {
   if (isGuest()) return localStorage.getItem(key);
@@ -27,7 +22,10 @@ export function setItem(key: string, value: string): void {
 export async function loadStore(): Promise<void> {
   if (!WORKER_URL) return;
   try {
-    const res = await fetch(WORKER_URL + "/", { headers: headers() });
+    const res = await fetch(WORKER_URL + "/", {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
     if (!res.ok) return;
     const snapshot = await res.json() as Record<string, string>;
     for (const [key, value] of Object.entries(snapshot)) {
@@ -47,7 +45,8 @@ export async function pushStore(): Promise<void> {
     }
     await fetch(WORKER_URL + "/", {
       method: "PUT",
-      headers: headers(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(body),
       keepalive: true,
     });
