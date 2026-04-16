@@ -31,9 +31,13 @@ function makeInitialState(storageKey: string): FlashcardsState {
   };
 }
 
-function makeReducer(cards: Flashcard[], storageKey: string, randomize: boolean) {
+export type CardOrder = "fixed" | "random" | "alpha";
+
+function makeReducer(cards: Flashcard[], storageKey: string, order: CardOrder) {
   function makeDeck(progress: Record<string, CardProgress>): Flashcard[] {
-    return randomize ? fisherYates([...cards], Math.random) : buildDeck(cards, progress);
+    if (order === "random") return fisherYates([...cards], Math.random);
+    if (order === "alpha")  return [...cards].filter(c => (progress[c.id]?.score ?? 0) < 2).sort((a, b) => a.front.localeCompare(b.front, "fr"));
+    return buildDeck(cards, progress);
   }
   return function reducer(state: FlashcardsState, action: FlashcardsAction): FlashcardsState {
     switch (action.type) {
@@ -108,8 +112,8 @@ export interface UseFlashcardsReturn {
   goHome(): void;
 }
 
-export function useFlashcards(cards: Flashcard[], storageKey: string, randomize = false): UseFlashcardsReturn {
-  const reducer = makeReducer(cards, storageKey, randomize);
+export function useFlashcards(cards: Flashcard[], storageKey: string, order: CardOrder = "fixed"): UseFlashcardsReturn {
+  const reducer = makeReducer(cards, storageKey, order);
   const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(storageKey));
 
   useEffect(() => {

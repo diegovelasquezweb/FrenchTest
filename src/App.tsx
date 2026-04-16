@@ -26,6 +26,7 @@ import { useSubjonctifQuiz } from "./hooks/useSubjonctifQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
+import type { CardOrder } from "./hooks/useFlashcards";
 import { useTheme } from "./hooks/useTheme";
 import { getItem, setItem, pushStore } from "./lib/store";
 import { logout, isGuest } from "./lib/auth";
@@ -246,10 +247,16 @@ export default function App({ session }: { session: Session | null }) {
   const [vocabListQuery, setVocabListQuery] = useState("");
   const [marathonDrawerOpen, setMarathonDrawerOpen] = useState(false);
   const [marathonSettingsOpen, setMarathonSettingsOpen] = useState(false);
-  const [marathonRandom, setMarathonRandom] = useState<boolean>(() => {
-    try { return getItem("tef-marathon-random") === "1"; }
-    catch { return false; }
+  const [marathonOrder, setMarathonOrder] = useState<CardOrder>(() => {
+    try {
+      const v = getItem("tef-marathon-order");
+      if (v === "random" || v === "alpha") return v;
+      return "fixed";
+    } catch { return "fixed"; }
   });
+  useEffect(() => {
+    setItem("tef-marathon-order", marathonOrder);
+  }, [marathonOrder]);
   const [aiChatOpen, setAiChatOpen] = useState(false);
   const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
     () => new Set<MarathonCategoryId>([
@@ -260,7 +267,7 @@ export default function App({ session }: { session: Session | null }) {
     () => Array.from(marathonCategories).flatMap(id => MARATHON_SOURCES[id] ?? []),
     [marathonCategories]
   );
-  const marathonDeck = useFlashcards(marathonCards, "tef-marathon", marathonRandom);
+  const marathonDeck = useFlashcards(marathonCards, "tef-marathon", marathonOrder);
   const [userNotes, setUserNotes] = useState<UserNote[]>(() => {
     try {
       const stored = getItem("tef-notes");
@@ -1925,13 +1932,14 @@ export default function App({ session }: { session: Session | null }) {
                   />
                   <MarathonSettingsDrawer
                     open={marathonSettingsOpen}
-                    onClose={() => setMarathonSettingsOpen(false)}
+                    onClose={() => { setMarathonSettingsOpen(false); marathonDeck.startSession(); }}
+                    onRestart={() => marathonDeck.startSession()}
                     autoPlay={marathonAutoPlay}
                     onAutoPlayChange={setMarathonAutoPlay}
                     autoSeconds={marathonAutoSeconds}
                     onAutoSecondsChange={setMarathonAutoSeconds}
-                    random={marathonRandom}
-                    onRandomChange={setMarathonRandom}
+                    order={marathonOrder}
+                    onOrderChange={setMarathonOrder}
                   />
                 </>
               )}

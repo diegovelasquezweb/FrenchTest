@@ -1,5 +1,4 @@
 import type { Flashcard, CardProgress, FlashcardRating } from "../types";
-import { fisherYates } from "./shuffle";
 import { getItem, setItem } from "./store";
 
 export function loadProgress(storageKey: string): Record<string, CardProgress> {
@@ -45,15 +44,10 @@ export function buildDeck(
   progress: Record<string, CardProgress>
 ): Flashcard[] {
   const pending = cards.filter((c) => (progress[c.id]?.score ?? 0) < 2);
-
-  if (pending.length === 0) {
-    return fisherYates([...cards], Math.random);
-  }
-
-  const priority = pending.filter((c) => (progress[c.id]?.score ?? 0) === 1);
-  const normal   = pending.filter((c) => (progress[c.id]?.score ?? 0) === 0);
-
-  return [...fisherYates(priority, Math.random), ...fisherYates(normal, Math.random)];
+  // All mastered — show everything in original order
+  if (pending.length === 0) return [...cards];
+  // Fixed order — same as source array, dominadas skipped
+  return pending;
 }
 
 export function totalMastered(progress: Record<string, CardProgress>): number {

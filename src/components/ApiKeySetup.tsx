@@ -19,7 +19,7 @@ export function ApiKeySetup({ onSaved, onCancel }: ApiKeySetupProps) {
       await saveAiKey(key.trim());
       onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar la key");
+      setError(err instanceof Error ? err.message : "Erreur lors de la sauvegarde de la clé");
     } finally {
       setSaving(false);
     }

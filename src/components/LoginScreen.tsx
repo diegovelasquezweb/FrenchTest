@@ -7,7 +7,7 @@ interface LoginScreenProps {
   onGuest(): void;
 }
 
-export function LoginScreen({ onGitHub, onGoogle, onGuest }: LoginScreenProps) {
+export function LoginScreen({ onGitHub: _onGitHub, onGoogle, onGuest }: LoginScreenProps) {
   const { theme, toggle } = useTheme();
 
   return (
@@ -35,7 +35,7 @@ export function LoginScreen({ onGitHub, onGoogle, onGuest }: LoginScreenProps) {
             Continuer avec Google
           </button>
 
-          {/* GitHub */}
+          {/* GitHub — hidden temporarily
           <button
             type="button"
             onClick={onGitHub}
@@ -46,6 +46,7 @@ export function LoginScreen({ onGitHub, onGoogle, onGuest }: LoginScreenProps) {
             </svg>
             Continuer avec GitHub
           </button>
+          */}
 
           {/* Guest */}
           <button

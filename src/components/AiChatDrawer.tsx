@@ -53,7 +53,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
       const reply = await sendMessage(next);
       setMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al enviar");
+      setError(err instanceof Error ? err.message : "Erreur lors de l'envoi");
     } finally {
       setLoading(false);
     }
@@ -83,13 +83,13 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Preguntarle al AI"
+        aria-label="Poser une question à l'IA"
         className={`fixed top-0 right-0 z-50 h-full w-80 max-w-[90vw] flex flex-col bg-(--color-surface) shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-(--color-ink)/8 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-(--color-ink)">Preguntarle al AI</span>
+            <span className="text-sm font-semibold text-(--color-ink)">Poser une question à l'IA</span>
             <span className="inline-flex items-center rounded-full bg-(--color-brand)/10 px-2 py-0.5 text-[10px] font-semibold text-(--color-brand)">Claude</span>
           </div>
           <div className="flex items-center gap-1">

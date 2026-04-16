@@ -1,15 +1,17 @@
-import { X, Shuffle } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect } from "react";
+import type { CardOrder } from "../hooks/useFlashcards";
 
 interface MarathonSettingsDrawerProps {
   open: boolean;
   onClose(): void;
+  onRestart(): void;
   autoPlay: boolean;
   onAutoPlayChange(v: boolean): void;
   autoSeconds: number;
   onAutoSecondsChange(v: number): void;
-  random: boolean;
-  onRandomChange(v: boolean): void;
+  order: CardOrder;
+  onOrderChange(v: CardOrder): void;
 }
 
 function Toggle({
@@ -49,15 +51,22 @@ function Toggle({
   );
 }
 
+const ORDER_OPTIONS: { value: CardOrder; label: string; description: string }[] = [
+  { value: "fixed",  label: "Fixe",      description: "Toujours dans le même ordre" },
+  { value: "random", label: "Aléatoire", description: "Mélanger les cartes" },
+  { value: "alpha",  label: "A → Z",     description: "Ordre alphabétique" },
+];
+
 export function MarathonSettingsDrawer({
   open,
   onClose,
+  onRestart,
   autoPlay,
   onAutoPlayChange,
   autoSeconds,
   onAutoSecondsChange,
-  random,
-  onRandomChange,
+  order,
+  onOrderChange,
 }: MarathonSettingsDrawerProps) {
   useEffect(() => {
     if (!open) return;
@@ -138,22 +147,35 @@ export function MarathonSettingsDrawer({
 
           <div className="border-t border-(--color-ink)/8" />
 
-          {/* Random */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shuffle size={14} className="text-(--color-muted)" />
-              <div>
-                <p className="text-sm font-medium text-(--color-ink)">Aléatoire</p>
-                <p className="text-xs text-(--color-muted)">Ignorer la progression</p>
+          {/* Order */}
+          <div className="flex flex-col gap-3">
+            <p className="text-sm font-medium text-(--color-ink)">Ordre</p>
+            {ORDER_OPTIONS.map(({ value, label, description }) => (
+              <div key={value} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-(--color-ink)">{label}</p>
+                  <p className="text-xs text-(--color-muted)">{description}</p>
+                </div>
+                <Toggle
+                  checked={order === value}
+                  onChange={() => onOrderChange(value)}
+                  label={label}
+                />
               </div>
-            </div>
-            <Toggle
-              checked={random}
-              onChange={onRandomChange}
-              label={random ? "Désactiver le mode aléatoire" : "Activer le mode aléatoire"}
-            />
+            ))}
           </div>
 
+        </div>
+
+        {/* Footer */}
+        <div className="shrink-0 border-t border-(--color-ink)/8 px-4 py-3">
+          <button
+            type="button"
+            onClick={() => { onRestart(); onClose(); }}
+            className="w-full rounded-(--radius-button) bg-(--color-brand)/12 py-2 text-sm font-medium text-(--color-brand) hover:bg-(--color-brand)/20 transition-colors duration-150"
+          >
+            Appliquer et relancer
+          </button>
         </div>
       </div>
     </>

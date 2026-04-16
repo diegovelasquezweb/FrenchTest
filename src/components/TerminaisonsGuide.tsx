@@ -3,12 +3,25 @@ type Row = { subject: string; ending: string; example: string };
 interface TenseBlock {
   title: string;
   note?: string;
+  usage: string;
+  dailyExamples: string[];
   rows: Row[];
+}
+
+interface ComparisonBlock {
+  title: string;
+  points: string[];
 }
 
 const TENSES: TenseBlock[] = [
   {
     title: "Présent (-er)",
+    usage: "S'utilise pour les habitudes, les faits généraux et les actions actuelles.",
+    dailyExamples: [
+      "Je prends le métro tous les matins.",
+      "Nous travaillons à distance aujourd'hui.",
+      "Ils dînent à 20 h.",
+    ],
     rows: [
       { subject: "je", ending: "-e", example: "je parle" },
       { subject: "tu", ending: "-es", example: "tu parles" },
@@ -20,6 +33,12 @@ const TENSES: TenseBlock[] = [
   },
   {
     title: "Imparfait",
+    usage: "S'utilise pour les descriptions dans le passé, le contexte et les habitudes passées.",
+    dailyExamples: [
+      "Quand j'étais enfant, je jouais au parc.",
+      "Il pleuvait, alors on restait à la maison.",
+      "Tous les soirs, nous regardions un film.",
+    ],
     rows: [
       { subject: "je", ending: "-ais", example: "je parlais" },
       { subject: "tu", ending: "-ais", example: "tu parlais" },
@@ -31,6 +50,12 @@ const TENSES: TenseBlock[] = [
   },
   {
     title: "Futur simple",
+    usage: "S'utilise pour les actions futures, les plans et les promesses.",
+    dailyExamples: [
+      "Je t'appellerai ce soir.",
+      "Nous finirons ce projet demain.",
+      "Ils arriveront vers 19 h.",
+    ],
     rows: [
       { subject: "je", ending: "-ai", example: "je parlerai" },
       { subject: "tu", ending: "-as", example: "tu parleras" },
@@ -42,6 +67,12 @@ const TENSES: TenseBlock[] = [
   },
   {
     title: "Conditionnel présent",
+    usage: "S'utilise pour demander poliment, donner un conseil ou exprimer une hypothèse.",
+    dailyExamples: [
+      "Je voudrais un café, s'il vous plaît.",
+      "Tu devrais te reposer un peu.",
+      "On pourrait sortir ce week-end.",
+    ],
     rows: [
       { subject: "je", ending: "-ais", example: "je parlerais" },
       { subject: "tu", ending: "-ais", example: "tu parlerais" },
@@ -53,6 +84,13 @@ const TENSES: TenseBlock[] = [
   },
   {
     title: "Subjonctif présent",
+    note: "Schéma clé : il faut que + subjonctif",
+    usage: "Règle pratique à mémoriser : après « il faut que », on utilise le subjonctif.",
+    dailyExamples: [
+      "Il faut que tu viennes à l'heure.",
+      "Il faut que nous finissions avant midi.",
+      "Il faut qu'ils soient prêts demain.",
+    ],
     rows: [
       { subject: "que je", ending: "-e", example: "que je parle" },
       { subject: "que tu", ending: "-es", example: "que tu parles" },
@@ -65,6 +103,12 @@ const TENSES: TenseBlock[] = [
   {
     title: "Passé composé (avoir)",
     note: "Auxiliaire au présent + participe passé",
+    usage: "S'utilise pour les actions terminées et ponctuelles dans le passé.",
+    dailyExamples: [
+      "J'ai fini mon travail à 18 h.",
+      "Nous avons réservé une table.",
+      "Elles ont regardé la série hier soir.",
+    ],
     rows: [
       { subject: "je", ending: "ai + PP", example: "j'ai parlé" },
       { subject: "tu", ending: "as + PP", example: "tu as parlé" },
@@ -77,6 +121,12 @@ const TENSES: TenseBlock[] = [
   {
     title: "Plus-que-parfait (avoir)",
     note: "Auxiliaire à l'imparfait + participe passé",
+    usage: "S'utilise pour une action passée antérieure à une autre action passée.",
+    dailyExamples: [
+      "J'avais déjà mangé quand tu es arrivé.",
+      "Nous avions préparé la réunion avant 9 h.",
+      "Il avait oublié ses clés, donc il est rentré tard.",
+    ],
     rows: [
       { subject: "je", ending: "avais + PP", example: "j'avais parlé" },
       { subject: "tu", ending: "avais + PP", example: "tu avais parlé" },
@@ -88,6 +138,25 @@ const TENSES: TenseBlock[] = [
   },
 ];
 
+const QUICK_COMPARISONS: ComparisonBlock[] = [
+  {
+    title: "Imparfait vs Passé composé",
+    points: [
+      "Imparfait = contexte, description ou habitude dans le passé.",
+      "Passé composé = action ponctuelle/terminée dans le passé.",
+      "Exemple : Il pleuvait quand j'ai raté le bus.",
+    ],
+  },
+  {
+    title: "Passé composé vs Plus-que-parfait",
+    points: [
+      "Passé composé = action passée principale.",
+      "Plus-que-parfait = action qui s'est produite avant une autre action passée.",
+      "Exemple : J'avais mangé avant de sortir.",
+    ],
+  },
+];
+
 export function TerminaisonsGuide() {
   return (
     <div className="mx-auto w-full max-w-5xl space-y-4">
@@ -95,6 +164,17 @@ export function TerminaisonsGuide() {
         <section key={tense.title} className="rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) p-4 shadow-sm">
           <h3 className="text-base font-bold text-(--color-ink)">{tense.title}</h3>
           {tense.note && <p className="mt-1 text-xs text-(--color-muted)">{tense.note}</p>}
+          <p className="mt-2 text-sm text-(--color-ink)">{tense.usage}</p>
+          <div className="mt-2 rounded border border-(--color-ink)/8 bg-(--color-ink)/3 px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-(--color-muted)">Usage quotidien</p>
+            <ul className="mt-1 space-y-1">
+              {tense.dailyExamples.map((example) => (
+                <li key={`${tense.title}-${example}`} className="text-sm text-(--color-ink)" lang="fr">
+                  • {example}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {tense.rows.map((row) => (
               <div key={`${tense.title}-${row.subject}`} className="rounded border border-(--color-ink)/8 px-3 py-2">
@@ -106,7 +186,24 @@ export function TerminaisonsGuide() {
           </div>
         </section>
       ))}
+
+      <section className="rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) p-4 shadow-sm">
+        <h3 className="text-base font-bold text-(--color-ink)">Comparaisons rapides</h3>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          {QUICK_COMPARISONS.map((block) => (
+            <article key={block.title} className="rounded border border-(--color-ink)/8 px-3 py-2">
+              <h4 className="text-sm font-semibold text-(--color-brand)">{block.title}</h4>
+              <ul className="mt-1 space-y-1">
+                {block.points.map((point) => (
+                  <li key={`${block.title}-${point}`} className="text-sm text-(--color-ink)">
+                    • {point}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
-
