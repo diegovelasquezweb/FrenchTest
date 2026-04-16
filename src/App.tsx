@@ -1419,6 +1419,7 @@ export default function App({ session }: { session: Session | null }) {
                         { label: "Présent",         onClick: handleStartPresent },
                         { label: "Subjonctif",      onClick: handleStartSubjonctif },
                         { label: "Plus-que-parfait", onClick: handleStartPlusQueParfait },
+                        { label: "Articles & contractions", onClick: handleStartArticles },
                         { label: "Orthographe", onClick: handleStartOrthographe },
                         { label: "Futur simple",    onClick: handleStartFutur },
                         { label: "Conditionnel",    onClick: handleStartConditionnel },

@@ -42,9 +42,9 @@ export const PHRASES_ORAL: OrthographePhrase[] = [
   },
   {
     sentence: "___ me donner des renseignements sur le programme ?",
-    options: ["Pourriez-vous", "Voulez-vous", "Vous voulez", "Vous pourrez"],
+    options: ["Pourriez-vous", "Peux-tu", "Vous voulez", "Vous pourrez"],
     correctIndex: 0,
-    explanation: "\"Pourriez-vous\" = conditionnel → registre formel. \"Voulez-vous\" = moins poli. \"Vous voulez\" / \"vous pourrez\" ne sont pas des formules interrogatives polies.",
+    explanation: "\"Pourriez-vous\" = conditionnel → registre formel (TEF). \"Peux-tu\" est correct en français, mais trop familier pour un échange formel.",
   },
   {
     sentence: "De quoi ___ au juste cette formation en ligne ?",

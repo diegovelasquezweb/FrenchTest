@@ -134,14 +134,7 @@ export default {
       if (!result) return json({ error: "Auth failed" }, 401, cors);
       const token = await createSession(env, result.userId);
       await env.TEF_SYNC.put(`user:${result.userId}:profile`, JSON.stringify({ login: result.login }));
-      return new Response(JSON.stringify({ login: result.login }), {
-        status: 200,
-        headers: {
-          ...cors,
-          "Content-Type": "application/json",
-          "Set-Cookie": `tef_token=${token}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${SESSION_TTL}`,
-        },
-      });
+      return json({ token, login: result.login }, 200, cors);
     }
 
     // ── POST /logout ─────────────────────────────────────────────────────────

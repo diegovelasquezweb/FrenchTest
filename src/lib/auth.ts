@@ -2,16 +2,40 @@ const WORKER_URL    = import.meta.env.VITE_SYNC_URL         as string | undefine
 const GITHUB_CLIENT = import.meta.env.VITE_GITHUB_CLIENT_ID as string | undefined;
 const GOOGLE_CLIENT = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
+const SESSION_KEY = "tef-session";
+
 export interface Session {
+  token: string;
   login: string;
-  // token lives in an httpOnly cookie — frontend never touches it
 }
 
 let _session: Session | null = null;
 
 export function getSession(): Session | null { return _session; }
-export function setSession(s: Session): void { _session = s; }
-export function clearSession(): void { _session = null; }
+
+export function setSession(s: Session): void {
+  _session = s;
+  localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+}
+
+export function clearSession(): void {
+  _session = null;
+  localStorage.removeItem(SESSION_KEY);
+}
+
+export function restoreSession(): Session | null {
+  if (_session) return _session;
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Session;
+    if (!parsed.token || !parsed.login) return null;
+    _session = parsed;
+    return _session;
+  } catch {
+    return null;
+  }
+}
 
 export function isGuest(): boolean {
   return localStorage.getItem("tef-guest") === "1";
@@ -26,31 +50,17 @@ export function clearGuestMode(): void {
 }
 
 export async function logout(): Promise<void> {
+  const token = _session?.token;
   clearSession();
   clearGuestMode();
-  if (!WORKER_URL) return;
+  if (!WORKER_URL || !token) return;
   try {
     await fetch(`${WORKER_URL}/logout`, {
       method: "POST",
-      credentials: "include",
+      headers: { Authorization: `Bearer ${token}` },
     });
   } catch {
-    // offline — session already cleared in memory
-  }
-}
-
-/** Called on app load to rehidrate _session from the httpOnly cookie. */
-export async function restoreSession(): Promise<Session | null> {
-  if (!WORKER_URL) return null;
-  try {
-    const res = await fetch(`${WORKER_URL}/me`, { credentials: "include" });
-    if (!res.ok) return null;
-    const data = await res.json() as { login: string };
-    const session: Session = { login: data.login };
-    setSession(session);
-    return session;
-  } catch {
-    return null;
+    // offline — session already cleared
   }
 }
 
@@ -91,7 +101,6 @@ export async function exchangeCode(code: string, provider: string): Promise<Sess
   if (!WORKER_URL) throw new Error("Worker URL not configured");
   const res = await fetch(`${WORKER_URL}/auth`, {
     method: "POST",
-    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       code,
@@ -100,8 +109,8 @@ export async function exchangeCode(code: string, provider: string): Promise<Sess
     }),
   });
   if (!res.ok) throw new Error("Auth failed");
-  const data = await res.json() as { login: string };
-  const session: Session = { login: data.login };
+  const data = await res.json() as { token: string; login: string };
+  const session: Session = { token: data.token, login: data.login };
   setSession(session);
   return session;
 }

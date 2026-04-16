@@ -14,6 +14,7 @@ async function bootstrap() {
   const params = new URLSearchParams(window.location.search);
   const code  = params.get("code");
   const state = params.get("state") ?? "";
+
   if (code) {
     window.history.replaceState({}, "", "/");
     try {
@@ -23,8 +24,7 @@ async function bootstrap() {
       // Auth failed or CSRF mismatch — show login screen
     }
   } else {
-    // No OAuth callback — try to rehidrate session from httpOnly cookie
-    await restoreSession();
+    restoreSession();
   }
 
   const session = getSession();

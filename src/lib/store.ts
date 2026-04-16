@@ -1,4 +1,4 @@
-import { isGuest } from "./auth";
+import { getSession, isGuest } from "./auth";
 
 const WORKER_URL = import.meta.env.VITE_SYNC_URL as string | undefined;
 const TEF_PREFIX = "tef-";
@@ -19,13 +19,15 @@ export function setItem(key: string, value: string): void {
   schedulePush();
 }
 
+function authHeaders(): HeadersInit {
+  const session = getSession();
+  return { "Content-Type": "application/json", Authorization: `Bearer ${session?.token ?? ""}` };
+}
+
 export async function loadStore(): Promise<void> {
   if (!WORKER_URL) return;
   try {
-    const res = await fetch(WORKER_URL + "/", {
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    const res = await fetch(WORKER_URL + "/", { headers: authHeaders() });
     if (!res.ok) return;
     const snapshot = await res.json() as Record<string, string>;
     for (const [key, value] of Object.entries(snapshot)) {
@@ -45,8 +47,7 @@ export async function pushStore(): Promise<void> {
     }
     await fetch(WORKER_URL + "/", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: authHeaders(),
       body: JSON.stringify(body),
       keepalive: true,
     });
