@@ -1,19 +1,15 @@
 "use client";
 
-import { use, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { use } from "react";
 import { notFound } from "next/navigation";
-import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
-import { FlashcardView } from "@/src/components/FlashcardView";
-import { FlashcardResults } from "@/src/components/FlashcardResults";
-import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { VOCABULAIRE_CARDS } from "@/src/data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
 import { GENRE_CARDS } from "@/src/data/genreCards";
 import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
+import { FlashcardCategoryShell } from "@/src/components/shells";
 
 type VocabCategory =
   | "verbes"
@@ -38,14 +34,21 @@ const VALID = new Set<string>([
 
 const VOCAB_CARDS = [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS];
 
-const verbesCards = VOCAB_CARDS.filter(
-  (c) => !c.subCategory || c.subCategory === "verbes",
-);
+const verbesCards = VOCAB_CARDS.filter((c) => !c.subCategory || c.subCategory === "verbes");
 const adjectifsCards = VOCAB_CARDS.filter((c) => c.subCategory === "adjectifs");
 const nomsCards = VOCAB_CARDS.filter((c) => c.subCategory === "noms");
-const expressionsCards = VOCAB_CARDS.filter(
-  (c) => c.subCategory === "expressions",
-);
+const expressionsCards = VOCAB_CARDS.filter((c) => c.subCategory === "expressions");
+
+const VOCAB_TITLES: Record<VocabCategory, string> = {
+  verbes: "Verbes",
+  adjectifs: "Adjectifs",
+  noms: "Noms",
+  expressions: "Expressions",
+  genre: "Genre",
+  erreurs: "Erreurs",
+  accents: "Accents",
+  mix: "Mix",
+};
 
 export default function VocabulaireCategoryPage({
   params,
@@ -53,7 +56,6 @@ export default function VocabulaireCategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category } = use(params);
-  const router = useRouter();
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
 
   const verbes = useFlashcards(verbesCards, "tef-vocab-verbes");
@@ -76,54 +78,17 @@ export default function VocabulaireCategoryPage({
     mix,
   };
 
-  const deck = VALID.has(category)
-    ? deckMap[category as VocabCategory]
-    : null;
-
-  const VOCAB_TITLES: Record<VocabCategory, string> = {
-    verbes: "Verbes",
-    adjectifs: "Adjectifs",
-    noms: "Noms",
-    expressions: "Expressions",
-    genre: "Genre",
-    erreurs: "Erreurs",
-    accents: "Accents",
-    mix: "Mix",
-  };
-
-  useSetFlashcardHeader(VOCAB_TITLES[category as VocabCategory] ?? category, deck!);
-
-  useEffect(() => {
-    deck?.startSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   if (!VALID.has(category)) notFound();
 
+  const deck = deckMap[category as VocabCategory];
+  const title = VOCAB_TITLES[category as VocabCategory] ?? category;
+
   return (
-    <AuthGate>
-      {deck!.state.phase === "session" && deck!.currentCard && (
-        <FlashcardView
-          card={deck!.currentCard}
-          index={deck!.progress.index}
-          total={deck!.progress.total}
-          onRate={deck!.rate}
-          onSkip={deck!.skip}
-          onBack={deck!.back}
-          isFavorite={isFavoriteCard(deck!.currentCard.id)}
-          onToggleFavorite={() => toggleFavoriteCard(deck!.currentCard!.id)}
-        />
-      )}
-      {deck!.state.phase === "complete" && (
-        <FlashcardResults
-          sessionResults={deck!.state.sessionResults}
-          masteredCount={deck!.masteredCount}
-          totalCards={deck!.totalCards}
-          cards={deck!.state.deck}
-          onRestart={deck!.restart}
-          onHome={() => router.push("/")}
-        />
-      )}
-    </AuthGate>
+    <FlashcardCategoryShell
+      title={title}
+      deck={deck}
+      isFavoriteCard={isFavoriteCard}
+      toggleFavoriteCard={toggleFavoriteCard}
+    />
   );
 }
