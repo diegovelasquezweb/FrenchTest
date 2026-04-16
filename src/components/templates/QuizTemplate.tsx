@@ -90,7 +90,7 @@ export function QuizTemplate<Q>({
       }
     }
     setAnnouncement(msg);
-  }, [quiz.state.phase, quiz.state.answerState, quiz.currentQuestion, buildAnnouncement]);
+  }, [quiz.state.phase, quiz.state.answerState, quiz.state.selectedIndex, quiz.currentQuestion, buildAnnouncement]);
 
   const isActive =
     quiz.state.phase === QuizPhase.Answering ||

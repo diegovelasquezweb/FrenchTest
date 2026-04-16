@@ -75,10 +75,14 @@ export function VocabListView({
     return map;
   }, [filtered]);
 
-  const availableLetters = new Set(
-    LETTERS.filter((letter) => (groups.get(letter)?.length ?? 0) > 0)
+  const availableLetters = useMemo(
+    () => new Set(LETTERS.filter((letter) => (groups.get(letter)?.length ?? 0) > 0)),
+    [groups]
   );
-  const availableLetterList = LETTERS.filter((letter) => availableLetters.has(letter));
+  const availableLetterList = useMemo(
+    () => LETTERS.filter((letter) => availableLetters.has(letter)),
+    [availableLetters]
+  );
 
   useEffect(() => {
     if (availableLetterList.length === 0) return;

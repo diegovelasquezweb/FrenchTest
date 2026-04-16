@@ -30,13 +30,15 @@ export async function fetchWiktionary(word: string, language: "fr" | "es" | "en"
     const response = await fetch(url);
     if (!response.ok) return null;
 
-    const data = await response.json() as any;
+    interface WikiPage { missing?: string; extract?: string }
+    interface WikiResponse { query?: { pages?: Record<string, WikiPage> } }
+    const data = await response.json() as WikiResponse;
     const pages = data.query?.pages ?? {};
-    const page = Object.values(pages)[0] as any;
+    const page = Object.values(pages)[0] as WikiPage | undefined;
 
     if (!page || page.missing !== undefined) return null;
 
-    const extract = page.extract as string | undefined;
+    const extract = page?.extract;
     if (!extract) return null;
 
     // Parse the extract to find definitions and examples

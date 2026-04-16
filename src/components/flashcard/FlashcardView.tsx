@@ -96,7 +96,7 @@ export function FlashcardView({
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [triggerRate, triggerSkip]);
+  }, [triggerRate, triggerSkip, onBack]);
 
   useEffect(() => {
     if (!autoAdvanceEnabled || autoAdvanceMs <= 0) return;
