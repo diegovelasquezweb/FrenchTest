@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { useAuth } from "@/src/lib/auth-context";
-import { AiChatDrawer } from "@/src/components/AiChatDrawer";
+import { AiChatDrawer } from "@/src/features/ai/AiChatDrawer";
 import { useHeaderData } from "@/src/lib/header-context";
-import { ScoreBoard } from "@/src/components/ScoreBoard";
-import { FlashcardHeader } from "@/src/components/FlashcardHeader";
+import { ScoreBoard } from "@/src/components/quiz/ScoreBoard";
+import { FlashcardHeader } from "@/src/components/flashcard/FlashcardHeader";
 import { QuizPhase } from "@/src/types";
 
 const PUBLIC_PATHS = ["/login", "/auth/callback"];

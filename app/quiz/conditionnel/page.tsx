@@ -2,11 +2,11 @@
 
 import { useConditionnelQuiz } from "@/src/hooks/useConditionnelQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { ConditionnelTable } from "@/src/components/ConditionnelTable";
-import { ConditionnelWrongTable } from "@/src/components/ConditionnelWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { ConditionnelTable } from "@/src/components/tables/ConditionnelTable";
+import { ConditionnelWrongTable } from "@/src/components/tables/ConditionnelWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function ConditionnelPage() {
   const quiz = useConditionnelQuiz();

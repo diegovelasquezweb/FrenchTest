@@ -11,7 +11,7 @@ import {
   MessageCircle,
   Heart,
 } from "lucide-react";
-import { ThemeToggle } from "@/src/components/ThemeToggle";
+import { ThemeToggle } from "@/src/components/ui/ThemeToggle";
 import { useAuth } from "@/src/lib/auth-context";
 import { useTheme } from "@/src/hooks/useTheme";
 import { logout } from "@/src/lib/auth";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthGate } from "@/src/layout/AuthGate";
-import { VocabListView } from "@/src/components/VocabListView";
+import { VocabListView } from "@/src/features/vocabulary/VocabListView";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { VOCABULAIRE_CARDS } from "@/src/data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";

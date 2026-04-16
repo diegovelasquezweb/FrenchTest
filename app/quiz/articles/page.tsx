@@ -1,9 +1,9 @@
 "use client";
 
 import { useArticlesQuiz } from "@/src/hooks/useArticlesQuiz";
-import { ArticlesQuizCard } from "@/src/components/ArticlesQuizCard";
-import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { ArticlesQuizCard } from "@/src/components/quiz/ArticlesQuizCard";
+import { OrthographeResultScreen } from "@/src/components/quiz/OrthographeResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function ArticlesPage() {
   const quiz = useArticlesQuiz();

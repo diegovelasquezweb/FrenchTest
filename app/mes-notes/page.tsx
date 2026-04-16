@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NotesView } from "@/src/components/NotesView";
-import type { UserNote } from "@/src/components/NotesView";
+import { NotesView } from "@/src/features/notes/NotesView";
+import type { UserNote } from "@/src/features/notes/NotesView";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { getItem, setItem } from "@/src/lib/store";
 

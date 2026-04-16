@@ -9,7 +9,7 @@ import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
 import { GENRE_CARDS } from "@/src/data/genreCards";
 import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
-import { FlashcardCategoryShell } from "@/src/components/shells";
+import { FlashcardCategoryShell } from "@/src/components/templates";
 
 type VocabCategory =
   | "verbes"

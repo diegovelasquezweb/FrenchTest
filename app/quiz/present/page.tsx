@@ -2,11 +2,11 @@
 
 import { usePresentQuiz } from "@/src/hooks/usePresentQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { PresentTable } from "@/src/components/PresentTable";
-import { PresentWrongTable } from "@/src/components/PresentWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { PresentTable } from "@/src/components/tables/PresentTable";
+import { PresentWrongTable } from "@/src/components/tables/PresentWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function PresentPage() {
   const quiz = usePresentQuiz();

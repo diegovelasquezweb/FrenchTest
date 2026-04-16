@@ -1,6 +1,6 @@
 "use client";
 
-import { TerminaisonsGuide } from "@/src/components/TerminaisonsGuide";
+import { TerminaisonsGuide } from "@/src/components/guides/TerminaisonsGuide";
 import { AuthGate } from "@/src/layout/AuthGate";
 
 export default function TerminaisonsPage() {

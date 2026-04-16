@@ -2,11 +2,11 @@
 
 import { useSubjonctifQuiz } from "@/src/hooks/useSubjonctifQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { SubjonctifTable } from "@/src/components/SubjonctifTable";
-import { SubjonctifWrongTable } from "@/src/components/SubjonctifWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { SubjonctifTable } from "@/src/components/tables/SubjonctifTable";
+import { SubjonctifWrongTable } from "@/src/components/tables/SubjonctifWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function SubjonctifPage() {
   const quiz = useSubjonctifQuiz();

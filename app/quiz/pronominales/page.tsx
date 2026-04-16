@@ -1,9 +1,9 @@
 "use client";
 
 import { usePronominalQuiz } from "@/src/hooks/usePronominalQuiz";
-import { PronominalQuizCard } from "@/src/components/PronominalQuizCard";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { PronominalQuizCard } from "@/src/components/quiz/PronominalQuizCard";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function PronominalesPage() {
   const quiz = usePronominalQuiz();

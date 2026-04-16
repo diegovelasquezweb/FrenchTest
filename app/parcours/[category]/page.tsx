@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { FLASHCARDS } from "@/src/data/flashcards";
-import { FlashcardCategoryShell } from "@/src/components/shells";
+import { FlashcardCategoryShell } from "@/src/components/templates";
 
 type ParcoursCategory =
   | "connecteurs"

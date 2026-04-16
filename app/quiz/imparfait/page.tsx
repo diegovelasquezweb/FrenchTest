@@ -2,11 +2,11 @@
 
 import { useImparfaitQuiz } from "@/src/hooks/useImparfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { ImparfaitTable } from "@/src/components/ImparfaitTable";
-import { ImparfaitWrongTable } from "@/src/components/ImparfaitWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { ImparfaitTable } from "@/src/components/tables/ImparfaitTable";
+import { ImparfaitWrongTable } from "@/src/components/tables/ImparfaitWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function ImparfaitPage() {
   const quiz = useImparfaitQuiz();

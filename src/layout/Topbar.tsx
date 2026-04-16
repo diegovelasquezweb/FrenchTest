@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
-import { ThemeToggle } from "@/src/components/ThemeToggle";
+import { ThemeToggle } from "@/src/components/ui/ThemeToggle";
 import { useAuth } from "@/src/lib/auth-context";
 import { useTheme } from "@/src/hooks/useTheme";
 import { logout } from "@/src/lib/auth";

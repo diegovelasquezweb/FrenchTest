@@ -5,11 +5,11 @@ import { HelpCircle } from "lucide-react";
 import * as Popover from "@radix-ui/react-popover";
 import { useQuiz } from "@/src/hooks/useQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { QuizCard } from "@/src/components/QuizCard";
-import { ResultScreen } from "@/src/components/ResultScreen";
+import { QuizCard } from "@/src/components/quiz/QuizCard";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
 import { VERBS } from "@/src/data/verbs";
 import { getItem, setItem } from "@/src/lib/store";
-import { QuizShell } from "@/src/components/shells";
+import { QuizShell } from "@/src/components/templates";
 
 const PARTICIPE_HARD_VERBS = VERBS.filter(
   (v) => !(v.ending === "-é" && v.auxiliary === "avoir"),

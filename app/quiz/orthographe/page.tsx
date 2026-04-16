@@ -1,9 +1,9 @@
 "use client";
 
 import { useOrthographeQuiz } from "@/src/hooks/useOrthographeQuiz";
-import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
-import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { OrthographeQuizCard } from "@/src/components/quiz/OrthographeQuizCard";
+import { OrthographeResultScreen } from "@/src/components/quiz/OrthographeResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function OrthographePage() {
   const quiz = useOrthographeQuiz();

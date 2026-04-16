@@ -2,22 +2,22 @@
 
 import { useGrammarQuiz } from "@/src/hooks/useGrammarQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { QuizCard } from "@/src/components/QuizCard";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { ImparfaitTable } from "@/src/components/ImparfaitTable";
-import { ImparfaitWrongTable } from "@/src/components/ImparfaitWrongTable";
-import { FuturTable } from "@/src/components/FuturTable";
-import { FuturWrongTable } from "@/src/components/FuturWrongTable";
-import { ConditionnelTable } from "@/src/components/ConditionnelTable";
-import { ConditionnelWrongTable } from "@/src/components/ConditionnelWrongTable";
-import { PresentTable } from "@/src/components/PresentTable";
-import { PresentWrongTable } from "@/src/components/PresentWrongTable";
-import { SubjonctifTable } from "@/src/components/SubjonctifTable";
-import { SubjonctifWrongTable } from "@/src/components/SubjonctifWrongTable";
-import { PlusQueParfaitTable } from "@/src/components/PlusQueParfaitTable";
-import { PlusQueParfaitWrongTable } from "@/src/components/PlusQueParfaitWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell, defaultAnnouncement } from "@/src/components/shells";
+import { QuizCard } from "@/src/components/quiz/QuizCard";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { ImparfaitTable } from "@/src/components/tables/ImparfaitTable";
+import { ImparfaitWrongTable } from "@/src/components/tables/ImparfaitWrongTable";
+import { FuturTable } from "@/src/components/tables/FuturTable";
+import { FuturWrongTable } from "@/src/components/tables/FuturWrongTable";
+import { ConditionnelTable } from "@/src/components/tables/ConditionnelTable";
+import { ConditionnelWrongTable } from "@/src/components/tables/ConditionnelWrongTable";
+import { PresentTable } from "@/src/components/tables/PresentTable";
+import { PresentWrongTable } from "@/src/components/tables/PresentWrongTable";
+import { SubjonctifTable } from "@/src/components/tables/SubjonctifTable";
+import { SubjonctifWrongTable } from "@/src/components/tables/SubjonctifWrongTable";
+import { PlusQueParfaitTable } from "@/src/components/tables/PlusQueParfaitTable";
+import { PlusQueParfaitWrongTable } from "@/src/components/tables/PlusQueParfaitWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell, defaultAnnouncement } from "@/src/components/templates";
 
 export default function GrammairePage() {
   const quiz = useGrammarQuiz();

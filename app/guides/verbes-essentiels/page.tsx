@@ -1,6 +1,6 @@
 "use client";
 
-import { EssentialVerbsGuide } from "@/src/components/EssentialVerbsGuide";
+import { EssentialVerbsGuide } from "@/src/components/guides/EssentialVerbsGuide";
 import { AuthGate } from "@/src/layout/AuthGate";
 
 export default function VerbsEssentielsPage() {

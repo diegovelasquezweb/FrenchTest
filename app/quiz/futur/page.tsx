@@ -2,11 +2,11 @@
 
 import { useFuturQuiz } from "@/src/hooks/useFuturQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { FuturTable } from "@/src/components/FuturTable";
-import { FuturWrongTable } from "@/src/components/FuturWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { FuturTable } from "@/src/components/tables/FuturTable";
+import { FuturWrongTable } from "@/src/components/tables/FuturWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function FuturPage() {
   const quiz = useFuturQuiz();

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LoginScreen } from "@/src/components/LoginScreen";
+import { LoginScreen } from "@/src/features/auth/LoginScreen";
 import { useAuth } from "@/src/lib/auth-context";
 
 export default function LoginPage() {

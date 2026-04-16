@@ -1,6 +1,6 @@
 "use client";
 
-import { TranslatorView } from "@/src/components/TranslatorView";
+import { TranslatorView } from "@/src/features/translator/TranslatorView";
 import { AuthGate } from "@/src/layout/AuthGate";
 
 export default function TraducteurPage() {

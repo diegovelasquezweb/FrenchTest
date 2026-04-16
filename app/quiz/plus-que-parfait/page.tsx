@@ -2,11 +2,11 @@
 
 import { usePlusQueParfaitQuiz } from "@/src/hooks/usePlusQueParfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
-import { PlusQueParfaitTable } from "@/src/components/PlusQueParfaitTable";
-import { PlusQueParfaitWrongTable } from "@/src/components/PlusQueParfaitWrongTable";
-import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizShell } from "@/src/components/shells";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { PlusQueParfaitTable } from "@/src/components/tables/PlusQueParfaitTable";
+import { PlusQueParfaitWrongTable } from "@/src/components/tables/PlusQueParfaitWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizShell } from "@/src/components/templates";
 
 export default function PlusQueParfaitPage() {
   const quiz = usePlusQueParfaitQuiz();
