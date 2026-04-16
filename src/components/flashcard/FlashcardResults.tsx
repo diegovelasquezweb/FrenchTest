@@ -33,16 +33,16 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
     <div className="flex w-full max-w-lg flex-col gap-4">
 
       {/* ── Score header ── */}
-      <div className="rounded-(--radius-card) bg-(--color-surface) px-6 py-5 shadow-sm">
+      <div className="rounded-card bg-surface px-6 py-5 shadow-sm">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="leading-none">
-              <span className="text-5xl font-extrabold tabular-nums text-(--color-ink)">{green}</span>
-              <span className="text-2xl font-medium text-(--color-muted)">/{sessionResults.length}</span>
+              <span className="text-5xl font-extrabold tabular-nums text-ink">{green}</span>
+              <span className="text-2xl font-medium text-muted">/{sessionResults.length}</span>
             </p>
-            <p className="mt-1.5 text-sm text-(--color-muted)">{motivation(pct)}</p>
+            <p className="mt-1.5 text-sm text-muted">{motivation(pct)}</p>
           </div>
-          <span className="text-lg font-bold tabular-nums text-(--color-muted)">
+          <span className="text-lg font-bold tabular-nums text-muted">
             {Math.round(pct * 100)} %
           </span>
         </div>
@@ -54,9 +54,9 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
             { count: yellow, label: "Hésité",      dot: "bg-yellow-400",  text: "text-yellow-600 dark:text-yellow-400"  },
             { count: red,    label: "Ne savais pas", dot: "bg-red-500",   text: "text-red-500 dark:text-red-400"        },
           ] as const).map(({ count, label, dot, text }) => (
-            <div key={label} className="flex flex-col items-center rounded-(--radius-button) bg-(--color-ink)/4 px-2 py-2.5">
+            <div key={label} className="flex flex-col items-center rounded-button bg-ink/4 px-2 py-2.5">
               <span className={`text-xl font-extrabold ${text}`}>{count}</span>
-              <span className="mt-0.5 flex items-center gap-1 text-[10px] text-(--color-muted)">
+              <span className="mt-0.5 flex items-center gap-1 text-[10px] text-muted">
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
                 {label}
               </span>
@@ -66,17 +66,17 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
       </div>
 
       {/* ── Maîtrise globale ── */}
-      <div className="rounded-(--radius-card) bg-(--color-surface) px-5 py-4 shadow-sm">
+      <div className="rounded-card bg-surface px-5 py-4 shadow-sm">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold uppercase tracking-widest text-(--color-muted)">Maîtrise totale</p>
-          <p className="text-sm font-bold text-(--color-ink)">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted">Maîtrise totale</p>
+          <p className="text-sm font-bold text-ink">
             {masteredCount}
-            <span className="font-medium text-(--color-muted)"> / {totalCards}</span>
+            <span className="font-medium text-muted"> / {totalCards}</span>
           </p>
         </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-(--color-ink)/8">
+        <div className="h-1.5 overflow-hidden rounded-full bg-ink/8">
           <div
-            className="h-full rounded-full bg-(--color-brand) transition-all duration-700"
+            className="h-full rounded-full bg-brand transition-all duration-700"
             style={{ width: `${masteredPct * 100}%` }}
           />
         </div>
@@ -85,7 +85,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
       {/* ── Récapitulatif complet ── */}
       {sessionResults.length > 0 && (
         <section aria-label="Récapitulatif de la session">
-          <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-(--color-muted)">
+          <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-muted">
             Récapitulatif
           </p>
           <ol className="flex flex-col gap-1.5">
@@ -96,10 +96,10 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
             ].map(({ card, dot }) => (
               <li
                 key={card.id}
-                className="flex items-start gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-2.5 shadow-sm"
+                className="flex items-start gap-3 rounded-button bg-surface px-4 py-2.5 shadow-sm"
               >
                 <span className={`mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} aria-hidden="true" />
-                <p className="min-w-0 flex-1 text-sm text-(--color-ink) leading-snug" lang="fr">{card.front}</p>
+                <p className="min-w-0 flex-1 text-sm text-ink leading-snug" lang="fr">{card.front}</p>
               </li>
             ))}
           </ol>
@@ -111,14 +111,14 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
         <button
           type="button"
           onClick={onRestart}
-          className="flex-1 min-h-11 rounded-(--radius-card) bg-(--color-brand) px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          className="flex-1 min-h-11 rounded-card bg-brand px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           Nouvelle session
         </button>
         <button
           type="button"
           onClick={onHome}
-          className="flex-1 min-h-11 rounded-(--radius-card) border border-(--color-ink)/12 px-6 py-3 font-semibold text-(--color-muted) transition-colors hover:text-(--color-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+          className="flex-1 min-h-11 rounded-card border border-ink/12 px-6 py-3 font-semibold text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           Accueil
         </button>

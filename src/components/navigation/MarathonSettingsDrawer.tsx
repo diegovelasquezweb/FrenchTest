@@ -32,10 +32,10 @@ function Toggle({
       onClick={() => onChange(!checked)}
       className={[
         "flex h-6 w-10 shrink-0 items-center rounded-full border p-0.5 transition-colors duration-200",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         checked
-          ? "border-(--color-brand)/45 bg-(--color-brand)/18"
-          : "border-(--color-ink)/20 bg-(--color-ink)/10",
+          ? "border-brand/45 bg-brand/18"
+          : "border-ink/20 bg-ink/10",
       ].join(" ")}
     >
       <span
@@ -43,8 +43,8 @@ function Toggle({
         className={[
           "h-4 w-4 rounded-full transition-transform duration-200",
           checked
-            ? "translate-x-[calc(40px-16px-4px)] bg-(--color-brand)"
-            : "translate-x-0 bg-(--color-ink)/70",
+            ? "translate-x-[calc(40px-16px-4px)] bg-brand"
+            : "translate-x-0 bg-ink/70",
         ].join(" ")}
       />
     </button>
@@ -89,16 +89,16 @@ export function MarathonSettingsDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Réglages du Marathon"
-        className={`fixed top-0 right-0 z-50 h-full w-72 max-w-[90vw] flex flex-col bg-(--color-surface) shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 z-50 h-full w-72 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-(--color-ink)/8 shrink-0">
-          <span className="text-sm font-semibold text-(--color-ink)">Réglages</span>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-ink/8 shrink-0">
+          <span className="text-sm font-semibold text-ink">Réglages</span>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fermer"
-            className="flex h-7 w-7 items-center justify-center rounded text-(--color-muted) hover:bg-(--color-ink)/8 hover:text-(--color-ink) transition-colors duration-150"
+            className="flex h-7 w-7 items-center justify-center rounded text-muted hover:bg-ink/8 hover:text-ink transition-colors duration-150"
           >
             <X size={16} />
           </button>
@@ -111,8 +111,8 @@ export function MarathonSettingsDrawer({
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-(--color-ink)">Auto</p>
-                <p className="text-xs text-(--color-muted)">Passage automatique</p>
+                <p className="text-sm font-medium text-ink">Auto</p>
+                <p className="text-xs text-muted">Passage automatique</p>
               </div>
               <Toggle
                 checked={autoPlay}
@@ -126,7 +126,7 @@ export function MarathonSettingsDrawer({
               aria-hidden={!autoPlay}
               className={`flex items-center gap-3 transition-opacity duration-200 ${autoPlay ? "opacity-100" : "opacity-40 pointer-events-none"}`}
             >
-              <span className="text-xs text-(--color-muted) w-4 shrink-0">1s</span>
+              <span className="text-xs text-muted w-4 shrink-0">1s</span>
               <input
                 type="range"
                 min={1}
@@ -136,25 +136,25 @@ export function MarathonSettingsDrawer({
                 onChange={(e) => onAutoSecondsChange(Number(e.target.value))}
                 disabled={!autoPlay}
                 aria-label="Délai auto en secondes"
-                className="flex-1 accent-(--color-brand) h-1"
+                className="flex-1 accent-brand h-1"
               />
-              <span className="text-xs text-(--color-muted) w-6 shrink-0">30s</span>
-              <span className="text-xs font-semibold text-(--color-ink) w-6 text-right shrink-0">
+              <span className="text-xs text-muted w-6 shrink-0">30s</span>
+              <span className="text-xs font-semibold text-ink w-6 text-right shrink-0">
                 {autoSeconds}s
               </span>
             </div>
           </div>
 
-          <div className="border-t border-(--color-ink)/8" />
+          <div className="border-t border-ink/8" />
 
           {/* Order */}
           <div className="flex flex-col gap-3">
-            <p className="text-sm font-medium text-(--color-ink)">Ordre</p>
+            <p className="text-sm font-medium text-ink">Ordre</p>
             {ORDER_OPTIONS.map(({ value, label, description }) => (
               <div key={value} className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-(--color-ink)">{label}</p>
-                  <p className="text-xs text-(--color-muted)">{description}</p>
+                  <p className="text-sm font-medium text-ink">{label}</p>
+                  <p className="text-xs text-muted">{description}</p>
                 </div>
                 <Toggle
                   checked={order === value}
@@ -168,11 +168,11 @@ export function MarathonSettingsDrawer({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-(--color-ink)/8 px-4 py-3">
+        <div className="shrink-0 border-t border-ink/8 px-4 py-3">
           <button
             type="button"
             onClick={() => { onRestart(); onClose(); }}
-            className="w-full rounded-(--radius-button) bg-(--color-brand)/12 py-2 text-sm font-medium text-(--color-brand) hover:bg-(--color-brand)/20 transition-colors duration-150"
+            className="w-full rounded-button bg-brand/12 py-2 text-sm font-medium text-brand hover:bg-brand/20 transition-colors duration-150"
           >
             Appliquer et relancer
           </button>

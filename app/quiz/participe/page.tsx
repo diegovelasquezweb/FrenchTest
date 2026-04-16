@@ -39,14 +39,14 @@ export default function ParticipePage() {
 
   const hardModeToggle = (
     <div className="mx-auto mt-6 mb-0 w-full max-w-xl px-4">
-      <div className="flex items-center justify-end gap-1.5 text-[11px] text-(--color-muted)/85">
+      <div className="flex items-center justify-end gap-1.5 text-[11px] text-muted/85">
         <span>Mode difficile</span>
         <Popover.Root>
           <Popover.Trigger asChild>
             <button
               type="button"
               aria-label="Aide mode difficile"
-              className="inline-flex h-[18px] w-[18px] items-center justify-center rounded text-(--color-muted)/85 transition-colors hover:bg-(--color-ink)/8 hover:text-(--color-ink)"
+              className="inline-flex h-[18px] w-[18px] items-center justify-center rounded text-muted/85 transition-colors hover:bg-ink/8 hover:text-ink"
             >
               <HelpCircle size={12} />
             </button>
@@ -56,10 +56,10 @@ export default function ParticipePage() {
               side="bottom"
               align="end"
               sideOffset={8}
-              className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-2 text-xs text-(--color-muted) shadow-lg"
+              className="z-50 w-64 rounded-card border border-ink/8 bg-surface px-3 py-2 text-xs text-muted shadow-lg"
             >
               Retire les verbes réguliers en -er (→ -é) avec « avoir ».
-              <Popover.Arrow className="fill-(--color-surface)" />
+              <Popover.Arrow className="fill-surface" />
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>
@@ -71,10 +71,10 @@ export default function ParticipePage() {
           onClick={toggleHardMode}
           className={[
             "flex h-6 w-10 items-center rounded-full border p-0.5 transition-colors duration-200",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             hardMode
-              ? "border-(--color-brand)/45 bg-(--color-brand)/18"
-              : "border-(--color-ink)/20 bg-(--color-ink)/10",
+              ? "border-brand/45 bg-brand/18"
+              : "border-ink/20 bg-ink/10",
           ].join(" ")}
         >
           <span
@@ -82,8 +82,8 @@ export default function ParticipePage() {
             className={[
               "flex h-4 w-4 items-center justify-center rounded-full transition-transform duration-200",
               hardMode
-                ? "translate-x-[calc(40px-16px-4px)] bg-(--color-brand)"
-                : "translate-x-0 bg-(--color-ink)/70",
+                ? "translate-x-[calc(40px-16px-4px)] bg-brand"
+                : "translate-x-0 bg-ink/70",
             ].join(" ")}
           />
         </button>

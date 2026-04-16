@@ -77,7 +77,7 @@ export function BaseQuizCard({
       <div className="flex flex-1 items-center justify-center px-4 py-6">
       <div className="w-full max-w-xl">
       <SwipeCard
-        className={`w-full rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
+        className={`w-full rounded-card bg-surface shadow-sm ${cardPaddingClassName}`}
         aria-label={`Question ${questionNumber} sur ${total}`}
         resetKey={questionNumber}
         onSwipeLeft={isRevealed ? onNext : undefined}
@@ -89,8 +89,8 @@ export function BaseQuizCard({
               aria-label={isWeak ? "Retirer des difficiles" : "Ajouter aux difficiles"}
               className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
                 isWeak
-                  ? "text-(--color-ink) font-semibold"
-                  : "text-(--color-muted) hover:text-(--color-ink)"
+                  ? "text-ink font-semibold"
+                  : "text-muted hover:text-ink"
               }`}
               onClick={onToggleWeak}
             >
@@ -124,7 +124,7 @@ export function BaseQuizCard({
             <button
               type="button"
               onClick={onNext}
-              className="min-h-11 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+              className="min-h-11 rounded-card bg-brand px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {nextLabel}
             </button>
@@ -139,12 +139,12 @@ export function BaseQuizCard({
 
       {/* Mobile: sticky bar pinned to bottom of viewport */}
       {isRevealed && (
-        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-(--color-ink)/8 bg-(--color-bg)/90 px-4 py-3 backdrop-blur-sm">
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-ink/8 bg-bg/90 px-4 py-3 backdrop-blur-sm">
           <button
             ref={nextButtonRef}
             type="button"
             onClick={onNext}
-            className="w-full min-h-12 rounded-(--radius-card) bg-(--color-brand) px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            className="w-full min-h-12 rounded-card bg-brand px-8 py-3 font-semibold text-white transition-colors duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {nextLabel}
           </button>

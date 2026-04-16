@@ -84,13 +84,13 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
         role="dialog"
         aria-modal="true"
         aria-label="Poser une question à l'IA"
-        className={`fixed top-0 right-0 z-50 h-full w-80 max-w-[90vw] flex flex-col bg-(--color-surface) shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 z-50 h-full w-80 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-(--color-ink)/8 shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-ink/8 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-(--color-ink)">Poser une question à l'IA</span>
-            <span className="inline-flex items-center rounded-full bg-(--color-brand)/10 px-2 py-0.5 text-[10px] font-semibold text-(--color-brand)">Claude</span>
+            <span className="text-sm font-semibold text-ink">Poser une question à l'IA</span>
+            <span className="inline-flex items-center rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold text-brand">Claude</span>
           </div>
           <div className="flex items-center gap-1">
             {keyConfigured && (
@@ -98,7 +98,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
                 type="button"
                 onClick={handleDeleteKey}
                 aria-label="Supprimer la clé API"
-                className="flex h-7 w-7 items-center justify-center rounded text-(--color-muted) hover:bg-red-500/10 hover:text-red-500 transition-colors duration-150"
+                className="flex h-7 w-7 items-center justify-center rounded text-muted hover:bg-red-500/10 hover:text-red-500 transition-colors duration-150"
               >
                 <Trash2 size={14} />
               </button>
@@ -107,7 +107,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
               type="button"
               onClick={onClose}
               aria-label="Fermer"
-              className="flex h-7 w-7 items-center justify-center rounded text-(--color-muted) hover:bg-(--color-ink)/8 hover:text-(--color-ink) transition-colors duration-150"
+              className="flex h-7 w-7 items-center justify-center rounded text-muted hover:bg-ink/8 hover:text-ink transition-colors duration-150"
             >
               <X size={16} />
             </button>
@@ -117,17 +117,17 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
         {/* Body */}
         {keyConfigured === null ? (
           <div className="flex flex-1 items-center justify-center">
-            <span className="text-xs text-(--color-muted)">Chargement…</span>
+            <span className="text-xs text-muted">Chargement…</span>
           </div>
         ) : !keyConfigured ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-            <p className="text-sm text-(--color-muted)">
+            <p className="text-sm text-muted">
               Pour utiliser le chat, configure ta clé API Anthropic.
             </p>
             <button
               type="button"
               onClick={() => setShowSetup(true)}
-              className="rounded-(--radius-button) bg-(--color-brand) px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Configurer la clé
             </button>
@@ -137,7 +137,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
               {messages.length === 0 && (
-                <p className="text-xs text-(--color-muted) text-center mt-4">
+                <p className="text-xs text-muted text-center mt-4">
                   Pose une question sur la grammaire, le vocabulaire, la traduction ou le TEF.
                 </p>
               )}
@@ -149,8 +149,8 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
                   <div
                     className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === "user"
-                        ? "bg-(--color-brand) text-white rounded-br-sm"
-                        : "bg-(--color-ink)/6 text-(--color-ink) rounded-bl-sm"
+                        ? "bg-brand text-white rounded-br-sm"
+                        : "bg-ink/6 text-ink rounded-bl-sm"
                     }`}
                   >
                     {m.content}
@@ -159,12 +159,12 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="rounded-2xl rounded-bl-sm bg-(--color-ink)/6 px-3 py-2">
+                  <div className="rounded-2xl rounded-bl-sm bg-ink/6 px-3 py-2">
                     <span className="flex gap-1">
                       {[0, 1, 2].map(i => (
                         <span
                           key={i}
-                          className="inline-block h-1.5 w-1.5 rounded-full bg-(--color-muted) animate-bounce"
+                          className="inline-block h-1.5 w-1.5 rounded-full bg-muted animate-bounce"
                           style={{ animationDelay: `${i * 150}ms` }}
                         />
                       ))}
@@ -179,7 +179,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
             </div>
 
             {/* Input */}
-            <div className="shrink-0 border-t border-(--color-ink)/8 px-3 py-3">
+            <div className="shrink-0 border-t border-ink/8 px-3 py-3">
               <div className="flex items-end gap-2">
                 <textarea
                   ref={inputRef}
@@ -188,7 +188,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Écris ta question…"
-                  className="flex-1 resize-none rounded-(--radius-button) border border-(--color-ink)/12 bg-(--color-bg) px-3 py-2 text-sm text-(--color-ink) placeholder:text-(--color-muted)/50 focus:outline-2 focus:outline-(--color-ring) focus:outline-offset-2 max-h-32 overflow-y-auto"
+                  className="flex-1 resize-none rounded-button border border-ink/12 bg-bg px-3 py-2 text-sm text-ink placeholder:text-muted/50 focus:outline-2 focus:outline-ring focus:outline-offset-2 max-h-32 overflow-y-auto"
                   style={{ fieldSizing: "content" } as React.CSSProperties}
                 />
                 <button
@@ -196,12 +196,12 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
                   aria-label="Envoyer"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-(--radius-button) bg-(--color-brand) text-white transition-opacity disabled:opacity-40 hover:opacity-90"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-button bg-brand text-white transition-opacity disabled:opacity-40 hover:opacity-90"
                 >
                   <Send size={15} />
                 </button>
               </div>
-              <p className="mt-1.5 text-[10px] text-(--color-muted)/50 text-center">Enter pour envoyer · Shift+Enter nouvelle ligne</p>
+              <p className="mt-1.5 text-[10px] text-muted/50 text-center">Enter pour envoyer · Shift+Enter nouvelle ligne</p>
             </div>
           </>
         )}

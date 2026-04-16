@@ -48,9 +48,9 @@ export function MarathonCategoryPicker({
             <button
               type="button"
               onClick={() => onToggleGroup(group.id, group.options.map(o => o.id))}
-              className="flex w-full items-center justify-between px-3 py-2 rounded hover:bg-(--color-ink)/5 transition-colors duration-150"
+              className="flex w-full items-center justify-between px-3 py-2 rounded hover:bg-ink/5 transition-colors duration-150"
             >
-              <span className="text-xs font-bold uppercase tracking-wide text-(--color-muted)">{group.label}</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-muted">{group.label}</span>
               <Checkbox checked={allSelected} indeterminate={someSelected} />
             </button>
             <ul>
@@ -59,11 +59,11 @@ export function MarathonCategoryPicker({
                   <button
                     type="button"
                     onClick={() => onToggle(option.id)}
-                    className="flex w-full items-center gap-2.5 px-3 py-1.5 rounded hover:bg-(--color-ink)/5 transition-colors duration-150"
+                    className="flex w-full items-center gap-2.5 px-3 py-1.5 rounded hover:bg-ink/5 transition-colors duration-150"
                   >
                     <Checkbox checked={selectedCategories.has(option.id)} />
-                    <span className="flex-1 text-left text-sm text-(--color-ink)">{option.label}</span>
-                    <span className="shrink-0 text-xs text-(--color-muted)">{option.count}</span>
+                    <span className="flex-1 text-left text-sm text-ink">{option.label}</span>
+                    <span className="shrink-0 text-xs text-muted">{option.count}</span>
                   </button>
                 </li>
               ))}
@@ -80,8 +80,8 @@ export function Checkbox({ checked, indeterminate = false }: { checked: boolean;
     <span
       className={`h-4 w-4 shrink-0 rounded border flex items-center justify-center transition-colors duration-150 ${
         checked || indeterminate
-          ? "bg-(--color-brand) border-(--color-brand)"
-          : "border-(--color-ink)/30 bg-transparent"
+          ? "bg-brand border-brand"
+          : "border-ink/30 bg-transparent"
       }`}
     >
       {indeterminate && <span className="text-white text-[11px] font-bold leading-none select-none">−</span>}

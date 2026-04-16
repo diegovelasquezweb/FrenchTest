@@ -83,15 +83,15 @@ export default function HomePage() {
   return (
     <div className="md:hidden flex flex-col gap-4 px-6 py-6">
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="text-base font-semibold text-(--color-ink)">Prêt à pratiquer ?</p>
-        <p className="text-sm text-(--color-muted)">Choisissez un exercice ci-dessous.</p>
+        <p className="text-base font-semibold text-ink">Prêt à pratiquer ?</p>
+        <p className="text-sm text-muted">Choisissez un exercice ci-dessous.</p>
       </div>
 
       {/* Marathon — featured */}
-      <div className="w-full rounded overflow-hidden border border-(--color-brand)/25 bg-(--color-brand)/6 shadow-sm">
+      <div className="w-full rounded overflow-hidden border border-brand/25 bg-brand/6 shadow-sm">
         <Link
           href="/marathon"
-          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/12 hover:text-(--color-brand) active:bg-(--color-brand)/18"
+          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-ink transition-colors hover:bg-brand/12 hover:text-brand active:bg-brand/18"
         >
           {(() => { const g = singleGroup("marathon"); return <g.icon size={16} className="shrink-0" />; })()}
           Marathon
@@ -101,19 +101,19 @@ export default function HomePage() {
       {/* Leçons favorites */}
       {favorites.length > 0 && (
         <div className="w-full">
-          <p className="mb-2 px-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-(--color-muted)">
+          <p className="mb-2 px-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted">
             <Heart size={12} className="shrink-0" />
             Leçons favorites
           </p>
-          <div className="rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+          <div className="rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
             {favorites.map((label) => {
               const href = ITEM_HREF_LOOKUP[label];
               if (!href) return null;
               return (
-                <div key={label} className="relative border-t border-(--color-ink)/8 first:border-t-0">
+                <div key={label} className="relative border-t border-ink/8 first:border-t-0">
                   <Link
                     href={href}
-                    className="flex w-full items-center gap-2.5 px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                    className="flex w-full items-center gap-2.5 px-4 py-3 pr-12 text-left text-sm font-medium text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
                   >
                     {label}
                   </Link>
@@ -121,7 +121,7 @@ export default function HomePage() {
                     type="button"
                     onClick={(e) => toggleFavorite(label, e)}
                     aria-label={`Retirer ${label} des favoris`}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-(--color-muted)"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted"
                   >
                     <Heart size={14} fill="currentColor" />
                   </button>
@@ -134,46 +134,46 @@ export default function HomePage() {
 
       {/* Mes difficiles */}
       {weakVerbList.length > 0 && (
-        <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+        <div className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link
             href="/mes-difficiles"
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
           >
             {(() => { const g = singleGroup("difficiles"); return <g.icon size={16} className="shrink-0" />; })()}
             Mes difficiles
-            <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
+            <span className="ml-auto text-[10px] font-bold text-muted">{weakVerbList.length}</span>
           </Link>
         </div>
       )}
 
       {/* Mes patterns */}
       {favoriteCardList.length > 0 && (
-        <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+        <div className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link
             href="/mes-patterns"
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
           >
             {(() => { const g = singleGroup("mes-patterns"); return <g.icon size={16} className="shrink-0" />; })()}
             Mes patterns
-            <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
+            <span className="ml-auto text-[10px] font-bold text-muted">{favoriteCardList.length}</span>
           </Link>
         </div>
       )}
 
       {/* Accordion sections */}
-      <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+      <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
         {ACCORDION_SECTIONS.map((section, si) => (
           <Accordion.Item
             key={section.id}
             value={section.id}
-            className={si > 0 ? "border-t border-(--color-ink)/8" : ""}
+            className={si > 0 ? "border-t border-ink/8" : ""}
           >
             <Accordion.Header>
-              <Accordion.Trigger className="group flex w-full items-center justify-between px-4 py-3.5 text-left text-xs font-bold uppercase tracking-widest text-(--color-muted) transition-colors hover:text-(--color-ink) data-[state=open]:text-(--color-ink)">
+              <Accordion.Trigger className="group flex w-full items-center justify-between px-4 py-3.5 text-left text-xs font-bold uppercase tracking-widest text-muted transition-colors hover:text-ink data-[state=open]:text-ink">
                 {section.label}
                 <ChevronDown
                   size={15}
-                  className="text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180"
+                  className="text-muted transition-transform duration-200 group-data-[state=open]:rotate-180"
                 />
               </Accordion.Trigger>
             </Accordion.Header>
@@ -185,7 +185,7 @@ export default function HomePage() {
                     <div key={label} className="relative">
                       <Link
                         href={href}
-                        className="w-full block px-4 py-3 pr-12 text-left text-sm font-medium text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+                        className="w-full block px-4 py-3 pr-12 text-left text-sm font-medium text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
                       >
                         {displayLabel(label)}
                       </Link>
@@ -193,7 +193,7 @@ export default function HomePage() {
                         type="button"
                         onClick={(e) => toggleFavorite(label, e)}
                         aria-label={isFav ? `Retirer ${label} des favoris` : `Ajouter ${label} aux favoris`}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-(--color-muted)"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted"
                       >
                         <Heart size={14} fill={isFav ? "currentColor" : "none"} />
                       </button>
@@ -208,10 +208,10 @@ export default function HomePage() {
 
       {/* Standalone single buttons (Verbes essentiels, Terminaisons verbales) */}
       {STANDALONE_SINGLES.map((group) => (
-        <div key={group.id} className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+        <div key={group.id} className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link
             href={group.href}
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
           >
             <group.icon size={16} className="shrink-0" />
             {group.label}

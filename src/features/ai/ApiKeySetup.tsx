@@ -26,10 +26,10 @@ export function ApiKeySetup({ onSaved, onCancel }: ApiKeySetupProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-(--color-ink)/20 backdrop-blur-sm px-4">
-      <div className="w-full max-w-sm rounded-(--radius-card) bg-(--color-surface) p-6 shadow-xl">
-        <h2 className="text-base font-bold text-(--color-ink) mb-1">Configurer Claude</h2>
-        <p className="text-sm text-(--color-muted) mb-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/20 backdrop-blur-sm px-4">
+      <div className="w-full max-w-sm rounded-card bg-surface p-6 shadow-xl">
+        <h2 className="text-base font-bold text-ink mb-1">Configurer Claude</h2>
+        <p className="text-sm text-muted mb-5">
           Entre ta clé API Anthropic. Elle est sauvegardée de façon sécurisée sur le serveur, liée à ton compte.
         </p>
 
@@ -41,7 +41,7 @@ export function ApiKeySetup({ onSaved, onCancel }: ApiKeySetupProps) {
             placeholder="sk-ant-api03-..."
             value={key}
             onChange={e => setKey(e.target.value)}
-            className="w-full rounded-(--radius-button) border border-(--color-ink)/12 bg-(--color-bg) px-3 py-2.5 text-sm font-mono text-(--color-ink) placeholder:text-(--color-muted)/50 focus:outline-2 focus:outline-(--color-ring) focus:outline-offset-2"
+            className="w-full rounded-button border border-ink/12 bg-bg px-3 py-2.5 text-sm font-mono text-ink placeholder:text-muted/50 focus:outline-2 focus:outline-ring focus:outline-offset-2"
           />
 
           {error && (
@@ -52,23 +52,23 @@ export function ApiKeySetup({ onSaved, onCancel }: ApiKeySetupProps) {
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 rounded-(--radius-button) border border-(--color-ink)/12 px-4 py-2 text-sm font-medium text-(--color-muted) transition-colors hover:bg-(--color-ink)/5"
+              className="flex-1 rounded-button border border-ink/12 px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-ink/5"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={!key.trim() || saving}
-              className="flex-1 rounded-(--radius-button) bg-(--color-brand) px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-40 hover:opacity-90"
+              className="flex-1 rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-40 hover:opacity-90"
             >
               {saving ? "Sauvegarde…" : "Sauvegarder"}
             </button>
           </div>
         </form>
 
-        <p className="mt-4 text-xs text-(--color-muted)/60">
+        <p className="mt-4 text-xs text-muted/60">
           Obtiens ta clé sur{" "}
-          <span className="font-medium text-(--color-muted)">console.anthropic.com</span>
+          <span className="font-medium text-muted">console.anthropic.com</span>
         </p>
       </div>
     </div>

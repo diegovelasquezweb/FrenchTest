@@ -71,18 +71,18 @@ export function TranslatorView() {
       <div className="mb-8">
         <div className="flex items-center justify-between gap-4 mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-(--color-ink)">Traducteur</h1>
-            <p className="text-sm text-(--color-muted) mt-1">Cherche des mots et traductions</p>
+            <h1 className="text-3xl font-bold text-ink">Traducteur</h1>
+            <p className="text-sm text-muted mt-1">Cherche des mots et traductions</p>
           </div>
           <div className="flex gap-2">
             {(["es", "en"] as const).map((lang) => (
               <button
                 key={lang}
                 onClick={() => setSourceLanguage(lang)}
-                className={`px-3 py-2 rounded-(--radius-button) text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-button text-sm font-medium transition-colors ${
                   sourceLanguage === lang
-                    ? "bg-(--color-brand) text-white"
-                    : "bg-(--color-ink)/5 text-(--color-ink) hover:bg-(--color-ink)/10"
+                    ? "bg-brand text-white"
+                    : "bg-ink/5 text-ink hover:bg-ink/10"
                 }`}
               >
                 {languageLabels[lang]}
@@ -99,11 +99,11 @@ export function TranslatorView() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Écris un mot..."
-          className="w-full rounded-(--radius-button) border-2 border-(--color-btn-border) bg-(--color-btn-bg) px-4 py-3 text-(--color-ink) placeholder-text-(--color-muted) focus:outline-2 focus:outline-offset-2 focus:outline-(--color-ring)"
+          className="w-full rounded-button border-2 border-btn-border bg-btn-bg px-4 py-3 text-ink placeholder-text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ring"
           autoFocus
         />
         {loading && (
-          <div className="mt-2 flex items-center gap-2 text-sm text-(--color-muted)">
+          <div className="mt-2 flex items-center gap-2 text-sm text-muted">
             <Loader size={14} className="animate-spin" />
             Cherchant...
           </div>
@@ -112,7 +112,7 @@ export function TranslatorView() {
 
       {/* Error Message */}
       {error && (
-        <div className="flex gap-3 rounded-(--radius-card) bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 mb-6">
+        <div className="flex gap-3 rounded-card bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 mb-6">
           <AlertCircle size={16} className="shrink-0 mt-0.5" />
           <p>{error}</p>
         </div>
@@ -120,18 +120,18 @@ export function TranslatorView() {
 
       {/* Results */}
       {result && (
-        <div className="rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
+        <div className="rounded-card bg-surface shadow-sm overflow-hidden">
           <div className="px-6 py-4">
             <div className="mb-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted) mb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 {languageNames[sourceLanguage]}
               </p>
-              <p className="text-2xl font-bold text-(--color-ink)">{result.word}</p>
+              <p className="text-2xl font-bold text-ink">{result.word}</p>
             </div>
 
-            <div className="border-t border-(--color-ink)/8 pt-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted) mb-2">Français</p>
-              <p className="text-2xl font-bold text-(--color-brand)">{result.translated}</p>
+            <div className="border-t border-ink/8 pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-2">Français</p>
+              <p className="text-2xl font-bold text-brand">{result.translated}</p>
             </div>
           </div>
         </div>
@@ -140,7 +140,7 @@ export function TranslatorView() {
       {/* Idle State */}
       {!result && !loading && !error && searchTerm.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-(--color-muted) text-sm">Écris un mot pour voir sa traduction</p>
+          <p className="text-muted text-sm">Écris un mot pour voir sa traduction</p>
         </div>
       )}
     </div>

@@ -26,7 +26,7 @@ const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
 };
 
 const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
-  oral: "bg-(--color-brand)/10 text-(--color-brand)",
+  oral: "bg-brand/10 text-brand",
   "oral-persuasion": "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   "écrit-faits-divers": "bg-sky-500/10 text-sky-600 dark:text-sky-400",
   connecteurs: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
@@ -123,12 +123,12 @@ export function FlashcardView({
             type="button"
             aria-label="Carte précédente"
             onClick={onBack}
-            className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            className="flex h-6 w-6 items-center justify-center rounded-full text-muted/60 transition-colors duration-150 hover:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             ←
           </button>
         ) : <span className="h-6 w-6" />}
-        <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted">
           {index + 1} / {total}
         </p>
         <Popover.Root>
@@ -136,7 +136,7 @@ export function FlashcardView({
             <button
               type="button"
               aria-label="Aide"
-              className="flex h-6 w-6 items-center justify-center rounded-full text-(--color-muted)/60 transition-colors duration-150 hover:text-(--color-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+              className="flex h-6 w-6 items-center justify-center rounded-full text-muted/60 transition-colors duration-150 hover:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               <HelpCircle size={13} />
             </button>
@@ -146,15 +146,15 @@ export function FlashcardView({
               side="bottom"
               align="center"
               sideOffset={10}
-              className="z-50 w-64 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-3 py-3 shadow-xl shadow-(--color-ink)/8"
+              className="z-50 w-64 rounded-card border border-ink/8 bg-surface px-3 py-3 shadow-xl shadow-ink/8"
             >
-              <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-(--color-muted)/60">Raccourcis</p>
+              <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted/60">Raccourcis</p>
               <ul className="flex flex-col gap-1.5">
                 {([
                   { gesture: "←", keys: ["←", "1"], label: "Ne savais pas", color: "text-red-500 dark:text-red-400",          bg: "bg-red-500/8"     },
                   { gesture: "→", keys: ["→", "3"], label: "Savais",         color: "text-emerald-600 dark:text-emerald-400",  bg: "bg-emerald-500/8" },
                   { gesture: "↑", keys: ["↑", "2"], label: "Hésité",         color: "text-yellow-600 dark:text-yellow-400",    bg: "bg-yellow-500/8"  },
-                  { gesture: "↓", keys: ["↓", "␣"], label: "Passer",         color: "text-(--color-muted)",                   bg: "bg-(--color-ink)/5" },
+                  { gesture: "↓", keys: ["↓", "␣"], label: "Passer",         color: "text-muted",                   bg: "bg-ink/5" },
                 ] as const).map(({ gesture, keys, label, color, bg }) => (
                   <li key={label} className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-1.5">
@@ -163,13 +163,13 @@ export function FlashcardView({
                     </div>
                     <div className="hidden md:flex items-center gap-1">
                       {keys.map(k => (
-                        <kbd key={k} className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-(--color-ink)/12 bg-(--color-ink)/5 px-1 text-[10px] font-medium text-(--color-muted)">{k}</kbd>
+                        <kbd key={k} className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-ink/12 bg-ink/5 px-1 text-[10px] font-medium text-muted">{k}</kbd>
                       ))}
                     </div>
                   </li>
                 ))}
               </ul>
-              <Popover.Arrow className="fill-(--color-surface)" />
+              <Popover.Arrow className="fill-surface" />
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>
@@ -179,7 +179,7 @@ export function FlashcardView({
       <input ref={focusTrapRef} type="text" readOnly tabIndex={-1} className="sr-only" aria-hidden="true" />
 
       <SwipeCard
-        className={`relative flex min-h-110 flex-col rounded-(--radius-card) bg-(--color-surface) p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
+        className={`relative flex min-h-110 flex-col rounded-card bg-surface p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
         resetKey={card.id}
         onSwipeRight={() => triggerRate(2)}
         onSwipeLeft={() => triggerRate(0)}
@@ -193,8 +193,8 @@ export function FlashcardView({
               aria-label={isFavorite ? "Retirer des favoris" : "Sauvegarder"}
               className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors duration-150 ${
                 isFavorite
-                  ? "text-(--color-ink) font-semibold"
-                  : "text-(--color-muted) hover:text-(--color-ink)"
+                  ? "text-ink font-semibold"
+                  : "text-muted hover:text-ink"
               }`}
               onClick={onToggleFavorite}
             >
@@ -207,12 +207,12 @@ export function FlashcardView({
           {CATEGORY_LABEL[card.category]}
         </span>
 
-        <p className="mt-3 text-xl font-bold leading-snug text-(--color-ink) sm:text-3xl" lang="fr">
+        <p className="mt-3 text-xl font-bold leading-snug text-ink sm:text-3xl" lang="fr">
           {card.front}
         </p>
 
-        <div className="mt-6 border-t border-(--color-ink)/8 pt-5">
-          <p className="text-sm text-(--color-muted)" lang="fr">
+        <div className="mt-6 border-t border-ink/8 pt-5">
+          <p className="text-sm text-muted" lang="fr">
             {card.usage}
           </p>
 
@@ -220,43 +220,43 @@ export function FlashcardView({
             <button
               type="button"
               onClick={() => triggerRate(0)}
-              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
             >
               <span className="inline-block h-3 w-3 rounded-full bg-red-500" aria-hidden="true" />
               <span className="leading-tight">Pas du tout</span>
-              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">1</span>
+              <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">1</span>
             </button>
             <button
               type="button"
               onClick={() => triggerRate(1)}
-              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-yellow-500/10 px-2 py-3 text-xs font-medium text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500/60 dark:text-yellow-400"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-yellow-500/10 px-2 py-3 text-xs font-medium text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500/60 dark:text-yellow-400"
             >
               <span className="inline-block h-3 w-3 rounded-full bg-yellow-400" aria-hidden="true" />
               <span className="leading-tight">Hésité</span>
-              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">2</span>
+              <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">2</span>
             </button>
             <button
               type="button"
               onClick={() => triggerRate(2)}
-              className="flex flex-col items-center justify-center gap-1.5 rounded-(--radius-button) bg-emerald-500/10 px-2 py-3 text-xs font-medium text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500/60 dark:text-emerald-400"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-emerald-500/10 px-2 py-3 text-xs font-medium text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500/60 dark:text-emerald-400"
             >
               <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" aria-hidden="true" />
               <span className="leading-tight">Savais</span>
-              <span className="hidden md:inline tabular-nums text-(--color-muted) opacity-50" aria-hidden="true">3</span>
+              <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">3</span>
             </button>
           </div>
 
           {(hasEnTranslation || hasEsTranslation) && (
-            <div className="mt-4 flex flex-col gap-1 border-t border-(--color-ink)/8 pt-3">
+            <div className="mt-4 flex flex-col gap-1 border-t border-ink/8 pt-3">
               {hasEnTranslation && (
-                <p className="text-xs text-(--color-muted)" lang="en">
-                  <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ENG</span>
+                <p className="text-xs text-muted" lang="en">
+                  <span className="mr-1.5 inline-flex rounded bg-ink/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-ink">ENG</span>
                   {card.translationEn}
                 </p>
               )}
               {hasEsTranslation && (
-                <p className="text-xs text-(--color-muted)" lang="es">
-                  <span className="mr-1.5 inline-flex rounded bg-(--color-ink)/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-(--color-ink)">ESP</span>
+                <p className="text-xs text-muted" lang="es">
+                  <span className="mr-1.5 inline-flex rounded bg-ink/8 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-ink">ESP</span>
                   {card.translationEs}
                 </p>
               )}

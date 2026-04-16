@@ -30,15 +30,15 @@ export function PronominalQuizCard({
 
   const header = (
     <div className="mb-6 text-center">
-      <p className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
+      <p className="text-2xl font-bold tracking-tight text-ink sm:text-4xl" lang="fr">
         {question.verb.infinitive}
       </p>
-      <p className="mt-1 text-sm text-(--color-muted)">
+      <p className="mt-1 text-sm text-muted">
         <span lang="en">{question.verb.translation}</span>
         <span className="mx-2 opacity-40">·</span>
         <span lang="es">{question.verb.translationEs}</span>
       </p>
-      <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-(--color-muted)/60">
+      <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-muted/60">
         {question.tense}
       </p>
     </div>

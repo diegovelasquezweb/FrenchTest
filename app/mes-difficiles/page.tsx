@@ -29,43 +29,43 @@ export default function MesDifficilesPage() {
     <AuthGate>
       {difficiles.state.phase === QuizPhase.Idle && (
         <div className="flex flex-1 items-center justify-center px-4 py-6">
-        <div className="w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
+        <div className="w-full max-w-xl rounded-card bg-surface shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-ink/8">
             <div className="flex items-center gap-2">
-              <Bookmark size={16} className="text-(--color-ink)" />
-              <span className="text-sm font-semibold text-(--color-ink)">Mes difficiles</span>
+              <Bookmark size={16} className="text-ink" />
+              <span className="text-sm font-semibold text-ink">Mes difficiles</span>
             </div>
             {weakVerbList.length > 0 && (
-              <span className="text-xs font-bold text-(--color-muted)">{weakVerbList.length}</span>
+              <span className="text-xs font-bold text-muted">{weakVerbList.length}</span>
             )}
           </div>
 
           {weakVerbList.length === 0 ? (
             <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
-              <p className="text-sm font-medium text-(--color-ink)">Aucun verbe marqué</p>
-              <p className="text-xs text-(--color-muted) max-w-xs">
+              <p className="text-sm font-medium text-ink">Aucun verbe marqué</p>
+              <p className="text-xs text-muted max-w-xs">
                 Pendant tes exercices, clique sur{" "}
-                <span className="font-medium text-(--color-ink)">Marquer</span>{" "}
+                <span className="font-medium text-ink">Marquer</span>{" "}
                 pour ajouter un verbe ici.
               </p>
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="mt-2 rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150"
+                className="mt-2 rounded-button bg-brand px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150"
               >
                 Commencer un exercice
               </button>
             </div>
           ) : (
             <>
-              <ul className="divide-y divide-(--color-ink)/6 max-h-[60vh] overflow-y-auto">
+              <ul className="divide-y divide-ink/6 max-h-[60vh] overflow-y-auto">
                 {weakVerbList.map((verb) => (
                   <li key={verb.infinitive} className="flex items-center justify-between px-6 py-3 gap-3">
                     <div className="flex-1 min-w-0">
-                      <span className="font-semibold text-(--color-ink)" lang="fr">
+                      <span className="font-semibold text-ink" lang="fr">
                         {verb.infinitive}
                       </span>
-                      <span className="ml-2 text-xs text-(--color-muted)" lang="en">
+                      <span className="ml-2 text-xs text-muted" lang="en">
                         {verb.translation}
                       </span>
                     </div>
@@ -73,19 +73,19 @@ export default function MesDifficilesPage() {
                       type="button"
                       onClick={() => toggleWeak(verb.infinitive)}
                       aria-label={`Retirer ${verb.infinitive}`}
-                      className="shrink-0 text-(--color-muted) hover:text-red-400 transition-colors duration-150"
+                      className="shrink-0 text-muted hover:text-red-400 transition-colors duration-150"
                     >
                       <Bookmark
                         size={14}
                         fill="currentColor"
-                        className="text-(--color-muted) hover:text-red-400 transition-colors duration-150"
+                        className="text-muted hover:text-red-400 transition-colors duration-150"
                       />
                     </button>
                   </li>
                 ))}
               </ul>
-              <div className="px-6 py-4 border-t border-(--color-ink)/8 flex items-center justify-between gap-3">
-                <p className="text-xs text-(--color-muted)">
+              <div className="px-6 py-4 border-t border-ink/8 flex items-center justify-between gap-3">
+                <p className="text-xs text-muted">
                   {weakVerbList.length < 2
                     ? "Ajoute au moins 2 verbes pour commencer"
                     : `${weakVerbList.length} verbe${weakVerbList.length > 1 ? "s" : ""} · quiz mixte`}
@@ -94,7 +94,7 @@ export default function MesDifficilesPage() {
                   type="button"
                   disabled={weakVerbList.length < 2}
                   onClick={() => difficiles.startQuiz(weakVerbList)}
-                  className="rounded-(--radius-button) bg-(--color-brand) px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="rounded-button bg-brand px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Commencer
                 </button>

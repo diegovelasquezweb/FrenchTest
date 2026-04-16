@@ -163,41 +163,41 @@ const QUICK_COMPARISONS: ComparisonBlock[] = [
 export function TerminaisonsGuide() {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6">
-      <Accordion.Root type="single" collapsible className="rounded-(--radius-card) overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+      <Accordion.Root type="single" collapsible className="rounded-card overflow-hidden border border-ink/10 bg-surface shadow-sm">
         {TENSES.map((tense, i) => (
           <Accordion.Item
             key={tense.title}
             value={tense.title}
-            className={i > 0 ? "border-t border-(--color-ink)/8" : ""}
+            className={i > 0 ? "border-t border-ink/8" : ""}
           >
             <Accordion.Header>
               <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
                 <div>
-                  <span className="text-sm font-bold text-(--color-ink)">{tense.title}</span>
-                  {tense.note && <span className="ml-2 text-xs text-(--color-muted)">{tense.note}</span>}
+                  <span className="text-sm font-bold text-ink">{tense.title}</span>
+                  {tense.note && <span className="ml-2 text-xs text-muted">{tense.note}</span>}
                 </div>
-                <ChevronDown size={16} className="shrink-0 text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <ChevronDown size={16} className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
               <div className="px-5 pb-5 space-y-3">
-                <p className="text-sm text-(--color-ink)">{tense.usage}</p>
+                <p className="text-sm text-ink">{tense.usage}</p>
 
-                <div className="rounded border border-(--color-ink)/8 bg-(--color-ink)/3 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-(--color-muted)">Usage quotidien</p>
+                <div className="rounded border border-ink/8 bg-ink/3 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">Usage quotidien</p>
                   <ul className="mt-1 space-y-1">
                     {tense.dailyExamples.map((example) => (
-                      <li key={example} className="text-sm text-(--color-ink)" lang="fr">• {example}</li>
+                      <li key={example} className="text-sm text-ink" lang="fr">• {example}</li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {tense.rows.map((row) => (
-                    <div key={row.subject} className="rounded border border-(--color-ink)/8 px-3 py-2">
-                      <p className="text-xs font-semibold text-(--color-muted)">{row.subject}</p>
-                      <p className="text-sm font-semibold text-(--color-brand)">{row.ending}</p>
-                      <p className="text-sm text-(--color-ink)" lang="fr">{row.example}</p>
+                    <div key={row.subject} className="rounded border border-ink/8 px-3 py-2">
+                      <p className="text-xs font-semibold text-muted">{row.subject}</p>
+                      <p className="text-sm font-semibold text-brand">{row.ending}</p>
+                      <p className="text-sm text-ink" lang="fr">{row.example}</p>
                     </div>
                   ))}
                 </div>
@@ -207,21 +207,21 @@ export function TerminaisonsGuide() {
         ))}
 
         {/* Comparaisons rapides */}
-        <Accordion.Item value="comparaisons" className="border-t border-(--color-ink)/8">
+        <Accordion.Item value="comparaisons" className="border-t border-ink/8">
           <Accordion.Header>
             <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
-              <span className="text-sm font-bold text-(--color-ink)">Comparaisons rapides</span>
-              <ChevronDown size={16} className="shrink-0 text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              <span className="text-sm font-bold text-ink">Comparaisons rapides</span>
+              <ChevronDown size={16} className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
             <div className="px-5 pb-5 grid gap-3 md:grid-cols-2">
               {QUICK_COMPARISONS.map((block) => (
-                <article key={block.title} className="rounded border border-(--color-ink)/8 px-3 py-2">
-                  <h4 className="text-sm font-semibold text-(--color-brand)">{block.title}</h4>
+                <article key={block.title} className="rounded border border-ink/8 px-3 py-2">
+                  <h4 className="text-sm font-semibold text-brand">{block.title}</h4>
                   <ul className="mt-1 space-y-1">
                     {block.points.map((point) => (
-                      <li key={point} className="text-sm text-(--color-ink)">• {point}</li>
+                      <li key={point} className="text-sm text-ink">• {point}</li>
                     ))}
                   </ul>
                 </article>

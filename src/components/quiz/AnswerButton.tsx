@@ -13,13 +13,13 @@ interface AnswerButtonProps {
 
 const stateClasses: Record<ButtonState, string> = {
   default:
-    "border-(--color-btn-border) bg-(--color-btn-bg) text-(--color-ink) hover:border-(--color-brand)/60 hover:bg-[color-mix(in_oklch,var(--color-brand)_6%,transparent)] active:scale-[0.98]",
+    "border-btn-border bg-btn-bg text-ink hover:border-brand/60 hover:bg-[color-mix(in_oklch,var(--color-brand)_6%,transparent)] active:scale-[0.98]",
   correct:
-    "border-(--color-correct) bg-[color-mix(in_oklch,var(--color-correct)_12%,transparent)] text-(--color-correct)",
+    "border-correct bg-[color-mix(in_oklch,var(--color-correct)_12%,transparent)] text-correct",
   wrong:
-    "border-(--color-wrong) bg-[color-mix(in_oklch,var(--color-wrong)_12%,transparent)] text-(--color-wrong)",
+    "border-wrong bg-[color-mix(in_oklch,var(--color-wrong)_12%,transparent)] text-wrong",
   dimmed:
-    "border-(--color-btn-border) bg-(--color-btn-bg) text-(--color-muted)",
+    "border-btn-border bg-btn-bg text-muted",
 };
 
 export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
@@ -44,9 +44,9 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         aria-label={ariaLabel}
         className={[
           "flex w-full items-center justify-between gap-3 px-4 py-3.5",
-          "min-h-12 rounded-(--radius-button) border-2",
+          "min-h-12 rounded-button border-2",
           "text-left font-medium transition-all duration-150",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           stateClasses[state],
         ].join(" ")}
       >

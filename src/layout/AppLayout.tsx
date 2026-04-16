@@ -31,14 +31,14 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-(--color-bg)">
+    <div className="flex h-dvh overflow-hidden bg-bg">
       <Sidebar onOpenAiChat={() => setAiChatOpen(true)} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar />
         {headerData.type !== "none" && (
           <>
-            <header className="hidden md:flex items-center justify-between gap-4 border-b border-(--color-ink)/8 bg-(--color-surface) px-6 py-3">
-              <span className="text-sm font-semibold text-(--color-ink) shrink-0">{headerData.title}</span>
+            <header className="hidden md:flex items-center justify-between gap-4 border-b border-ink/8 bg-surface px-6 py-3">
+              <span className="text-sm font-semibold text-ink shrink-0">{headerData.title}</span>
               {headerData.type === "quiz" &&
                 (headerData.phase === QuizPhase.Answering || headerData.phase === QuizPhase.Feedback) && (
                   <ScoreBoard score={headerData.score} index={headerData.questionNumber - 1} total={headerData.total} />
@@ -64,12 +64,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             </header>
             {headerData.type === "quiz" &&
               (headerData.phase === QuizPhase.Answering || headerData.phase === QuizPhase.Feedback) && (
-                <header className="md:hidden border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-3 flex flex-col gap-2">
+                <header className="md:hidden border-b border-ink/8 bg-surface px-4 py-3 flex flex-col gap-2">
                   <ScoreBoard score={headerData.score} index={headerData.questionNumber - 1} total={headerData.total} />
                 </header>
               )}
             {headerData.type === "flashcard" && headerData.phase === "session" && (
-              <header className="md:hidden border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-3 flex flex-col gap-2">
+              <header className="md:hidden border-b border-ink/8 bg-surface px-4 py-3 flex flex-col gap-2">
                 {headerData.variant === "marathon" ? (
                   <FlashcardHeader
                     variant="marathon"

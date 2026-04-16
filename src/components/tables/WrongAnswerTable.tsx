@@ -14,17 +14,17 @@ export function WrongAnswerTable({ verb, wrongOption }: WrongAnswerTableProps) {
   const { label, rows, partial } = buildTenseConjugation(tense, wrongOption, verb.participle);
 
   return (
-    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
+    <div className="mt-4 rounded-card border-2 border-wrong/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-wrong">
         "{wrongOption}" est le {label} de {verb.infinitive}
       </p>
       <div className={`grid gap-x-4 gap-y-1 ${partial ? "grid-cols-1" : "grid-cols-2"}`}>
         {rows.map(({ subject, form }) => (
           <div key={subject} className="flex items-baseline gap-2">
-            <span className="w-10 shrink-0 text-right text-xs font-semibold text-(--color-muted)">
+            <span className="w-10 shrink-0 text-right text-xs font-semibold text-muted">
               {subject}
             </span>
-            <span className="text-sm font-medium text-(--color-ink)" lang="fr">
+            <span className="text-sm font-medium text-ink" lang="fr">
               {form}
             </span>
           </div>

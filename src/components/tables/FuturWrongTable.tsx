@@ -19,15 +19,15 @@ export function FuturWrongTable({
   const { rows } = buildTenseConjugation("futur", futur3sg);
 
   return (
-    <div className="mt-4 rounded-(--radius-card) border-2 border-(--color-wrong)/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
-      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-(--color-wrong)">
+    <div className="mt-4 rounded-card border-2 border-wrong/40 bg-[color-mix(in_oklch,var(--color-wrong)_6%,transparent)] p-4">
+      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-wrong">
         "{wrongForm}" est la forme de{" "}
         <span lang="fr">{wrongSubject}</span>, pas de{" "}
         <span lang="fr">{targetSubject}</span>
       </p>
-      <p className="mb-3 text-xs text-(--color-muted)">
+      <p className="mb-3 text-xs text-muted">
         Conjugaison complète de{" "}
-        <strong className="text-(--color-ink)" lang="fr">
+        <strong className="text-ink" lang="fr">
           {verb.infinitive}
         </strong>{" "}
         au futur :
@@ -35,10 +35,10 @@ export function FuturWrongTable({
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         {rows.map(({ subject, form }) => (
           <div key={subject} className="flex items-baseline gap-2">
-            <span className="w-10 shrink-0 text-right text-xs font-semibold text-(--color-muted)">
+            <span className="w-10 shrink-0 text-right text-xs font-semibold text-muted">
               {subject}
             </span>
-            <span className="text-sm font-medium text-(--color-ink)" lang="fr">
+            <span className="text-sm font-medium text-ink" lang="fr">
               {form}
             </span>
           </div>

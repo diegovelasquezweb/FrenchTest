@@ -88,25 +88,25 @@ export function VocabListView({
   }, [activeLetter, availableLetterList, availableLetters]);
 
   return (
-    <div className="mx-auto w-full max-w-4xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
-      <div className="border-b border-(--color-ink)/8 px-4 py-4 sm:px-6">
+    <div className="mx-auto w-full max-w-4xl rounded-card bg-surface shadow-sm overflow-hidden">
+      <div className="border-b border-ink/8 px-4 py-4 sm:px-6">
         <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted)" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Rechercher en français, anglais, espagnol ou dans l’exemple"
-            className="w-full rounded border border-(--color-ink)/12 bg-(--color-bg) py-2.5 pl-9 pr-3 text-sm text-(--color-ink) outline-none transition-colors focus:border-(--color-brand)/40 focus:ring-2 focus:ring-(--color-brand)/20"
+            className="w-full rounded border border-ink/12 bg-bg py-2.5 pl-9 pr-3 text-sm text-ink outline-none transition-colors focus:border-brand/40 focus:ring-2 focus:ring-brand/20"
           />
         </div>
         <div className="mt-2 flex items-center justify-between gap-2">
-          <p className="text-xs text-(--color-muted)">
+          <p className="text-xs text-muted">
             {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
           </p>
           <button
             type="button"
             onClick={() => setIsIndexOpen((v) => !v)}
-            className="px-1 h-7 text-xs text-(--color-muted) underline underline-offset-2 hover:text-(--color-ink) transition-colors duration-150"
+            className="px-1 h-7 text-xs text-muted underline underline-offset-2 hover:text-ink transition-colors duration-150"
           >
             {isIndexOpen ? "masquer l’indice" : "afficher l’indice"}
           </button>
@@ -114,7 +114,7 @@ export function VocabListView({
       </div>
 
       {isIndexOpen && (
-        <div className="border-b border-(--color-ink)/8 bg-(--color-surface) px-3 py-2 sm:px-6">
+        <div className="border-b border-ink/8 bg-surface px-3 py-2 sm:px-6">
           <div className="flex flex-wrap gap-1.5">
             {LETTERS.map((letter) => {
               const enabled = availableLetters.has(letter);
@@ -130,10 +130,10 @@ export function VocabListView({
                   }}
                   className={`h-6 min-w-6 rounded px-1 text-[11px] font-semibold transition-colors ${
                     isActive
-                      ? "bg-(--color-brand)/16 text-(--color-brand)"
+                      ? "bg-brand/16 text-brand"
                       : enabled
-                      ? "bg-(--color-ink)/7 text-(--color-ink) hover:bg-(--color-brand)/14 hover:text-(--color-brand)"
-                      : "bg-(--color-ink)/4 text-(--color-muted)/50 cursor-not-allowed"
+                      ? "bg-ink/7 text-ink hover:bg-brand/14 hover:text-brand"
+                      : "bg-ink/4 text-muted/50 cursor-not-allowed"
                   }`}
                 >
                   {letter}
@@ -146,7 +146,7 @@ export function VocabListView({
 
       <div className="px-3 py-3 sm:px-6">
         {filtered.length === 0 ? (
-          <div className="flex items-center justify-center py-12 text-sm text-(--color-muted)">
+          <div className="flex items-center justify-center py-12 text-sm text-muted">
             Aucun résultat pour cette recherche.
           </div>
         ) : (
@@ -154,19 +154,19 @@ export function VocabListView({
             {LETTERS.filter((letter) => availableLetters.has(letter)).map((letter) => (
               <section key={letter} id={`vocab-index-${letter}`}>
                 <div className="mb-2 py-1">
-                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded bg-(--color-brand)/12 px-2 text-xs font-bold text-(--color-brand)">
+                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded bg-brand/12 px-2 text-xs font-bold text-brand">
                     {letter}
                   </span>
                 </div>
                 <ul className="space-y-2">
                   {(groups.get(letter) ?? []).map((card) => (
-                    <li key={card.id} className="rounded border border-(--color-ink)/8 p-3 sm:p-4">
+                    <li key={card.id} className="rounded border border-ink/8 p-3 sm:p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="font-semibold text-(--color-ink)" lang="fr">
+                          <p className="font-semibold text-ink" lang="fr">
                             {card.front}
                           </p>
-                          <span className="mt-1 inline-flex rounded bg-(--color-ink)/6 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-(--color-muted)">
+                          <span className="mt-1 inline-flex rounded bg-ink/6 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted">
                             {categoryFromCard(card)}
                           </span>
                         </div>
@@ -174,7 +174,7 @@ export function VocabListView({
                           <button
                             type="button"
                             onClick={() => onPractice(card)}
-                            className="rounded border border-(--color-ink)/12 px-2.5 py-1.5 text-xs font-semibold text-(--color-ink) transition-colors hover:bg-(--color-ink)/6"
+                            className="rounded border border-ink/12 px-2.5 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-ink/6"
                           >
                             Pratiquer
                           </button>
@@ -184,8 +184,8 @@ export function VocabListView({
                             aria-label={isFavoriteCard(card.id) ? "Retirer des favoris" : "Sauvegarder"}
                             className={`inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                               isFavoriteCard(card.id)
-                                ? "text-(--color-ink)"
-                                : "text-(--color-muted) hover:text-(--color-ink)"
+                                ? "text-ink"
+                                : "text-muted hover:text-ink"
                             }`}
                           >
                             <Bookmark size={13} fill={isFavoriteCard(card.id) ? "currentColor" : "none"} />
@@ -193,13 +193,13 @@ export function VocabListView({
                           </button>
                         </div>
                       </div>
-                      <p className="mt-2 text-xs text-(--color-muted)" lang="en">
+                      <p className="mt-2 text-xs text-muted" lang="en">
                         ENG: {card.translationEn}
                       </p>
-                      <p className="mt-0.5 text-xs text-(--color-muted)" lang="es">
+                      <p className="mt-0.5 text-xs text-muted" lang="es">
                         ESP: {card.translationEs}
                       </p>
-                      <p className="mt-2 text-xs text-(--color-muted)" lang="fr">
+                      <p className="mt-2 text-xs text-muted" lang="fr">
                         {card.usage}
                       </p>
                     </li>

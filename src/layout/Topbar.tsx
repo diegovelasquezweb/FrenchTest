@@ -28,18 +28,18 @@ export function Topbar() {
   }
 
   return (
-    <div className="md:hidden sticky top-0 z-40 flex items-center justify-between border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-3">
+    <div className="md:hidden sticky top-0 z-40 flex items-center justify-between border-b border-ink/8 bg-surface px-4 py-3">
       {isHome ? (
         <Link
           href="/"
-          className="text-sm font-bold text-(--color-ink) hover:text-(--color-brand) transition-colors duration-150"
+          className="text-sm font-bold text-ink hover:text-brand transition-colors duration-150"
         >
           🇨🇦 TEF Pratiquer
         </Link>
       ) : (
         <Link
           href="/"
-          className="text-sm font-medium text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150"
+          className="text-sm font-medium text-muted hover:text-ink transition-colors duration-150"
         >
           ← Accueil
         </Link>
@@ -50,7 +50,7 @@ export function Topbar() {
           <Popover.Trigger asChild>
             <button
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-(--color-brand)/15 text-xs font-bold text-(--color-brand)"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 text-xs font-bold text-brand"
             >
               {initial}
             </button>
@@ -60,13 +60,13 @@ export function Topbar() {
               side="bottom"
               align="end"
               sideOffset={8}
-              className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8"
+              className="z-50 min-w-36 rounded-card border border-ink/8 bg-surface py-1 shadow-lg shadow-ink/8"
             >
-              <div className="px-3 py-1.5 text-xs font-medium text-(--color-muted)">{login}</div>
+              <div className="px-3 py-1.5 text-xs font-medium text-muted">{login}</div>
               {status === "authed" && (
                 <Link
                   href="/mes-notes"
-                  className="block w-full px-3 py-2 text-left text-sm text-(--color-ink) hover:bg-(--color-ink)/5 transition-colors duration-150"
+                  className="block w-full px-3 py-2 text-left text-sm text-ink hover:bg-ink/5 transition-colors duration-150"
                 >
                   Mes notes
                 </Link>
@@ -78,7 +78,7 @@ export function Topbar() {
               >
                 Déconnexion
               </button>
-              <Popover.Arrow className="fill-(--color-surface)" />
+              <Popover.Arrow className="fill-surface" />
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>

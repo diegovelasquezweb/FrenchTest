@@ -39,10 +39,10 @@ export default function AuthCallbackPage() {
   if (error) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-4 text-center">
-        <p className="text-sm font-medium text-(--color-wrong)">{error}</p>
+        <p className="text-sm font-medium text-wrong">{error}</p>
         <a
           href="/login"
-          className="text-sm text-(--color-brand) underline underline-offset-2"
+          className="text-sm text-brand underline underline-offset-2"
         >
           Retour à la connexion
         </a>
@@ -52,7 +52,7 @@ export default function AuthCallbackPage() {
 
   return (
     <div className="flex min-h-dvh items-center justify-center">
-      <p className="text-sm text-(--color-muted)">Connexion en cours…</p>
+      <p className="text-sm text-muted">Connexion en cours…</p>
     </div>
   );
 }

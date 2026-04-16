@@ -92,12 +92,12 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
   const initial = login[0]?.toUpperCase() ?? "?";
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-(--color-ink)/8 bg-(--color-surface)">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-ink/8 bg-surface">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-(--color-ink)/8">
+      <div className="px-5 py-5 border-b border-ink/8">
         <Link
           href="/"
-          className="text-xl font-extrabold tracking-tight text-(--color-ink) hover:text-(--color-brand) transition-colors duration-150"
+          className="text-xl font-extrabold tracking-tight text-ink hover:text-brand transition-colors duration-150"
         >
           🇨🇦 TEF Pratiquer
         </Link>
@@ -116,8 +116,8 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                 href={g.href}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-semibold transition-colors duration-150 ${
                   isActive
-                    ? "bg-(--color-brand)/14 text-(--color-brand)"
-                    : "text-(--color-ink) bg-(--color-brand)/6 border border-(--color-brand)/20 hover:bg-(--color-brand)/10"
+                    ? "bg-brand/14 text-brand"
+                    : "text-ink bg-brand/6 border border-brand/20 hover:bg-brand/10"
                 }`}
               >
                 <g.icon size={16} className="shrink-0" />
@@ -141,15 +141,15 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
               <button
                 type="button"
                 onClick={() => toggleGroup("favoris")}
-                className="w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-(--color-ink)/5 group"
+                className="w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-ink/5 group"
               >
-                <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-(--color-ink) transition-colors">
+                <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-ink transition-colors">
                   <Heart size={12} className="shrink-0" />
                   Leçons favorites
                 </span>
                 {isOpen
-                  ? <ChevronDown size={16} className="text-(--color-ink) transition-transform duration-200" />
-                  : <ChevronRight size={16} className="text-(--color-ink) transition-transform duration-200" />}
+                  ? <ChevronDown size={16} className="text-ink transition-transform duration-200" />
+                  : <ChevronRight size={16} className="text-ink transition-transform duration-200" />}
               </button>
               {isOpen && (
                 <div className="mt-0.5 mb-2 flex flex-col gap-0.5">
@@ -163,8 +163,8 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                           href={href}
                           className={`flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-sm font-medium transition-colors duration-150 ${
                             isActive
-                              ? "bg-(--color-brand)/10 text-(--color-brand)"
-                              : "text-(--color-ink) hover:bg-(--color-ink)/6"
+                              ? "bg-brand/10 text-brand"
+                              : "text-ink hover:bg-ink/6"
                           }`}
                         >
                           <BookCheck size={15} className="shrink-0" />
@@ -174,7 +174,7 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                           type="button"
                           onClick={(e) => toggleFavorite(label, e)}
                           aria-label={`Retirer ${label} des favoris`}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-(--color-muted)"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted"
                         >
                           <Heart size={13} fill="currentColor" />
                         </button>
@@ -190,7 +190,7 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
         {NAV_GROUPS.map((group, idx) => {
           const isFirst = idx === 0;
           const noSep = isFirst || NO_SEPARATOR_IDS.has(group.id);
-          const sepClass = noSep ? "" : "pt-2 border-t border-(--color-ink)/16";
+          const sepClass = noSep ? "" : "pt-2 border-t border-ink/16";
 
           if (group.type === "single") {
             if (group.id === "marathon") return null; // rendered separately above
@@ -211,16 +211,16 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                   href={group.href}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-sm font-semibold transition-colors duration-150 ${
                     isActive
-                      ? "bg-(--color-brand)/14 text-(--color-brand)"
+                      ? "bg-brand/14 text-brand"
                       : isMarathon
-                        ? "text-(--color-ink) bg-(--color-brand)/6 border border-(--color-brand)/20 hover:bg-(--color-brand)/10"
-                        : "text-(--color-ink) hover:bg-(--color-ink)/6"
+                        ? "text-ink bg-brand/6 border border-brand/20 hover:bg-brand/10"
+                        : "text-ink hover:bg-ink/6"
                   }`}
                 >
                   <group.icon size={16} className="shrink-0" />
                   <span className="flex-1">{group.label}</span>
                   {badge > 0 && (
-                    <span className="text-[10px] font-bold text-(--color-muted)">{badge}</span>
+                    <span className="text-[10px] font-bold text-muted">{badge}</span>
                   )}
                 </Link>
               </div>
@@ -237,17 +237,17 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-(--color-ink)/5 ${
-                  hasActive && !isOpen ? "text-(--color-brand)" : ""
+                className={`w-full flex items-center justify-between px-3 py-2 rounded text-left transition-colors duration-150 hover:bg-ink/5 ${
+                  hasActive && !isOpen ? "text-brand" : ""
                 }`}
               >
-                <span className="text-[11px] font-bold uppercase tracking-widest text-(--color-ink)">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-ink">
                   {group.label}
                 </span>
                 {isOpen ? (
-                  <ChevronDown size={16} className="text-(--color-ink)" />
+                  <ChevronDown size={16} className="text-ink" />
                 ) : (
-                  <ChevronRight size={16} className="text-(--color-ink)" />
+                  <ChevronRight size={16} className="text-ink" />
                 )}
               </button>
 
@@ -263,8 +263,8 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                           href={item.href}
                           className={`flex items-center gap-2.5 px-3 py-2 pr-8 rounded text-sm font-medium transition-colors duration-150 ${
                             isActive
-                              ? "bg-(--color-brand)/10 text-(--color-brand)"
-                              : "text-(--color-ink) hover:bg-(--color-ink)/6"
+                              ? "bg-brand/10 text-brand"
+                              : "text-ink hover:bg-ink/6"
                           }`}
                         >
                           <Icon size={14} className="shrink-0" />
@@ -276,8 +276,8 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                           aria-label={isFav ? `Retirer ${item.label} des favoris` : `Ajouter ${item.label} aux favoris`}
                           className={`absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-150 ${
                             isFav
-                              ? "text-(--color-muted)"
-                              : "opacity-0 group-hover/item:opacity-60 text-(--color-muted)"
+                              ? "text-muted"
+                              : "opacity-0 group-hover/item:opacity-60 text-muted"
                           }`}
                         >
                           <Heart size={13} fill={isFav ? "currentColor" : "none"} />
@@ -294,11 +294,11 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
 
       {/* AI Chat (authed only) */}
       {status === "authed" && (
-        <div className="px-4 py-2 border-t border-(--color-ink)/8">
+        <div className="px-4 py-2 border-t border-ink/8">
           <button
             type="button"
             onClick={onOpenAiChat}
-            className="w-full flex items-center gap-2.5 rounded px-3 py-2 text-sm font-medium text-(--color-muted) transition-colors duration-150 hover:bg-(--color-ink)/6 hover:text-(--color-ink)"
+            className="w-full flex items-center gap-2.5 rounded px-3 py-2 text-sm font-medium text-muted transition-colors duration-150 hover:bg-ink/6 hover:text-ink"
           >
             <MessageCircle size={15} className="shrink-0" />
             Demander à l&apos;IA
@@ -307,17 +307,17 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
       )}
 
       {/* User footer */}
-      <div className="border-t border-(--color-ink)/8 flex items-center justify-between px-4 py-3">
+      <div className="border-t border-ink/8 flex items-center justify-between px-4 py-3">
         <Popover.Root>
           <Popover.Trigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-lg px-1 py-1 hover:bg-(--color-ink)/5 transition-colors duration-150"
+              className="flex items-center gap-2 rounded-lg px-1 py-1 hover:bg-ink/5 transition-colors duration-150"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-(--color-brand)/15 text-xs font-bold text-(--color-brand)">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand/15 text-xs font-bold text-brand">
                 {initial}
               </span>
-              <span className="text-xs font-medium text-(--color-ink) max-w-24 truncate">{login}</span>
+              <span className="text-xs font-medium text-ink max-w-24 truncate">{login}</span>
             </button>
           </Popover.Trigger>
           <Popover.Portal>
@@ -325,12 +325,12 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
               side="top"
               align="start"
               sideOffset={8}
-              className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg"
+              className="z-50 min-w-36 rounded-card border border-ink/8 bg-surface py-1 shadow-lg"
             >
               {status === "authed" && (
                 <Link
                   href="/mes-notes"
-                  className="block w-full px-3 py-2 text-left text-sm text-(--color-ink) hover:bg-(--color-ink)/5 transition-colors duration-150"
+                  className="block w-full px-3 py-2 text-left text-sm text-ink hover:bg-ink/5 transition-colors duration-150"
                 >
                   Mes notes
                 </Link>
@@ -342,7 +342,7 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
               >
                 Déconnexion
               </button>
-              <Popover.Arrow className="fill-(--color-surface)" />
+              <Popover.Arrow className="fill-surface" />
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>

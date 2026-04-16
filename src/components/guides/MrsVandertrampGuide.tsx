@@ -22,15 +22,15 @@ export function MrsVandertrampGuide() {
         {VERBS.map(({ letter, verb, participle, note }, i) => (
           <li
             key={i}
-            className="flex items-center gap-3 rounded-(--radius-button) bg-(--color-surface) px-4 py-3 shadow-sm"
+            className="flex items-center gap-3 rounded-button bg-surface px-4 py-3 shadow-sm"
           >
-            <span className="w-5 shrink-0 text-center text-base font-extrabold text-(--color-brand)">
+            <span className="w-5 shrink-0 text-center text-base font-extrabold text-brand">
               {letter}
             </span>
             <span className="min-w-0 flex-1">
-              <span className="text-sm font-bold text-(--color-ink)" lang="fr">{verb}</span>
+              <span className="text-sm font-bold text-ink" lang="fr">{verb}</span>
               {note && (
-                <span className="ml-2 text-[10px] font-medium text-(--color-muted)">{note}</span>
+                <span className="ml-2 text-[10px] font-medium text-muted">{note}</span>
               )}
             </span>
             <span className="shrink-0 text-xs font-semibold text-teal-600 dark:text-teal-400" lang="fr">
@@ -40,11 +40,11 @@ export function MrsVandertrampGuide() {
         ))}
       </ol>
 
-      <div className="mt-4 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) px-4 py-3 shadow-sm">
-        <p className="text-xs font-semibold text-(--color-muted) uppercase tracking-widest mb-2">Accord du participe</p>
+      <div className="mt-4 rounded-card border border-ink/8 bg-surface px-4 py-3 shadow-sm">
+        <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">Accord du participe</p>
         <div className="flex flex-col gap-1 text-sm" lang="fr">
-          <p><span className="font-semibold text-(--color-ink)">Il</span> est allé · <span className="font-semibold text-(--color-ink)">Elle</span> est allé<span className="text-teal-600 dark:text-teal-400 font-bold">e</span></p>
-          <p><span className="font-semibold text-(--color-ink)">Ils</span> sont allé<span className="text-teal-600 dark:text-teal-400 font-bold">s</span> · <span className="font-semibold text-(--color-ink)">Elles</span> sont allé<span className="text-teal-600 dark:text-teal-400 font-bold">es</span></p>
+          <p><span className="font-semibold text-ink">Il</span> est allé · <span className="font-semibold text-ink">Elle</span> est allé<span className="text-teal-600 dark:text-teal-400 font-bold">e</span></p>
+          <p><span className="font-semibold text-ink">Ils</span> sont allé<span className="text-teal-600 dark:text-teal-400 font-bold">s</span> · <span className="font-semibold text-ink">Elles</span> sont allé<span className="text-teal-600 dark:text-teal-400 font-bold">es</span></p>
         </div>
       </div>
     </div>

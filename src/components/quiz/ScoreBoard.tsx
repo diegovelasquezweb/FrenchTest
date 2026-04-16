@@ -13,7 +13,7 @@ export function ScoreBoard({ score, index, total }: ScoreBoardProps) {
       aria-label="Progression du quiz"
       className="mx-auto mt-3 flex w-full max-w-xl items-center gap-3 px-1"
     >
-      <span className="shrink-0 text-xs font-semibold tabular-nums text-(--color-muted)">
+      <span className="shrink-0 text-xs font-semibold tabular-nums text-muted">
         {questionNumber} / {total}
       </span>
       <div
@@ -22,10 +22,10 @@ export function ScoreBoard({ score, index, total }: ScoreBoardProps) {
         aria-valuemin={0}
         aria-valuemax={total}
         aria-label={`Question ${questionNumber} sur ${total}`}
-        className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-(--color-ink)/10"
+        className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-ink/10"
       >
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-linear-to-r from-(--color-brand) to-(--color-brand)/70 transition-[width] duration-500 ease-out"
+          className="absolute inset-y-0 left-0 rounded-full bg-linear-to-r from-brand to-brand/70 transition-[width] duration-500 ease-out"
           style={{ width: `${percent}%` }}
         />
         <div
@@ -35,7 +35,7 @@ export function ScoreBoard({ score, index, total }: ScoreBoardProps) {
         />
       </div>
       <span
-        className="shrink-0 text-xs font-semibold tabular-nums text-(--color-brand)"
+        className="shrink-0 text-xs font-semibold tabular-nums text-brand"
         aria-label={`Score : ${score} correct${score > 1 ? "s" : ""}`}
       >
         ✓ {score}

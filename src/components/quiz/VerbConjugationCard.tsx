@@ -47,18 +47,18 @@ export function VerbConjugationCard({
 
   const header = (
     <div className="mb-2 text-center">
-      <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted">
         {tenseName}
       </p>
-      <p className="mt-2 text-3xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
+      <p className="mt-2 text-3xl font-bold tracking-tight text-ink sm:text-4xl" lang="fr">
         {question.verb.infinitive}
       </p>
-      <p className="mt-1 text-sm text-(--color-muted)">
+      <p className="mt-1 text-sm text-muted">
         <span lang="en">{question.verb.translation}</span>
         <span className="mx-2 opacity-40">·</span>
         <span lang="es">{question.verb.translationEs}</span>
       </p>
-      <p className="mt-3 inline-block rounded-(--radius-button) bg-(--color-brand)/10 px-3 py-1 text-sm font-semibold text-(--color-brand)">
+      <p className="mt-3 inline-block rounded-button bg-brand/10 px-3 py-1 text-sm font-semibold text-brand">
         {question.targetSubject}
       </p>
     </div>

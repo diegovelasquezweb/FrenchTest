@@ -21,9 +21,9 @@ interface ArticlesQuizCardProps {
 function SentenceDisplay({ sentence, filled }: { sentence: string; filled?: string }) {
   const parts = sentence.split("___");
   return (
-    <p className="text-base font-medium leading-relaxed text-(--color-ink) sm:text-lg" lang="fr">
+    <p className="text-base font-medium leading-relaxed text-ink sm:text-lg" lang="fr">
       {parts[0]}
-      <span className="inline-block min-w-12 border-b-2 border-(--color-brand) px-1 text-center font-bold text-(--color-brand)">
+      <span className="inline-block min-w-12 border-b-2 border-brand px-1 text-center font-bold text-brand">
         {filled ?? "\u00A0\u00A0\u00A0\u00A0"}
       </span>
       {parts[1]}
@@ -46,10 +46,10 @@ export function ArticlesQuizCard({
 
   const header = (
     <>
-      <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
+      <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">
         Articles & contractions
       </p>
-      <div className="mb-6 rounded-(--radius-button) bg-(--color-bg) px-4 py-4">
+      <div className="mb-6 rounded-button bg-bg px-4 py-4">
         <SentenceDisplay sentence={question.sentence} filled={selectedWord} />
       </div>
     </>
@@ -57,10 +57,10 @@ export function ArticlesQuizCard({
 
   const feedback = selectedIndex !== null ? (
     <div
-      className={`mt-4 rounded-(--radius-button) border-l-4 px-4 py-3 text-sm ${
+      className={`mt-4 rounded-button border-l-4 px-4 py-3 text-sm ${
         isWrongPick
-          ? "border-(--color-wrong) bg-[color-mix(in_oklch,var(--color-wrong)_8%,transparent)] text-(--color-ink)"
-          : "border-(--color-correct) bg-[color-mix(in_oklch,var(--color-correct)_8%,transparent)] text-(--color-ink)"
+          ? "border-wrong bg-[color-mix(in_oklch,var(--color-wrong)_8%,transparent)] text-ink"
+          : "border-correct bg-[color-mix(in_oklch,var(--color-correct)_8%,transparent)] text-ink"
       }`}
     >
       {isWrongPick ? (
