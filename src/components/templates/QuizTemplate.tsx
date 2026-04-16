@@ -32,6 +32,15 @@ interface QuizTemplateProps<Q> {
   autoStart?: boolean;
 }
 
+function hasStandardQuestion(q: unknown): q is { options: string[]; correctIndex: number } {
+  return (
+    typeof q === "object" &&
+    q !== null &&
+    Array.isArray((q as Record<string, unknown>)["options"]) &&
+    typeof (q as Record<string, unknown>)["correctIndex"] === "number"
+  );
+}
+
 export function QuizTemplate<Q>({
   title,
   quiz,
@@ -74,12 +83,8 @@ export function QuizTemplate<Q>({
     if (buildAnnouncement) {
       msg = buildAnnouncement(q, quiz.state.answerState, quiz.state.selectedIndex);
     } else {
-      const anyQ = q as Record<string, unknown>;
-      if (Array.isArray(anyQ["options"]) && typeof anyQ["correctIndex"] === "number") {
-        msg = defaultAnnouncement(
-          q as unknown as { options: string[]; correctIndex: number },
-          quiz.state.answerState,
-        );
+      if (hasStandardQuestion(q)) {
+        msg = defaultAnnouncement(q, quiz.state.answerState);
       } else {
         if (process.env.NODE_ENV === "development") {
           console.error(

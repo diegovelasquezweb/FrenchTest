@@ -18,6 +18,7 @@ export function SwipeCard({
   children,
   className,
   "aria-label": ariaLabel,
+  resetKey,
   onSwipeRight,
   onSwipeLeft,
   onSwipeUp,
@@ -25,6 +26,8 @@ export function SwipeCard({
 }: SwipeCardProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const start = useRef<{ x: number; y: number; t: number } | null>(null);
+
+  useEffect(() => { start.current = null; }, [resetKey]);
 
   const hasVertical = !!(onSwipeUp || onSwipeDown);
   const hasCallbacks = !!(onSwipeRight || onSwipeLeft || onSwipeUp || onSwipeDown);
