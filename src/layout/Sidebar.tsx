@@ -28,6 +28,8 @@ import { ThemeToggle } from "@/src/components/ThemeToggle";
 import { useAuth } from "@/src/lib/auth-context";
 import { useTheme } from "@/src/hooks/useTheme";
 import { logout } from "@/src/lib/auth";
+import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
+import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 
 type NavItem = { label: string; href: string; icon?: LucideIcon };
 
@@ -142,6 +144,8 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
   const { session, status } = useAuth();
   const { theme, toggle: toggleTheme } = useTheme();
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
+  const { weakVerbList } = useWeakVerbs();
+  const { favoriteCardList, favoriteVocabList } = useFavoriteCards();
 
   useEffect(() => {
     for (const group of NAV_GROUPS) {
@@ -194,8 +198,18 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
           const sepClass = noSep ? "" : "pt-2 border-t border-(--color-ink)/16";
 
           if (group.type === "single") {
+            // Hide data-dependent items when empty (matches original behavior).
+            if (group.id === "difficiles" && weakVerbList.length === 0) return null;
+            if (group.id === "mes-patterns" && favoriteCardList.length === 0) return null;
+            if (group.id === "mes-vocab" && favoriteVocabList.length === 0) return null;
+
             const isActive = pathname === group.href;
             const isMarathon = group.marathon === true;
+            const badge =
+              group.id === "difficiles" ? weakVerbList.length :
+              group.id === "mes-patterns" ? favoriteCardList.length :
+              group.id === "mes-vocab" ? favoriteVocabList.length : 0;
+
             return (
               <div key={group.id} className={sepClass}>
                 <Link
@@ -209,7 +223,10 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
                   }`}
                 >
                   <group.icon size={16} className="shrink-0" />
-                  {group.label}
+                  <span className="flex-1">{group.label}</span>
+                  {badge > 0 && (
+                    <span className="text-[10px] font-bold text-(--color-muted)">{badge}</span>
+                  )}
                 </Link>
               </div>
             );

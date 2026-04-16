@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import type { Flashcard } from "../types";
 import { FLASHCARDS } from "../data/flashcards";
 import { VOCABULAIRE_CARDS } from "../data/vocabulaireCards";
@@ -7,6 +7,7 @@ import { GENRE_CARDS } from "../data/genreCards";
 import { PIEGES_CARDS } from "../data/piegesCards";
 import { ACCENTS_CARDS } from "../data/accentsCards";
 import { getFavoriteCards, saveFavoriteCards } from "../lib/favoriteCards";
+import { subscribeToStore } from "../lib/store";
 
 const PATTERNS_CATEGORIES = new Set<Flashcard["category"]>([
   "oral", "oral-persuasion", "écrit-faits-divers", "connecteurs", "argumentation",
@@ -30,6 +31,8 @@ export interface UseFavoriteCardsReturn {
 
 export function useFavoriteCards(): UseFavoriteCardsReturn {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(getFavoriteCards);
+
+  useEffect(() => subscribeToStore(() => setFavoriteIds(getFavoriteCards())), []);
 
   const isFavoriteCard = useCallback(
     (id: string) => favoriteIds.has(id),

@@ -5,6 +5,17 @@ const TEF_PREFIX = "tef-";
 
 const cache: Record<string, string> = {};
 
+const listeners = new Set<() => void>();
+
+export function subscribeToStore(fn: () => void): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+function notifyListeners(): void {
+  listeners.forEach(fn => fn());
+}
+
 export function getItem(key: string): string | null {
   if (isGuest()) return localStorage.getItem(key);
   return Object.prototype.hasOwnProperty.call(cache, key) ? cache[key] : null;
@@ -16,6 +27,7 @@ export function setItem(key: string, value: string): void {
     return;
   }
   cache[key] = value;
+  notifyListeners();
   schedulePush();
 }
 
@@ -30,9 +42,28 @@ export async function loadStore(): Promise<void> {
     const res = await fetch(WORKER_URL + "/", { headers: authHeaders() });
     if (!res.ok) return;
     const snapshot = await res.json() as Record<string, string>;
+    const workerKeys = Object.keys(snapshot).filter(k => k.startsWith(TEF_PREFIX));
+
+    let cacheUpdated = false;
     for (const [key, value] of Object.entries(snapshot)) {
-      if (key.startsWith(TEF_PREFIX)) cache[key] = value;
+      if (key.startsWith(TEF_PREFIX)) { cache[key] = value; cacheUpdated = true; }
     }
+
+    // One-time migration: if Worker KV is empty, move existing localStorage data to Worker.
+    // After this runs once, all data lives in Worker KV and localStorage is no longer used.
+    if (workerKeys.length === 0) {
+      let migrated = false;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith(TEF_PREFIX) && key !== "tef-session" && key !== "tef-guest") {
+          const val = localStorage.getItem(key);
+          if (val) { cache[key] = val; migrated = true; }
+        }
+      }
+      if (migrated) { cacheUpdated = true; void pushStore(); }
+    }
+
+    if (cacheUpdated) notifyListeners();
   } catch {
     // offline
   }

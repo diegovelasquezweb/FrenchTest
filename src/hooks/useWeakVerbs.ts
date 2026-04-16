@@ -1,7 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Verb } from "../types";
 import { VERBS } from "../data/verbs";
 import { getWeakVerbs, saveWeakVerbs } from "../lib/weakVerbs";
+import { subscribeToStore } from "../lib/store";
 
 export interface UseWeakVerbsReturn {
   weakVerbs: Set<string>;
@@ -12,6 +13,8 @@ export interface UseWeakVerbsReturn {
 
 export function useWeakVerbs(): UseWeakVerbsReturn {
   const [weakVerbs, setWeakVerbs] = useState<Set<string>>(getWeakVerbs);
+
+  useEffect(() => subscribeToStore(() => setWeakVerbs(getWeakVerbs())), []);
 
   const isWeak = useCallback(
     (infinitive: string) => weakVerbs.has(infinitive),
