@@ -14,6 +14,7 @@ interface QuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
+  score: number;
 }
 
 export function QuizCard({
@@ -26,6 +27,7 @@ export function QuizCard({
   total,
   isWeak,
   onToggleWeak,
+  score,
 }: QuizCardProps) {
   const header = (
     <div className="mb-6 text-center">
@@ -69,6 +71,7 @@ export function QuizCard({
       cardPaddingClassName="p-4 sm:p-8"
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
+      score={score}
     />
   );
 }

@@ -46,6 +46,7 @@ export default function OralPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
+          score={quiz.state.score}
           label="Expression orale — complétez la phrase"
         />
       )}

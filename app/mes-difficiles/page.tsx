@@ -21,7 +21,8 @@ export default function MesDifficilesPage() {
   return (
     <AuthGate>
       {difficiles.state.phase === QuizPhase.Idle && (
-        <div className="mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
+        <div className="flex flex-1 items-center justify-center px-4 py-6">
+        <div className="w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-ink)/8">
             <div className="flex items-center gap-2">
               <Bookmark size={16} className="text-(--color-ink)" />
@@ -94,6 +95,7 @@ export default function MesDifficilesPage() {
             </>
           )}
         </div>
+        </div>
       )}
 
       {(difficiles.state.phase === QuizPhase.Answering ||
@@ -109,23 +111,21 @@ export default function MesDifficilesPage() {
             onNext: difficiles.nextQuestion,
             questionNumber: difficiles.progress.index + 1,
             total: difficiles.progress.total,
+            score: difficiles.state.score,
             isWeak: isWeak(verbInfinitive),
             onToggleWeak: () => toggleWeak(verbInfinitive),
           };
-          switch (wrapper.source) {
-            case "participe":
-              return <QuizCard {...common} question={wrapper.q} />;
-            case "imparfait":
-              return <ImparfaitQuizCard {...common} question={wrapper.q} />;
-            case "futur":
-              return <FuturQuizCard {...common} question={wrapper.q} />;
-            case "conditionnel":
-              return <ConditionnelQuizCard {...common} question={wrapper.q} />;
-            case "présent":
-              return <PresentQuizCard {...common} question={wrapper.q} />;
-            default:
-              return null;
-          }
+          const card = (() => {
+            switch (wrapper.source) {
+              case "participe":    return <QuizCard {...common} question={wrapper.q} />;
+              case "imparfait":    return <ImparfaitQuizCard {...common} question={wrapper.q} />;
+              case "futur":        return <FuturQuizCard {...common} question={wrapper.q} />;
+              case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
+              case "présent":      return <PresentQuizCard {...common} question={wrapper.q} />;
+              default:             return null;
+            }
+          })();
+          return card ?? null;
         })()}
 
       {difficiles.state.phase === QuizPhase.Complete && (

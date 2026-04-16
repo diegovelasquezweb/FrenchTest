@@ -61,7 +61,7 @@ export default function ParticipePage() {
 
   return (
     <AuthGate>
-      <div className="mx-auto mb-3 w-full max-w-xl">
+      <div className="mx-auto mt-6 mb-0 w-full max-w-xl px-4">
         <div className="flex items-center justify-end gap-1.5 text-[11px] text-(--color-muted)/85">
           <span>Mode difficile</span>
           <Popover.Root>
@@ -121,6 +121,7 @@ export default function ParticipePage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
+          score={quiz.state.score}
           isWeak={isWeak(quiz.currentQuestion.verb.infinitive)}
           onToggleWeak={() => toggleWeak(quiz.currentQuestion!.verb.infinitive)}
         />

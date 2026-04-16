@@ -55,6 +55,7 @@ export default function GrammairePage() {
       onNext: quiz.nextQuestion,
       questionNumber: quiz.progress.index + 1,
       total: quiz.progress.total,
+      score: quiz.state.score,
       isWeak: isWeak(verbInfinitive),
       onToggleWeak: () => toggleWeak(verbInfinitive),
     };

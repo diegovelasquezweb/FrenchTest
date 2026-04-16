@@ -26,7 +26,8 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
     : { text: "text-red-500 dark:text-red-400", bar: "bg-red-500" };
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
+    <div className="flex flex-1 items-start justify-center px-4 py-6">
+    <div className="w-full max-w-lg flex flex-col gap-4">
 
       {/* ── Score header ── */}
       <div className="rounded-(--radius-card) bg-(--color-surface) px-6 py-5 shadow-sm">
@@ -110,6 +111,7 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
           Accueil
         </button>
       </div>
+    </div>
     </div>
   );
 }

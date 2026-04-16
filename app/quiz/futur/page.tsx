@@ -48,6 +48,7 @@ export default function FuturPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
+          score={quiz.state.score}
           isWeak={isWeak(quiz.currentQuestion.verb.infinitive)}
           onToggleWeak={() => toggleWeak(quiz.currentQuestion!.verb.infinitive)}
         />

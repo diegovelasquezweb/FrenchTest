@@ -105,7 +105,7 @@ const PRONOUN_LABEL: Record<keyof PersonForms, string> = {
 
 export function EssentialVerbsGuide() {
   return (
-    <div className="mx-auto w-full max-w-6xl">
+    <div className="mx-auto w-full max-w-6xl px-4 py-6">
       <Accordion.Root type="single" collapsible className="rounded-(--radius-card) overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
         {ESSENTIAL_VERBS.map((verb, i) => (
           <Accordion.Item

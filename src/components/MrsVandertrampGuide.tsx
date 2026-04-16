@@ -17,7 +17,7 @@ const VERBS: { letter: string; verb: string; participle: string; note?: string }
 
 export function MrsVandertrampGuide() {
   return (
-    <div className="mx-auto w-full max-w-lg">
+    <div className="mx-auto w-full max-w-lg px-4 py-6">
       <ol className="flex flex-col gap-1.5">
         {VERBS.map(({ letter, verb, participle, note }, i) => (
           <li

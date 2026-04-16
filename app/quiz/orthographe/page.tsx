@@ -46,6 +46,7 @@ export default function OrthographePage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
+          score={quiz.state.score}
         />
       )}
       {quiz.state.phase === QuizPhase.Complete && (

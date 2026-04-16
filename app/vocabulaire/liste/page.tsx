@@ -37,14 +37,16 @@ export default function VocabListPage() {
 
   return (
     <AuthGate>
-      <VocabListView
-        cards={ALL_VOCAB_CARDS}
-        query={query}
-        onQueryChange={setQuery}
-        isFavoriteCard={isFavoriteCard}
-        onToggleFavorite={toggleFavoriteCard}
-        onPractice={handlePractice}
-      />
+      <div className="px-4 py-6">
+        <VocabListView
+          cards={ALL_VOCAB_CARDS}
+          query={query}
+          onQueryChange={setQuery}
+          isFavoriteCard={isFavoriteCard}
+          onToggleFavorite={toggleFavoriteCard}
+          onPractice={handlePractice}
+        />
+      </div>
     </AuthGate>
   );
 }

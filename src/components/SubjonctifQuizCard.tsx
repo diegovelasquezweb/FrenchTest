@@ -14,6 +14,7 @@ interface SubjonctifQuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
+  score: number;
 }
 
 export function SubjonctifQuizCard({
@@ -26,6 +27,7 @@ export function SubjonctifQuizCard({
   total,
   isWeak,
   onToggleWeak,
+  score,
 }: SubjonctifQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -80,6 +82,7 @@ export function SubjonctifQuizCard({
       feedback={feedback}
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
+      score={score}
     />
   );
 }

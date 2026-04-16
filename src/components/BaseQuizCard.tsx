@@ -3,6 +3,7 @@ import { Bookmark } from "lucide-react";
 import { AnswerState } from "../types";
 import { AnswerButton } from "./AnswerButton";
 import { SwipeCard } from "./SwipeCard";
+import { ScoreBoard } from "./ScoreBoard";
 
 type ButtonState = "default" | "correct" | "wrong" | "dimmed";
 
@@ -40,6 +41,7 @@ interface BaseQuizCardProps {
   /** Weak-verb bookmark — shown when provided */
   isWeak?: boolean;
   onToggleWeak?(): void;
+  score: number;
 }
 
 export function BaseQuizCard({
@@ -57,6 +59,7 @@ export function BaseQuizCard({
   nextButtonSpacing = "mt-6",
   isWeak,
   onToggleWeak,
+  score,
 }: BaseQuizCardProps) {
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
@@ -74,8 +77,11 @@ export function BaseQuizCard({
 
   return (
     <>
+      <div className="flex flex-1 items-center justify-center px-4 py-6">
+      <div className="w-full max-w-xl flex flex-col gap-0">
+        <ScoreBoard score={score} index={questionNumber - 1} total={total} />
       <SwipeCard
-        className={`mx-auto w-full max-w-xl rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
+        className={`w-full rounded-(--radius-card) bg-(--color-surface) shadow-sm ${cardPaddingClassName}`}
         aria-label={`Question ${questionNumber} sur ${total}`}
         resetKey={questionNumber}
         onSwipeLeft={isRevealed ? onNext : undefined}
@@ -129,6 +135,8 @@ export function BaseQuizCard({
           </div>
         )}
       </SwipeCard>
+      </div>
+      </div>
 
       {/* Mobile spacer so fixed bottom CTA doesn't cover card content */}
       {isRevealed && <div className="h-24 md:hidden" aria-hidden="true" />}

@@ -16,6 +16,7 @@ interface ArticlesQuizCardProps {
   onNext(): void;
   questionNumber: number;
   total: number;
+  score: number;
 }
 
 function SentenceDisplay({ sentence, filled }: { sentence: string; filled?: string }) {
@@ -39,6 +40,7 @@ export function ArticlesQuizCard({
   onNext,
   questionNumber,
   total,
+  score,
 }: ArticlesQuizCardProps) {
   const isWrongPick = selectedIndex !== null && selectedIndex !== question.correctIndex;
   const selectedWord = selectedIndex !== null ? question.options[selectedIndex] : undefined;
@@ -90,6 +92,7 @@ export function ArticlesQuizCard({
       feedback={feedback}
       optionsGridClassName="grid grid-cols-2 gap-3"
       nextButtonSpacing="mt-4"
+      score={score}
     />
   );
 }

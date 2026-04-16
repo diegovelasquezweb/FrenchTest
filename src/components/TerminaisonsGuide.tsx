@@ -162,7 +162,7 @@ const QUICK_COMPARISONS: ComparisonBlock[] = [
 
 export function TerminaisonsGuide() {
   return (
-    <div className="mx-auto w-full max-w-5xl">
+    <div className="mx-auto w-full max-w-5xl px-4 py-6">
       <Accordion.Root type="single" collapsible className="rounded-(--radius-card) overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
         {TENSES.map((tense, i) => (
           <Accordion.Item
