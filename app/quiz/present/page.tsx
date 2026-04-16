@@ -41,7 +41,7 @@ export default function PresentPage() {
       )}
       renderResult={({ score, total, onRestart, onHome }) => (
         <ResultScreen
-          history={quiz.state.history.map((e) => ({ verb: e.question.verb, picked: e.picked, correct: e.correct }))}
+          history={quiz.state.history}
           score={score}
           total={total}
           onRestart={onRestart}
