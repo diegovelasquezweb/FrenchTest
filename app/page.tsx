@@ -4,110 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as Accordion from "@radix-ui/react-accordion";
-import {
-  Gamepad2,
-  Heart,
-  Bookmark,
-  Columns3,
-  PenSquare,
-  ChevronDown,
-} from "lucide-react";
+import { Heart, ChevronDown } from "lucide-react";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { getItem, setItem, subscribeToStore } from "@/src/lib/store";
+import { NAV_GROUPS, ITEM_HREF_LOOKUP, displayLabel, type NavGroupSingle } from "@/src/lib/nav";
 
-/** Collapse verbose "Test X" labels to just "Test" inside their section. */
-function displayLabel(label: string): string {
-  return label.startsWith("Test ") ? "Test" : label;
+function singleGroup(id: string): NavGroupSingle {
+  return NAV_GROUPS.find((g): g is NavGroupSingle => g.type === "single" && g.id === id)!;
 }
 
-type NavItem = { label: string; href: string };
+// Accordion sections only (type === "accordion")
+const ACCORDION_SECTIONS = NAV_GROUPS.filter(
+  (g): g is Extract<typeof NAV_GROUPS[number], { type: "accordion" }> => g.type === "accordion",
+);
 
-const ACCORDION_SECTIONS: { id: string; label: string; items: NavItem[] }[] = [
-  {
-    id: "vocabulaire",
-    label: "Vocabulaire",
-    items: [
-      { label: "Verbes",              href: "/vocabulaire/verbes" },
-      { label: "Adjectifs",           href: "/vocabulaire/adjectifs" },
-      { label: "Noms",                href: "/vocabulaire/noms" },
-      { label: "Expressions",         href: "/vocabulaire/expressions" },
-      { label: "Genre",               href: "/vocabulaire/genre" },
-      { label: "Erreurs",             href: "/vocabulaire/erreurs" },
-      { label: "Accents",             href: "/vocabulaire/accents" },
-      { label: "Mixte",               href: "/vocabulaire/mix" },
-      { label: "Liste vocabulaire",   href: "/vocabulaire/liste" },
-    ],
-  },
-  {
-    id: "oral",
-    label: "Oral",
-    items: [
-      { label: "Renseignements",  href: "/parcours/oral-interaction" },
-      { label: "Persuasion",      href: "/parcours/oral-monologue" },
-      { label: "Test oral",       href: "/quiz/oral" },
-    ],
-  },
-  {
-    id: "ecrit",
-    label: "Écrit",
-    items: [
-      { label: "Faits divers",    href: "/parcours/ecrit-faits-divers" },
-      { label: "Argumentatif",    href: "/parcours/ecrit-argumentatif" },
-      { label: "Test écrit",      href: "/quiz/ecrit" },
-    ],
-  },
-  {
-    id: "grammaire",
-    label: "Grammaire",
-    items: [
-      { label: "Participe passé",         href: "/quiz/participe" },
-      { label: "Imparfait",               href: "/quiz/imparfait" },
-      { label: "Présent",                 href: "/quiz/present" },
-      { label: "Subjonctif",              href: "/quiz/subjonctif" },
-      { label: "Plus-que-parfait",        href: "/quiz/plus-que-parfait" },
-      { label: "Articles & contractions", href: "/quiz/articles" },
-      { label: "Orthographe",             href: "/quiz/orthographe" },
-      { label: "Futur simple",            href: "/quiz/futur" },
-      { label: "Conditionnel",            href: "/quiz/conditionnel" },
-      { label: "Pronominales",            href: "/quiz/pronominales" },
-      { label: "Test grammaire",          href: "/quiz/grammaire" },
-    ],
-  },
-  {
-    id: "connecteurs",
-    label: "Connecteurs",
-    items: [
-      { label: "Connecteurs",      href: "/parcours/connecteurs" },
-      { label: "Test connecteurs", href: "/quiz/connecteurs" },
-    ],
-  },
-  {
-    id: "etre-avoir",
-    label: "MRS VANDERTRAMP",
-    items: [
-      { label: "Être / avoir",      href: "/parcours/etre-avoir" },
-      { label: "Test être / avoir", href: "/quiz/etre-avoir" },
-      { label: "Liste des verbes",  href: "/guides/etre-avoir" },
-    ],
-  },
-  {
-    id: "voyage",
-    label: "Voyage",
-    items: [
-      { label: "Restaurant",  href: "/voyage/restaurant" },
-      { label: "Transport",   href: "/voyage/transport" },
-      { label: "Hébergement", href: "/voyage/hebergement" },
-      { label: "Shopping",    href: "/voyage/shopping" },
-      { label: "Orientation", href: "/voyage/orientation" },
-      { label: "Urgences",    href: "/voyage/urgences" },
-    ],
-  },
-];
-
-// Flat label→href lookup for the favorites section.
-const ITEM_LOOKUP: Record<string, string> = Object.fromEntries(
-  ACCORDION_SECTIONS.flatMap((s) => s.items.map((i) => [i.label, i.href])),
+// Standalone single buttons shown in mobile (not sidebarOnly, not conditional)
+const STANDALONE_SINGLES = NAV_GROUPS.filter(
+  (g): g is Extract<typeof NAV_GROUPS[number], { type: "single" }> =>
+    g.type === "single" &&
+    !g.marathon &&
+    !["difficiles", "mes-patterns", "mes-vocab"].includes(g.id) &&
+    !g.sidebarOnly,
 );
 
 export default function HomePage() {
@@ -175,7 +93,7 @@ export default function HomePage() {
           href="/marathon"
           className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/12 hover:text-(--color-brand) active:bg-(--color-brand)/18"
         >
-          <Gamepad2 size={16} className="shrink-0" />
+          {(() => { const g = singleGroup("marathon"); return <g.icon size={16} className="shrink-0" />; })()}
           Marathon
         </Link>
       </div>
@@ -189,7 +107,7 @@ export default function HomePage() {
           </p>
           <div className="rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
             {favorites.map((label) => {
-              const href = ITEM_LOOKUP[label];
+              const href = ITEM_HREF_LOOKUP[label];
               if (!href) return null;
               return (
                 <div key={label} className="relative border-t border-(--color-ink)/8 first:border-t-0">
@@ -221,7 +139,7 @@ export default function HomePage() {
             href="/mes-difficiles"
             className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
           >
-            <Bookmark size={16} className="shrink-0" />
+            {(() => { const g = singleGroup("difficiles"); return <g.icon size={16} className="shrink-0" />; })()}
             Mes difficiles
             <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{weakVerbList.length}</span>
           </Link>
@@ -235,7 +153,7 @@ export default function HomePage() {
             href="/mes-patterns"
             className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
           >
-            <Bookmark size={16} className="shrink-0" />
+            {(() => { const g = singleGroup("mes-patterns"); return <g.icon size={16} className="shrink-0" />; })()}
             Mes patterns
             <span className="ml-auto text-[10px] font-bold text-(--color-muted)">{favoriteCardList.length}</span>
           </Link>
@@ -288,27 +206,18 @@ export default function HomePage() {
         ))}
       </Accordion.Root>
 
-      {/* Verbes essentiels */}
-      <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-        <Link
-          href="/guides/verbes-essentiels"
-          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-        >
-          <Columns3 size={16} className="shrink-0" />
-          Verbes essentiels
-        </Link>
-      </div>
-
-      {/* Terminaisons verbales */}
-      <div className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
-        <Link
-          href="/guides/terminaisons"
-          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
-        >
-          <PenSquare size={16} className="shrink-0" />
-          Terminaisons verbales
-        </Link>
-      </div>
+      {/* Standalone single buttons (Verbes essentiels, Terminaisons verbales) */}
+      {STANDALONE_SINGLES.map((group) => (
+        <div key={group.id} className="w-full rounded overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+          <Link
+            href={group.href}
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-brand)/8 hover:text-(--color-brand) active:bg-(--color-brand)/15"
+          >
+            <group.icon size={16} className="shrink-0" />
+            {group.label}
+          </Link>
+        </div>
+      ))}
     </div>
   );
 }

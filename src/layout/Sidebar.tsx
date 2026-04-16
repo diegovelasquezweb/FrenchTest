@@ -5,26 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
 import {
-  Gamepad2,
-  Bookmark,
   BookCheck,
-  FlaskConical,
-  Columns3,
-  PenSquare,
-  Globe,
-  Map as MapIcon,
   ChevronDown,
   ChevronRight,
   MessageCircle,
-  UtensilsCrossed,
-  Bus,
-  BedDouble,
-  ShoppingBag,
-  Siren,
-  SlidersHorizontal,
   Heart,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "@/src/components/ThemeToggle";
 import { useAuth } from "@/src/lib/auth-context";
 import { useTheme } from "@/src/hooks/useTheme";
@@ -32,110 +18,7 @@ import { logout } from "@/src/lib/auth";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { getItem, setItem, subscribeToStore } from "@/src/lib/store";
-
-type NavItem = { label: string; href: string; icon?: LucideIcon };
-
-type NavGroupSingle = {
-  id: string;
-  type: "single";
-  label: string;
-  href: string;
-  icon: LucideIcon;
-  marathon?: true;
-};
-
-type NavGroupAccordion = {
-  id: string;
-  type: "accordion";
-  label: string;
-  items: NavItem[];
-};
-
-type NavGroup = NavGroupSingle | NavGroupAccordion;
-
-const NAV_GROUPS: NavGroup[] = [
-  { id: "marathon",     type: "single", label: "Marathon",              href: "/marathon",                  icon: Gamepad2,          marathon: true },
-  { id: "difficiles",   type: "single", label: "Mes difficiles",        href: "/mes-difficiles",            icon: Bookmark },
-  { id: "mes-patterns", type: "single", label: "Mes patterns",          href: "/mes-patterns",              icon: Bookmark },
-  { id: "mes-vocab",    type: "single", label: "Mon vocabulaire",       href: "/mon-vocabulaire",           icon: Bookmark },
-  {
-    id: "oral", type: "accordion", label: "Oral",
-    items: [
-      { label: "Renseignements", href: "/parcours/oral-interaction" },
-      { label: "Persuasion",     href: "/parcours/oral-monologue" },
-      { label: "Test oral",      href: "/quiz/oral",               icon: FlaskConical },
-    ],
-  },
-  {
-    id: "ecrit", type: "accordion", label: "Écrit",
-    items: [
-      { label: "Faits divers",  href: "/parcours/ecrit-faits-divers" },
-      { label: "Argumentatif",  href: "/parcours/ecrit-argumentatif" },
-      { label: "Test écrit",    href: "/quiz/ecrit",               icon: FlaskConical },
-    ],
-  },
-  {
-    id: "grammaire", type: "accordion", label: "Grammaire",
-    items: [
-      { label: "Participe passé",        href: "/quiz/participe" },
-      { label: "Imparfait",              href: "/quiz/imparfait" },
-      { label: "Présent",                href: "/quiz/present" },
-      { label: "Subjonctif",             href: "/quiz/subjonctif" },
-      { label: "Plus-que-parfait",       href: "/quiz/plus-que-parfait" },
-      { label: "Articles & contractions", href: "/quiz/articles" },
-      { label: "Orthographe",            href: "/quiz/orthographe" },
-      { label: "Futur simple",           href: "/quiz/futur" },
-      { label: "Conditionnel",           href: "/quiz/conditionnel" },
-      { label: "Pronominales",           href: "/quiz/pronominales" },
-      { label: "Test grammaire",         href: "/quiz/grammaire",    icon: FlaskConical },
-    ],
-  },
-  {
-    id: "vocabulaire", type: "accordion", label: "Vocabulaire",
-    items: [
-      { label: "Verbes",          href: "/vocabulaire/verbes" },
-      { label: "Adjectifs",       href: "/vocabulaire/adjectifs" },
-      { label: "Noms",            href: "/vocabulaire/noms" },
-      { label: "Expressions",     href: "/vocabulaire/expressions" },
-      { label: "Genre",           href: "/vocabulaire/genre" },
-      { label: "Erreurs",         href: "/vocabulaire/erreurs" },
-      { label: "Accents",         href: "/vocabulaire/accents" },
-      { label: "Mixte",           href: "/vocabulaire/mix" },
-      { label: "Liste vocabulaire", href: "/vocabulaire/liste",    icon: SlidersHorizontal },
-    ],
-  },
-  {
-    id: "connecteurs", type: "accordion", label: "Connecteurs",
-    items: [
-      { label: "Connecteurs",      href: "/parcours/connecteurs" },
-      { label: "Test connecteurs", href: "/quiz/connecteurs",     icon: FlaskConical },
-    ],
-  },
-  {
-    id: "etre-avoir", type: "accordion", label: "MRS VANDERTRAMP",
-    items: [
-      { label: "Être / avoir",      href: "/parcours/etre-avoir" },
-      { label: "Test être / avoir", href: "/quiz/etre-avoir",      icon: FlaskConical },
-      { label: "Liste des verbes",  href: "/guides/etre-avoir",    icon: Columns3 },
-    ],
-  },
-  {
-    id: "voyage", type: "accordion", label: "Voyage",
-    items: [
-      { label: "Restaurant",  href: "/voyage/restaurant",  icon: UtensilsCrossed },
-      { label: "Transport",   href: "/voyage/transport",   icon: Bus },
-      { label: "Hébergement", href: "/voyage/hebergement", icon: BedDouble },
-      { label: "Shopping",    href: "/voyage/shopping",    icon: ShoppingBag },
-      { label: "Orientation", href: "/voyage/orientation", icon: MapIcon },
-      { label: "Urgences",    href: "/voyage/urgences",    icon: Siren },
-    ],
-  },
-  { id: "verbes",      type: "single", label: "Verbes essentiels",    href: "/guides/verbes-essentiels", icon: Columns3 },
-  { id: "terminaisons", type: "single", label: "Terminaisons verbales", href: "/guides/terminaisons",  icon: PenSquare },
-  { id: "traducteur",  type: "single", label: "Traducteur",            href: "/traducteur",               icon: Globe },
-];
-
-const NO_SEPARATOR_IDS = new Set(["difficiles", "mes-patterns", "mes-vocab", "terminaisons", "traducteur"]);
+import { NAV_GROUPS, NO_SEPARATOR_IDS } from "@/src/lib/nav";
 
 interface SidebarProps {
   onOpenAiChat?: () => void;

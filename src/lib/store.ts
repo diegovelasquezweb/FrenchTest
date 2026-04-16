@@ -13,7 +13,7 @@ export function subscribeToStore(fn: () => void): () => void {
 }
 
 function notifyListeners(): void {
-  listeners.forEach(fn => fn());
+  queueMicrotask(() => listeners.forEach(fn => fn()));
 }
 
 export function getItem(key: string): string | null {
