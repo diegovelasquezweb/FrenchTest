@@ -7,11 +7,12 @@ import { useImparfaitQuiz } from "@/src/hooks/useImparfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { ImparfaitQuizCard } from "@/src/components/ImparfaitQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function ImparfaitPage() {
   const router = useRouter();
   const quiz = useImparfaitQuiz();
+  useSetQuizHeader("Imparfait", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
@@ -40,14 +41,6 @@ export default function ImparfaitPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Imparfait"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <ImparfaitQuizCard
           question={quiz.currentQuestion}

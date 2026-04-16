@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SlidersHorizontal, Settings } from "lucide-react";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import type { CardOrder } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetMarathonHeader } from "@/src/lib/header-context";
 import { MarathonFilterDrawer } from "@/src/components/MarathonFilterDrawer";
 import { MarathonSettingsDrawer } from "@/src/components/MarathonSettingsDrawer";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
@@ -128,44 +128,10 @@ export default function MarathonPage() {
     });
   }
 
-  const isIdle = deck.state.phase === "idle";
+  useSetMarathonHeader(deck, { onFilter: () => setDrawerOpen(true), onSettings: () => setSettingsOpen(true) });
 
   return (
     <AuthGate>
-      {!isIdle && (
-        <header className="flex items-center gap-4 border-b border-(--color-ink)/8 bg-(--color-surface) px-4 py-2 md:px-6 md:py-3">
-          <p className="text-sm text-(--color-muted) flex-1">
-            <span className="font-semibold text-(--color-ink)">{deck.masteredCount}</span>
-            {" / "}{deck.totalCards} dominées
-          </p>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={deck.reset}
-              className="text-xs text-(--color-muted) underline underline-offset-2 hover:text-red-500 transition-colors duration-150"
-            >
-              Réinitialiser
-            </button>
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className="flex items-center gap-1 text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150"
-            >
-              <SlidersHorizontal size={12} />
-              Filtrer
-            </button>
-            <button
-              type="button"
-              onClick={() => setSettingsOpen(true)}
-              className="flex items-center gap-1 text-xs text-(--color-muted) hover:text-(--color-ink) transition-colors duration-150"
-            >
-              <Settings size={12} />
-              Réglages
-            </button>
-          </div>
-        </header>
-      )}
-
       {deck.state.phase === "session" && deck.currentCard && (
         <FlashcardView
           card={deck.currentCard}

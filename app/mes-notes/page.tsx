@@ -38,7 +38,7 @@ export default function MesNotesPage() {
 
   return (
     <AuthGate>
-      <div className="flex flex-1 items-start justify-center">
+      <div className="w-full">
         <NotesView
           notes={userNotes}
           onAdd={handleAddNote}

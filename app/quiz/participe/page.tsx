@@ -11,13 +11,14 @@ import { QuizCard } from "@/src/components/QuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { VERBS } from "@/src/data/verbs";
 import { getItem, setItem } from "@/src/lib/store";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 const PARTICIPE_HARD_VERBS = VERBS.filter(v => !(v.ending === "-é" && v.auxiliary === "avoir"));
 
 export default function ParticipePage() {
   const router = useRouter();
   const quiz = useQuiz(VERBS, 10);
+  useSetQuizHeader("Participe passé", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [hardMode, setHardMode] = useState(false);
   const [announcement, setAnnouncement] = useState("");
@@ -113,14 +114,6 @@ export default function ParticipePage() {
           </button>
         </div>
       </div>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Participe passé"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <QuizCard
           question={quiz.currentQuestion}

@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { useEtreQuiz } from "@/src/hooks/useEtreQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function EtreAvoirPage() {
   const router = useRouter();
   const quiz = useEtreQuiz();
+  useSetQuizHeader("Test être / avoir", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function EtreAvoirPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Test être / avoir"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AuthProvider } from "@/src/lib/auth-context";
+import { HeaderProvider } from "@/src/lib/header-context";
 import { pushStore } from "@/src/lib/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -23,5 +24,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   if (!mounted) return null;
 
-  return <AuthProvider>{children}</AuthProvider>;
+  return <AuthProvider><HeaderProvider>{children}</HeaderProvider></AuthProvider>;
 }

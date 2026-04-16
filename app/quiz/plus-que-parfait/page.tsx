@@ -7,11 +7,12 @@ import { usePlusQueParfaitQuiz } from "@/src/hooks/usePlusQueParfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { PlusQueParfaitQuizCard } from "@/src/components/PlusQueParfaitQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function PlusQueParfaitPage() {
   const router = useRouter();
   const quiz = usePlusQueParfaitQuiz();
+  useSetQuizHeader("Plus-que-parfait", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
@@ -40,14 +41,6 @@ export default function PlusQueParfaitPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Plus-que-parfait"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <PlusQueParfaitQuizCard
           question={quiz.currentQuestion}

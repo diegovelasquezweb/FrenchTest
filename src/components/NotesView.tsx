@@ -30,7 +30,7 @@ export function NotesView({ notes, onAdd, onDelete }: NotesViewProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-xl px-4 py-6">
+    <div className="self-center mx-auto w-full max-w-xl px-4 py-6">
       {/* Add form */}
       <div className="rounded-(--radius-card) bg-(--color-surface) shadow-sm mb-4 overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-4 border-b border-(--color-ink)/8">

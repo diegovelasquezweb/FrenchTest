@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { useArticlesQuiz } from "@/src/hooks/useArticlesQuiz";
 import { ArticlesQuizCard } from "@/src/components/ArticlesQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function ArticlesPage() {
   const router = useRouter();
   const quiz = useArticlesQuiz();
+  useSetQuizHeader("Articles & contractions", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function ArticlesPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Articles & contractions"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <ArticlesQuizCard
           question={quiz.currentQuestion}

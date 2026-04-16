@@ -60,7 +60,7 @@ export function Topbar() {
               side="bottom"
               align="end"
               sideOffset={8}
-              className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg"
+              className="z-50 min-w-36 rounded-(--radius-card) border border-(--color-ink)/8 bg-(--color-surface) py-1 shadow-lg shadow-(--color-ink)/8"
             >
               <div className="px-3 py-1.5 text-xs font-medium text-(--color-muted)">{login}</div>
               {status === "authed" && (

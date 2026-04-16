@@ -7,11 +7,12 @@ import { usePresentQuiz } from "@/src/hooks/usePresentQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { PresentQuizCard } from "@/src/components/PresentQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function PresentPage() {
   const router = useRouter();
   const quiz = usePresentQuiz();
+  useSetQuizHeader("Présent", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
@@ -40,14 +41,6 @@ export default function PresentPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Présent"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <PresentQuizCard
           question={quiz.currentQuestion}

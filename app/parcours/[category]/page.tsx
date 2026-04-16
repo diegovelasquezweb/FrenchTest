@@ -7,6 +7,7 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { FLASHCARDS } from "@/src/data/flashcards";
 
@@ -57,6 +58,16 @@ export default function ParcoursCategoryPage({
   const deck = VALID.has(category)
     ? deckMap[category as ParcoursCategory]
     : null;
+
+  const PARCOURS_TITLES: Record<ParcoursCategory, string> = {
+    connecteurs: "Connecteurs",
+    "oral-interaction": "Renseignements",
+    "oral-monologue": "Persuasion",
+    "ecrit-faits-divers": "Faits divers",
+    "ecrit-argumentatif": "Argumentatif",
+  };
+
+  useSetFlashcardHeader(PARCOURS_TITLES[category as ParcoursCategory] ?? category, deck!);
 
   useEffect(() => {
     deck?.startSession();

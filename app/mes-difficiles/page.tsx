@@ -12,12 +12,13 @@ import { ConditionnelQuizCard } from "@/src/components/ConditionnelQuizCard";
 import { PresentQuizCard } from "@/src/components/PresentQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizPhase } from "@/src/types";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function MesDifficilesPage() {
   const router = useRouter();
   const { isWeak, toggleWeak, weakVerbList } = useWeakVerbs();
   const difficiles = useDifficultesQuiz();
+  useSetQuizHeader("Mes difficiles", difficiles);
 
   return (
     <AuthGate>
@@ -97,15 +98,6 @@ export default function MesDifficilesPage() {
           )}
         </div>
         </div>
-      )}
-
-      {(difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Mes difficiles"
-          score={difficiles.state.score}
-          questionNumber={difficiles.progress.index + 1}
-          total={difficiles.progress.total}
-        />
       )}
 
       {(difficiles.state.phase === QuizPhase.Answering ||

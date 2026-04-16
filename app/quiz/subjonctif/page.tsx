@@ -7,11 +7,12 @@ import { useSubjonctifQuiz } from "@/src/hooks/useSubjonctifQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { SubjonctifQuizCard } from "@/src/components/SubjonctifQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function SubjonctifPage() {
   const router = useRouter();
   const quiz = useSubjonctifQuiz();
+  useSetQuizHeader("Subjonctif", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
@@ -40,14 +41,6 @@ export default function SubjonctifPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Subjonctif"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <SubjonctifQuizCard
           question={quiz.currentQuestion}

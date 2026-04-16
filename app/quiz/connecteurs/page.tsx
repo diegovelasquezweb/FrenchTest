@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { usePhrasesQuiz } from "@/src/hooks/usePhrasesQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function ConnecteursPage() {
   const router = useRouter();
   const quiz = usePhrasesQuiz();
+  useSetQuizHeader("Test connecteurs", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function ConnecteursPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Test connecteurs"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}

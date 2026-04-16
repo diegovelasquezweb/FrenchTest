@@ -6,6 +6,7 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 
 export default function MonVocabulairePage() {
@@ -13,6 +14,7 @@ export default function MonVocabulairePage() {
   const { isFavoriteCard, toggleFavoriteCard, favoriteVocabList } =
     useFavoriteCards();
   const deck = useFlashcards(favoriteVocabList, "tef-mes-vocab-progress");
+  useSetFlashcardHeader("Mon vocabulaire", deck);
 
   return (
     <AuthGate>

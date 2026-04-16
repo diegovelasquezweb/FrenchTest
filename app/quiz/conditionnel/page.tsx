@@ -7,11 +7,12 @@ import { useConditionnelQuiz } from "@/src/hooks/useConditionnelQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { ConditionnelQuizCard } from "@/src/components/ConditionnelQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function ConditionnelPage() {
   const router = useRouter();
   const quiz = useConditionnelQuiz();
+  useSetQuizHeader("Conditionnel", quiz);
   const { isWeak, toggleWeak } = useWeakVerbs();
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
@@ -40,14 +41,6 @@ export default function ConditionnelPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Conditionnel"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <ConditionnelQuizCard
           question={quiz.currentQuestion}

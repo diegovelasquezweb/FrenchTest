@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { usePronominalQuiz } from "@/src/hooks/usePronominalQuiz";
 import { PronominalQuizCard } from "@/src/components/PronominalQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function PronominalesPage() {
   const router = useRouter();
   const quiz = usePronominalQuiz();
+  useSetQuizHeader("Pronominales", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function PronominalesPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Pronominales"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <PronominalQuizCard
           question={quiz.currentQuestion}

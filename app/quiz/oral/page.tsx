@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { useOralQuiz } from "@/src/hooks/useOralQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function OralPage() {
   const router = useRouter();
   const quiz = useOralQuiz();
+  useSetQuizHeader("Test oral", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function OralPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Test oral"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}

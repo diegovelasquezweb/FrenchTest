@@ -6,6 +6,7 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { FLASHCARDS } from "@/src/data/flashcards";
 
@@ -15,6 +16,7 @@ export default function ParcoursEtreAvoirPage() {
   const router = useRouter();
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
   const deck = useFlashcards(CARDS, "tef-p-etre-avoir");
+  useSetFlashcardHeader("Être / avoir", deck);
 
   useEffect(() => {
     deck.startSession();

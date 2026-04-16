@@ -7,6 +7,7 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { TOURISTE_CARDS } from "@/src/data/touristeCards";
 
@@ -74,6 +75,17 @@ export default function VoyageCategoryPage({
   const deck = VALID.has(category)
     ? deckMap[category as VoyageCategory]
     : null;
+
+  const VOYAGE_TITLES: Record<VoyageCategory, string> = {
+    restaurant: "Restaurant",
+    transport: "Transport",
+    hebergement: "Hébergement",
+    shopping: "Shopping",
+    orientation: "Orientation",
+    urgences: "Urgences",
+  };
+
+  useSetFlashcardHeader(VOYAGE_TITLES[category as VoyageCategory] ?? category, deck!);
 
   useEffect(() => {
     deck?.startSession();

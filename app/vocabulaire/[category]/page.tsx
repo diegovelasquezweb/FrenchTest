@@ -7,6 +7,7 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/FlashcardView";
 import { FlashcardResults } from "@/src/components/FlashcardResults";
+import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { VOCABULAIRE_CARDS } from "@/src/data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
@@ -78,6 +79,19 @@ export default function VocabulaireCategoryPage({
   const deck = VALID.has(category)
     ? deckMap[category as VocabCategory]
     : null;
+
+  const VOCAB_TITLES: Record<VocabCategory, string> = {
+    verbes: "Verbes",
+    adjectifs: "Adjectifs",
+    noms: "Noms",
+    expressions: "Expressions",
+    genre: "Genre",
+    erreurs: "Erreurs",
+    accents: "Accents",
+    mix: "Mix",
+  };
+
+  useSetFlashcardHeader(VOCAB_TITLES[category as VocabCategory] ?? category, deck!);
 
   useEffect(() => {
     deck?.startSession();

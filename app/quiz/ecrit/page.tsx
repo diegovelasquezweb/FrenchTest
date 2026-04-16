@@ -6,11 +6,12 @@ import { QuizPhase } from "@/src/types";
 import { useEcritQuiz } from "@/src/hooks/useEcritQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
-import { QuizPageHeader } from "@/src/components/QuizPageHeader";
+import { useSetQuizHeader } from "@/src/lib/header-context";
 
 export default function EcritPage() {
   const router = useRouter();
   const quiz = useEcritQuiz();
+  useSetQuizHeader("Test écrit", quiz);
   const [announcement, setAnnouncement] = useState("");
   const liveRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +39,6 @@ export default function EcritPage() {
 
   return (
     <AuthGate>
-      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
-        <QuizPageHeader
-          title="Test écrit"
-          score={quiz.state.score}
-          questionNumber={quiz.progress.index + 1}
-          total={quiz.progress.total}
-        />
-      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}
