@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { ConditionnelTable } from "@/src/components/tables/ConditionnelTable";
 import { ConditionnelWrongTable } from "@/src/components/tables/ConditionnelWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function ConditionnelPage() {
   const quiz = useConditionnelQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Conditionnel"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

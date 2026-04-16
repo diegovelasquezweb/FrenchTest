@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { PresentTable } from "@/src/components/tables/PresentTable";
 import { PresentWrongTable } from "@/src/components/tables/PresentWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function PresentPage() {
   const quiz = usePresentQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Présent"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

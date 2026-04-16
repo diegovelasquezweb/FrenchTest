@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { TOURISTE_CARDS } from "@/src/data/touristeCards";
-import { FlashcardCategoryShell } from "@/src/components/templates";
+import { FlashcardCategoryTemplate } from "@/src/components/templates";
 
 type VoyageCategory =
   | "restaurant"
@@ -70,7 +70,7 @@ export default function VoyageCategoryPage({
   const title = VOYAGE_TITLES[category as VoyageCategory] ?? category;
 
   return (
-    <FlashcardCategoryShell
+    <FlashcardCategoryTemplate
       title={title}
       deck={deck}
       isFavoriteCard={isFavoriteCard}

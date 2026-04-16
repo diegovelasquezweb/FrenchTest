@@ -3,13 +3,13 @@
 import { useOrthographeQuiz } from "@/src/hooks/useOrthographeQuiz";
 import { OrthographeQuizCard } from "@/src/components/quiz/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/quiz/OrthographeResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function OrthographePage() {
   const quiz = useOrthographeQuiz();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Orthographe"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

@@ -1,13 +1,13 @@
 "use client";
 
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
-import { FavoriteCollectionShell } from "@/src/components/templates";
+import { FavoriteCollectionTemplate } from "@/src/components/templates";
 
 export default function MonVocabulairePage() {
   const { isFavoriteCard, toggleFavoriteCard, favoriteVocabList } = useFavoriteCards();
 
   return (
-    <FavoriteCollectionShell
+    <FavoriteCollectionTemplate
       title="Mon vocabulaire"
       storageKey="tef-mes-vocab-progress"
       favoriteList={favoriteVocabList}

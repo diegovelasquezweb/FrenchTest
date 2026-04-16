@@ -3,13 +3,13 @@
 import { usePronominalQuiz } from "@/src/hooks/usePronominalQuiz";
 import { PronominalQuizCard } from "@/src/components/quiz/PronominalQuizCard";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function PronominalesPage() {
   const quiz = usePronominalQuiz();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Pronominales"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

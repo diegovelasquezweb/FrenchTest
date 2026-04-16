@@ -2,7 +2,7 @@ import type { AnswerState, QuizPhase, Flashcard, FlashcardRating } from "@/src/t
 
 export type { AnswerState, QuizPhase };
 
-/** Minimal interface a quiz hook must satisfy to work with QuizShell. */
+/** Minimal interface a quiz hook must satisfy to work with QuizTemplate. */
 export interface QuizLike<Q> {
   state: {
     phase: QuizPhase;
@@ -46,7 +46,7 @@ export function defaultAnnouncement(
   return `Incorrect. La bonne réponse est ${correct}.`;
 }
 
-/** Minimal interface a flashcard deck must satisfy for FlashcardCategoryShell. */
+/** Minimal interface a flashcard deck must satisfy for FlashcardCategoryTemplate. */
 export interface FlashcardDeckLike {
   state: {
     phase: "idle" | "session" | "complete";
@@ -65,7 +65,7 @@ export interface FlashcardDeckLike {
   goHome(): void;
 }
 
-/** Varying copy for FavoriteCollectionShell idle state. */
+/** Varying copy for FavoriteCollectionTemplate idle state. */
 export interface FavoriteCollectionCopy {
   emptyHeading: string;
   emptyDescription: string;

@@ -17,14 +17,14 @@ import { SubjonctifWrongTable } from "@/src/components/tables/SubjonctifWrongTab
 import { PlusQueParfaitTable } from "@/src/components/tables/PlusQueParfaitTable";
 import { PlusQueParfaitWrongTable } from "@/src/components/tables/PlusQueParfaitWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell, defaultAnnouncement } from "@/src/components/templates";
+import { QuizTemplate, defaultAnnouncement } from "@/src/components/templates";
 
 export default function GrammairePage() {
   const quiz = useGrammarQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Test grammaire"
       quiz={quiz}
       buildAnnouncement={(wrapper, answerState) =>

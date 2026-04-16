@@ -9,7 +9,7 @@ import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
 import { GENRE_CARDS } from "@/src/data/genreCards";
 import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
-import { FlashcardCategoryShell } from "@/src/components/templates";
+import { FlashcardCategoryTemplate } from "@/src/components/templates";
 
 type VocabCategory =
   | "verbes"
@@ -84,7 +84,7 @@ export default function VocabulaireCategoryPage({
   const title = VOCAB_TITLES[category as VocabCategory] ?? category;
 
   return (
-    <FlashcardCategoryShell
+    <FlashcardCategoryTemplate
       title={title}
       deck={deck}
       isFavoriteCard={isFavoriteCard}

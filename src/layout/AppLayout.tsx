@@ -13,11 +13,11 @@ import { QuizPhase } from "@/src/types";
 
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
 
-interface ShellProps {
+interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-export function Shell({ children }: ShellProps) {
+export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
   const { status } = useAuth();
   const [aiChatOpen, setAiChatOpen] = useState(false);

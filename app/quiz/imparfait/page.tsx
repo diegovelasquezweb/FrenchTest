@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { ImparfaitTable } from "@/src/components/tables/ImparfaitTable";
 import { ImparfaitWrongTable } from "@/src/components/tables/ImparfaitWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function ImparfaitPage() {
   const quiz = useImparfaitQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Imparfait"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

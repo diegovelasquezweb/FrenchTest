@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { SubjonctifTable } from "@/src/components/tables/SubjonctifTable";
 import { SubjonctifWrongTable } from "@/src/components/tables/SubjonctifWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function SubjonctifPage() {
   const quiz = useSubjonctifQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Subjonctif"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

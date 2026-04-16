@@ -8,19 +8,19 @@ import { FlashcardResults } from "@/src/components/flashcard/FlashcardResults";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import type { FlashcardDeckLike } from "./types";
 
-interface FlashcardCategoryShellProps {
+interface FlashcardCategoryTemplateProps {
   title: string;
   deck: FlashcardDeckLike;
   isFavoriteCard: (id: string) => boolean;
   toggleFavoriteCard: (id: string) => void;
 }
 
-export function FlashcardCategoryShell({
+export function FlashcardCategoryTemplate({
   title,
   deck,
   isFavoriteCard,
   toggleFavoriteCard,
-}: FlashcardCategoryShellProps) {
+}: FlashcardCategoryTemplateProps) {
   const router = useRouter();
 
   useSetFlashcardHeader(title, deck);

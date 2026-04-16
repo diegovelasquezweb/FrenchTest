@@ -10,7 +10,7 @@ import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import type { Flashcard } from "@/src/types";
 import type { FavoriteCollectionCopy } from "./types";
 
-interface FavoriteCollectionShellProps {
+interface FavoriteCollectionTemplateProps {
   title: string;
   storageKey: string;
   favoriteList: Flashcard[];
@@ -19,14 +19,14 @@ interface FavoriteCollectionShellProps {
   copy: FavoriteCollectionCopy;
 }
 
-export function FavoriteCollectionShell({
+export function FavoriteCollectionTemplate({
   title,
   storageKey,
   favoriteList,
   isFavoriteCard,
   toggleFavoriteCard,
   copy,
-}: FavoriteCollectionShellProps) {
+}: FavoriteCollectionTemplateProps) {
   const router = useRouter();
   const deck = useFlashcards(favoriteList, storageKey);
   useSetFlashcardHeader(title, deck);

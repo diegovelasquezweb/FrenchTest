@@ -3,13 +3,13 @@
 import { useArticlesQuiz } from "@/src/hooks/useArticlesQuiz";
 import { ArticlesQuizCard } from "@/src/components/quiz/ArticlesQuizCard";
 import { OrthographeResultScreen } from "@/src/components/quiz/OrthographeResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function ArticlesPage() {
   const quiz = useArticlesQuiz();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Articles & contractions"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

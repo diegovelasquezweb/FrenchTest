@@ -3,13 +3,13 @@
 import { useEcritQuiz } from "@/src/hooks/useEcritQuiz";
 import { OrthographeQuizCard } from "@/src/components/quiz/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/quiz/OrthographeResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function EcritPage() {
   const quiz = useEcritQuiz();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Test écrit"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

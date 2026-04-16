@@ -1,6 +1,6 @@
-export { QuizShell } from "./QuizShell";
-export { FlashcardCategoryShell } from "./FlashcardCategoryShell";
-export { FavoriteCollectionShell } from "./FavoriteCollectionShell";
+export { QuizTemplate } from "./QuizTemplate";
+export { FlashcardCategoryTemplate } from "./FlashcardCategoryTemplate";
+export { FavoriteCollectionTemplate } from "./FavoriteCollectionTemplate";
 export type {
   QuizLike,
   RenderCardArgs,

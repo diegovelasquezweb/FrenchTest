@@ -9,7 +9,7 @@ import { QuizCard } from "@/src/components/quiz/QuizCard";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
 import { VERBS } from "@/src/data/verbs";
 import { getItem, setItem } from "@/src/lib/store";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 const PARTICIPE_HARD_VERBS = VERBS.filter(
   (v) => !(v.ending === "-é" && v.auxiliary === "avoir"),
@@ -92,7 +92,7 @@ export default function ParticipePage() {
   );
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Participe passé"
       quiz={quiz}
       autoStart={false}

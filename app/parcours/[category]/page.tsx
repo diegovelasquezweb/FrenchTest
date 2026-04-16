@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { FLASHCARDS } from "@/src/data/flashcards";
-import { FlashcardCategoryShell } from "@/src/components/templates";
+import { FlashcardCategoryTemplate } from "@/src/components/templates";
 
 type ParcoursCategory =
   | "connecteurs"
@@ -64,7 +64,7 @@ export default function ParcoursCategoryPage({
   const title = PARCOURS_TITLES[category as ParcoursCategory] ?? category;
 
   return (
-    <FlashcardCategoryShell
+    <FlashcardCategoryTemplate
       title={title}
       deck={deck}
       isFavoriteCard={isFavoriteCard}

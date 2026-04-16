@@ -8,7 +8,7 @@ import { QuizPhase, AnswerState } from "@/src/types";
 import type { QuizLike, RenderCardArgs, RenderResultArgs } from "./types";
 import { defaultAnnouncement } from "./types";
 
-interface QuizShellProps<Q> {
+interface QuizTemplateProps<Q> {
   title: string;
   quiz: QuizLike<Q>;
   renderCard: (args: RenderCardArgs<Q>) => React.ReactNode;
@@ -32,7 +32,7 @@ interface QuizShellProps<Q> {
   autoStart?: boolean;
 }
 
-export function QuizShell<Q>({
+export function QuizTemplate<Q>({
   title,
   quiz,
   renderCard,
@@ -40,7 +40,7 @@ export function QuizShell<Q>({
   headerSlot,
   buildAnnouncement,
   autoStart = true,
-}: QuizShellProps<Q>) {
+}: QuizTemplateProps<Q>) {
   const router = useRouter();
   const [announcement, setAnnouncement] = useState("");
 
@@ -83,7 +83,7 @@ export function QuizShell<Q>({
       } else {
         if (process.env.NODE_ENV === "development") {
           console.error(
-            "[QuizShell] buildAnnouncement is required for this question type but was not provided.",
+            "[QuizTemplate] buildAnnouncement is required for this question type but was not provided.",
           );
         }
         msg = "";

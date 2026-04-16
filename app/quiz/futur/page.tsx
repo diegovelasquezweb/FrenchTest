@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { FuturTable } from "@/src/components/tables/FuturTable";
 import { FuturWrongTable } from "@/src/components/tables/FuturWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function FuturPage() {
   const quiz = useFuturQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Futur simple"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

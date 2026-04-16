@@ -6,14 +6,14 @@ import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
 import { PlusQueParfaitTable } from "@/src/components/tables/PlusQueParfaitTable";
 import { PlusQueParfaitWrongTable } from "@/src/components/tables/PlusQueParfaitWrongTable";
 import { ResultScreen } from "@/src/components/quiz/ResultScreen";
-import { QuizShell } from "@/src/components/templates";
+import { QuizTemplate } from "@/src/components/templates";
 
 export default function PlusQueParfaitPage() {
   const quiz = usePlusQueParfaitQuiz();
   const { isWeak, toggleWeak } = useWeakVerbs();
 
   return (
-    <QuizShell
+    <QuizTemplate
       title="Plus-que-parfait"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (

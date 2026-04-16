@@ -1,13 +1,13 @@
 "use client";
 
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
-import { FavoriteCollectionShell } from "@/src/components/templates";
+import { FavoriteCollectionTemplate } from "@/src/components/templates";
 
 export default function MesPatternsPage() {
   const { isFavoriteCard, toggleFavoriteCard, favoriteCardList } = useFavoriteCards();
 
   return (
-    <FavoriteCollectionShell
+    <FavoriteCollectionTemplate
       title="Mes patterns"
       storageKey="tef-mes-patterns-progress"
       favoriteList={favoriteCardList}
