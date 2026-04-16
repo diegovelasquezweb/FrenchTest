@@ -38,11 +38,13 @@ export default function MesNotesPage() {
 
   return (
     <AuthGate>
-      <NotesView
-        notes={userNotes}
-        onAdd={handleAddNote}
-        onDelete={handleDeleteNote}
-      />
+      <div className="flex flex-1 items-start justify-center">
+        <NotesView
+          notes={userNotes}
+          onAdd={handleAddNote}
+          onDelete={handleDeleteNote}
+        />
+      </div>
     </AuthGate>
   );
 }

@@ -14,7 +14,6 @@ interface ImparfaitQuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
-  score: number;
 }
 
 export function ImparfaitQuizCard({
@@ -27,7 +26,6 @@ export function ImparfaitQuizCard({
   total,
   isWeak,
   onToggleWeak,
-  score,
 }: ImparfaitQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -83,7 +81,6 @@ export function ImparfaitQuizCard({
       feedback={feedback}
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
-      score={score}
     />
   );
 }

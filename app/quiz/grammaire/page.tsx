@@ -13,6 +13,7 @@ import { PresentQuizCard } from "@/src/components/PresentQuizCard";
 import { SubjonctifQuizCard } from "@/src/components/SubjonctifQuizCard";
 import { PlusQueParfaitQuizCard } from "@/src/components/PlusQueParfaitQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function GrammairePage() {
   const router = useRouter();
@@ -55,7 +56,6 @@ export default function GrammairePage() {
       onNext: quiz.nextQuestion,
       questionNumber: quiz.progress.index + 1,
       total: quiz.progress.total,
-      score: quiz.state.score,
       isWeak: isWeak(verbInfinitive),
       onToggleWeak: () => toggleWeak(verbInfinitive),
     };
@@ -73,6 +73,14 @@ export default function GrammairePage() {
 
   return (
     <AuthGate>
+      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Test grammaire"
+          score={quiz.state.score}
+          questionNumber={quiz.progress.index + 1}
+          total={quiz.progress.total}
+        />
+      )}
       {renderCard()}
       {quiz.state.phase === QuizPhase.Complete && (
         <ResultScreen

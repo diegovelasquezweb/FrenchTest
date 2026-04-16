@@ -12,7 +12,6 @@ interface PronominalQuizCardProps {
   onNext(): void;
   questionNumber: number;
   total: number;
-  score: number;
 }
 
 export function PronominalQuizCard({
@@ -23,7 +22,6 @@ export function PronominalQuizCard({
   onNext,
   questionNumber,
   total,
-  score,
 }: PronominalQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -74,7 +72,6 @@ export function PronominalQuizCard({
       feedback={feedback}
       optionsGridClassName="grid grid-cols-1 gap-3 sm:grid-cols-2"
       cardPaddingClassName="p-4 sm:p-8"
-      score={score}
     />
   );
 }

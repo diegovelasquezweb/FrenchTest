@@ -14,7 +14,6 @@ interface FuturQuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
-  score: number;
 }
 
 export function FuturQuizCard({
@@ -27,7 +26,6 @@ export function FuturQuizCard({
   total,
   isWeak,
   onToggleWeak,
-  score,
 }: FuturQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -83,7 +81,6 @@ export function FuturQuizCard({
       feedback={feedback}
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
-      score={score}
     />
   );
 }

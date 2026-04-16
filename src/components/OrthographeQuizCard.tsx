@@ -11,7 +11,6 @@ interface OrthographeQuizCardProps {
   questionNumber: number;
   total: number;
   label?: string;
-  score: number;
 }
 
 function SentenceDisplay({ sentence, filled }: { sentence: string; filled?: string }) {
@@ -36,7 +35,6 @@ export function OrthographeQuizCard({
   questionNumber,
   total,
   label = "Orthographe — choisissez la bonne forme",
-  score,
 }: OrthographeQuizCardProps) {
   const isRevealed = answerState !== AnswerState.Idle;
   const selectedWord = selectedIndex !== null ? question.options[selectedIndex] : undefined;
@@ -82,7 +80,6 @@ export function OrthographeQuizCard({
       feedback={feedback}
       optionsGridClassName="grid grid-cols-2 gap-3"
       nextButtonSpacing="mt-4"
-      score={score}
     />
   );
 }

@@ -7,6 +7,7 @@ import { usePresentQuiz } from "@/src/hooks/usePresentQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { PresentQuizCard } from "@/src/components/PresentQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function PresentPage() {
   const router = useRouter();
@@ -39,6 +40,14 @@ export default function PresentPage() {
 
   return (
     <AuthGate>
+      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Présent"
+          score={quiz.state.score}
+          questionNumber={quiz.progress.index + 1}
+          total={quiz.progress.total}
+        />
+      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <PresentQuizCard
           question={quiz.currentQuestion}
@@ -48,7 +57,6 @@ export default function PresentPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
-          score={quiz.state.score}
           isWeak={isWeak(quiz.currentQuestion.verb.infinitive)}
           onToggleWeak={() => toggleWeak(quiz.currentQuestion!.verb.infinitive)}
         />

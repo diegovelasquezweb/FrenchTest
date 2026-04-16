@@ -6,6 +6,7 @@ import { QuizPhase } from "@/src/types";
 import { usePhrasesQuiz } from "@/src/hooks/usePhrasesQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function ConnecteursPage() {
   const router = useRouter();
@@ -37,6 +38,14 @@ export default function ConnecteursPage() {
 
   return (
     <AuthGate>
+      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Test connecteurs"
+          score={quiz.state.score}
+          questionNumber={quiz.progress.index + 1}
+          total={quiz.progress.total}
+        />
+      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}
@@ -46,7 +55,6 @@ export default function ConnecteursPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
-          score={quiz.state.score}
           label="Complétez avec la bonne expression"
         />
       )}

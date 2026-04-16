@@ -14,7 +14,6 @@ interface ConditionnelQuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
-  score: number;
 }
 
 export function ConditionnelQuizCard({
@@ -27,7 +26,6 @@ export function ConditionnelQuizCard({
   total,
   isWeak,
   onToggleWeak,
-  score,
 }: ConditionnelQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -83,7 +81,6 @@ export function ConditionnelQuizCard({
       feedback={feedback}
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
-      score={score}
     />
   );
 }

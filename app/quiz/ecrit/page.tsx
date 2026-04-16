@@ -6,6 +6,7 @@ import { QuizPhase } from "@/src/types";
 import { useEcritQuiz } from "@/src/hooks/useEcritQuiz";
 import { OrthographeQuizCard } from "@/src/components/OrthographeQuizCard";
 import { OrthographeResultScreen } from "@/src/components/OrthographeResultScreen";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function EcritPage() {
   const router = useRouter();
@@ -37,6 +38,14 @@ export default function EcritPage() {
 
   return (
     <AuthGate>
+      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Test écrit"
+          score={quiz.state.score}
+          questionNumber={quiz.progress.index + 1}
+          total={quiz.progress.total}
+        />
+      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <OrthographeQuizCard
           question={quiz.currentQuestion}
@@ -46,7 +55,6 @@ export default function EcritPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
-          score={quiz.state.score}
           label="Lettre formelle — complétez l'expression"
         />
       )}

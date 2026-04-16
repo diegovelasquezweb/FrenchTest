@@ -6,7 +6,9 @@ import { AuthGate } from "@/src/layout/AuthGate";
 export default function TraducteurPage() {
   return (
     <AuthGate>
-      <TranslatorView />
+      <div className="flex flex-1 items-center justify-center">
+        <TranslatorView />
+      </div>
     </AuthGate>
   );
 }

@@ -24,6 +24,7 @@ export function getItem(key: string): string | null {
 export function setItem(key: string, value: string): void {
   if (isGuest()) {
     localStorage.setItem(key, value);
+    notifyListeners();
     return;
   }
   cache[key] = value;

@@ -7,6 +7,7 @@ import { useImparfaitQuiz } from "@/src/hooks/useImparfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { ImparfaitQuizCard } from "@/src/components/ImparfaitQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function ImparfaitPage() {
   const router = useRouter();
@@ -39,6 +40,14 @@ export default function ImparfaitPage() {
 
   return (
     <AuthGate>
+      {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Imparfait"
+          score={quiz.state.score}
+          questionNumber={quiz.progress.index + 1}
+          total={quiz.progress.total}
+        />
+      )}
       {(quiz.state.phase === QuizPhase.Answering || quiz.state.phase === QuizPhase.Feedback) && quiz.currentQuestion && (
         <ImparfaitQuizCard
           question={quiz.currentQuestion}
@@ -48,7 +57,6 @@ export default function ImparfaitPage() {
           onNext={quiz.nextQuestion}
           questionNumber={quiz.progress.index + 1}
           total={quiz.progress.total}
-          score={quiz.state.score}
           isWeak={isWeak(quiz.currentQuestion.verb.infinitive)}
           onToggleWeak={() => toggleWeak(quiz.currentQuestion!.verb.infinitive)}
         />

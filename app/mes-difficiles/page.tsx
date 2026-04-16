@@ -12,6 +12,7 @@ import { ConditionnelQuizCard } from "@/src/components/ConditionnelQuizCard";
 import { PresentQuizCard } from "@/src/components/PresentQuizCard";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizPhase } from "@/src/types";
+import { QuizPageHeader } from "@/src/components/QuizPageHeader";
 
 export default function MesDifficilesPage() {
   const router = useRouter();
@@ -98,6 +99,15 @@ export default function MesDifficilesPage() {
         </div>
       )}
 
+      {(difficiles.state.phase === QuizPhase.Answering || difficiles.state.phase === QuizPhase.Feedback) && (
+        <QuizPageHeader
+          title="Mes difficiles"
+          score={difficiles.state.score}
+          questionNumber={difficiles.progress.index + 1}
+          total={difficiles.progress.total}
+        />
+      )}
+
       {(difficiles.state.phase === QuizPhase.Answering ||
         difficiles.state.phase === QuizPhase.Feedback) &&
         difficiles.currentQuestion &&
@@ -111,7 +121,6 @@ export default function MesDifficilesPage() {
             onNext: difficiles.nextQuestion,
             questionNumber: difficiles.progress.index + 1,
             total: difficiles.progress.total,
-            score: difficiles.state.score,
             isWeak: isWeak(verbInfinitive),
             onToggleWeak: () => toggleWeak(verbInfinitive),
           };

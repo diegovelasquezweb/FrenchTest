@@ -14,7 +14,6 @@ interface PlusQueParfaitQuizCardProps {
   total: number;
   isWeak?: boolean;
   onToggleWeak?(): void;
-  score: number;
 }
 
 export function PlusQueParfaitQuizCard({
@@ -27,7 +26,6 @@ export function PlusQueParfaitQuizCard({
   total,
   isWeak,
   onToggleWeak,
-  score,
 }: PlusQueParfaitQuizCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
@@ -82,7 +80,6 @@ export function PlusQueParfaitQuizCard({
       feedback={feedback}
       isWeak={isWeak}
       onToggleWeak={onToggleWeak}
-      score={score}
     />
   );
 }
