@@ -23,6 +23,7 @@ import { useEtreQuiz } from "./hooks/useEtreQuiz";
 import { usePresentQuiz } from "./hooks/usePresentQuiz";
 import { usePlusQueParfaitQuiz } from "./hooks/usePlusQueParfaitQuiz";
 import { useSubjonctifQuiz } from "./hooks/useSubjonctifQuiz";
+import { useArticlesQuiz } from "./hooks/useArticlesQuiz";
 import { useEcritQuiz } from "./hooks/useEcritQuiz";
 import { useOralQuiz } from "./hooks/useOralQuiz";
 import { useFlashcards } from "./hooks/useFlashcards";
@@ -52,6 +53,7 @@ import { PresentQuizCard } from "./components/PresentQuizCard";
 import { PlusQueParfaitQuizCard } from "./components/PlusQueParfaitQuizCard";
 import { SubjonctifQuizCard } from "./components/SubjonctifQuizCard";
 import { PronominalQuizCard } from "./components/PronominalQuizCard";
+import { ArticlesQuizCard } from "./components/ArticlesQuizCard";
 import { FlashcardView } from "./components/FlashcardView";
 import { FlashcardResults } from "./components/FlashcardResults";
 import { EssentialVerbsGuide } from "./components/EssentialVerbsGuide";
@@ -103,7 +105,7 @@ function displayLabel(label: string): string {
   return label.startsWith("Test ") ? "Test" : label;
 }
 
-type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "plus-que-parfait" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "terminaisons" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
+type AppMode = "home" | "participe" | "imparfait" | "conditionnel" | "futur" | "orthographe" | "phrases" | "présent" | "subjonctif" | "plus-que-parfait" | "articles" | "écrit" | "oral" | "patterns" | "vocabulaire" | "vocabulaire-liste" | "touriste" | "grammar-test" | "pronominales" | "difficiles" | "verbes" | "terminaisons" | "mes-patterns" | "mes-vocab" | "être-cards" | "être-quiz" | "être-guide" | "marathon" | "mes-notes" | "traductor";
 
 const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   participe: "Participe passé",
@@ -115,6 +117,7 @@ const MODE_LABEL: Record<Exclude<AppMode, "home">, string> = {
   présent: "Présent",
   subjonctif: "Subjonctif",
   "plus-que-parfait": "Plus-que-parfait",
+  articles: "Articles & contractions",
   écrit: "Test écrit",
   oral: "Test oral",
   patterns: "Parcours",
@@ -212,6 +215,7 @@ export default function App({ session }: { session: Session | null }) {
   const présent = usePresentQuiz();
   const plusQueParfait = usePlusQueParfaitQuiz();
   const subjonctif = useSubjonctifQuiz();
+  const articles = useArticlesQuiz();
   const écrit = useEcritQuiz();
   const oral = useOralQuiz();
   const flashcards = useFlashcards(FLASHCARDS.filter(c => c.category !== "être-avoir"), "tef-flashcard-progress");
@@ -382,6 +386,10 @@ export default function App({ session }: { session: Session | null }) {
         if (plusQueParfait.state.phase === QuizPhase.Answering || plusQueParfait.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) plusQueParfait.selectAnswer(d - 1); }
         if (plusQueParfait.state.phase === QuizPhase.Feedback && e.key === "Enter") plusQueParfait.nextQuestion();
       }
+      if (appMode === "articles") {
+        if (articles.state.phase === QuizPhase.Answering || articles.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) articles.selectAnswer(d - 1); }
+        if (articles.state.phase === QuizPhase.Feedback && e.key === "Enter") articles.nextQuestion();
+      }
       if (appMode === "écrit") {
         if (écrit.state.phase === QuizPhase.Answering || écrit.state.phase === QuizPhase.Feedback) { const d = parseInt(e.key, 10); if (d >= 1 && d <= 4) écrit.selectAnswer(d - 1); }
         if (écrit.state.phase === QuizPhase.Feedback && e.key === "Enter") écrit.nextQuestion();
@@ -393,7 +401,7 @@ export default function App({ session }: { session: Session | null }) {
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, subjonctif, plusQueParfait, écrit, oral]);
+  }, [appMode, participe, imparfait, conditionnel, futur, orthographe, phrases, etreQuiz, présent, subjonctif, plusQueParfait, articles, écrit, oral]);
 
   useEffect(() => {
     if (appMode === "participe" && participe.state.phase === QuizPhase.Feedback && participe.currentQuestion) {
@@ -423,6 +431,9 @@ export default function App({ session }: { session: Session | null }) {
     } else if (appMode === "plus-que-parfait" && plusQueParfait.state.phase === QuizPhase.Feedback && plusQueParfait.currentQuestion) {
       const correct = plusQueParfait.currentQuestion.options[plusQueParfait.currentQuestion.correctIndex] ?? "";
       setAnnouncement(plusQueParfait.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
+    } else if (appMode === "articles" && articles.state.phase === QuizPhase.Feedback && articles.currentQuestion) {
+      const correct = articles.currentQuestion.options[articles.currentQuestion.correctIndex] ?? "";
+      setAnnouncement(articles.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
     } else if (appMode === "écrit" && écrit.state.phase === QuizPhase.Feedback && écrit.currentQuestion) {
       const correct = écrit.currentQuestion.options[écrit.currentQuestion.correctIndex] ?? "";
       setAnnouncement(écrit.state.answerState === "correct" ? "Correct !" : `Incorrect. La bonne réponse est ${correct}.`);
@@ -446,6 +457,7 @@ export default function App({ session }: { session: Session | null }) {
     présent.state.phase, présent.state.answerState, présent.currentQuestion,
     subjonctif.state.phase, subjonctif.state.answerState, subjonctif.currentQuestion,
     plusQueParfait.state.phase, plusQueParfait.state.answerState, plusQueParfait.currentQuestion,
+    articles.state.phase, articles.state.answerState, articles.currentQuestion,
     écrit.state.phase, écrit.state.answerState, écrit.currentQuestion,
     oral.state.phase, oral.state.answerState, oral.currentQuestion,
     etreQuiz.state.phase, etreQuiz.state.answerState, etreQuiz.currentQuestion,
@@ -464,6 +476,7 @@ export default function App({ session }: { session: Session | null }) {
     if (appMode === "présent") présent.goHome();
     if (appMode === "subjonctif") subjonctif.goHome();
     if (appMode === "plus-que-parfait") plusQueParfait.goHome();
+    if (appMode === "articles") articles.goHome();
     if (appMode === "écrit") écrit.goHome();
     if (appMode === "oral") oral.goHome();
     if (appMode === "patterns") { activeDeck.goHome(); setPatternsCategory(null); }
@@ -494,6 +507,7 @@ export default function App({ session }: { session: Session | null }) {
   function handleStartPresent()      { présent.startQuiz();      setAppMode("présent"); }
   function handleStartSubjonctif()   { subjonctif.startQuiz();   setAppMode("subjonctif"); }
   function handleStartPlusQueParfait() { plusQueParfait.startQuiz(); setAppMode("plus-que-parfait"); }
+  function handleStartArticles()     { articles.startQuiz();     setAppMode("articles"); }
   function handleStartEcrit()        { écrit.startQuiz();        setAppMode("écrit"); }
   function handleStartOral()         { oral.startQuiz();         setAppMode("oral"); }
   function handleStartVerbes()       { setAppMode("verbes"); }
@@ -614,6 +628,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "présent"       ? présent.state.phase
     : appMode === "subjonctif"    ? subjonctif.state.phase
     : appMode === "plus-que-parfait" ? plusQueParfait.state.phase
+    : appMode === "articles"      ? articles.state.phase
     : appMode === "écrit"         ? écrit.state.phase
     : appMode === "oral"          ? oral.state.phase
     : appMode === "être-quiz"     ? etreQuiz.state.phase
@@ -632,6 +647,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "présent"       ? présent.progress
     : appMode === "subjonctif"    ? subjonctif.progress
     : appMode === "plus-que-parfait" ? plusQueParfait.progress
+    : appMode === "articles"      ? articles.progress
     : appMode === "écrit"         ? écrit.progress
     : appMode === "oral"          ? oral.progress
     : appMode === "être-quiz"     ? etreQuiz.progress
@@ -650,6 +666,7 @@ export default function App({ session }: { session: Session | null }) {
     : appMode === "présent"       ? présent.state.score
     : appMode === "subjonctif"    ? subjonctif.state.score
     : appMode === "plus-que-parfait" ? plusQueParfait.state.score
+    : appMode === "articles"      ? articles.state.score
     : appMode === "écrit"         ? écrit.state.score
     : appMode === "oral"      ? oral.state.score
     : etreQuiz.state.score;
@@ -689,6 +706,7 @@ export default function App({ session }: { session: Session | null }) {
     "Présent":           { mode: "présent",      onClick: handleStartPresent,      icon: BookCheck },
     "Subjonctif":        { mode: "subjonctif",   onClick: handleStartSubjonctif,   icon: BookCheck },
     "Plus-que-parfait":  { mode: "plus-que-parfait", onClick: handleStartPlusQueParfait, icon: BookCheck },
+    "Articles & contractions": { mode: "articles", onClick: handleStartArticles, icon: BookCheck },
     "Orthographe":       { mode: "orthographe",  onClick: handleStartOrthographe,  icon: BookCheck },
     "Pronominales":      { mode: "pronominales", onClick: handleStartPronominales, icon: BookCheck },
     "Test grammaire":    { mode: "grammar-test", onClick: handleStartGrammarTest,  icon: FlaskConical },
@@ -854,6 +872,7 @@ export default function App({ session }: { session: Session | null }) {
                 { label: "Présent",          mode: "présent"      as const, onClick: handleStartPresent },
                 { label: "Subjonctif",       mode: "subjonctif"   as const, onClick: handleStartSubjonctif },
                 { label: "Plus-que-parfait", mode: "plus-que-parfait" as const, onClick: handleStartPlusQueParfait },
+                { label: "Articles & contractions", mode: "articles" as const, onClick: handleStartArticles },
                 { label: "Orthographe",      mode: "orthographe" as const, onClick: handleStartOrthographe },
                 { label: "Futur simple",     mode: "futur"        as const, onClick: handleStartFutur },
                 { label: "Conditionnel",     mode: "conditionnel" as const, onClick: handleStartConditionnel },
@@ -1492,8 +1511,8 @@ export default function App({ session }: { session: Session | null }) {
 
           {/* QUIZ / FLASHCARD SCREENS */}
           {appMode !== "home" && (
-            <div className="flex min-h-full w-full flex-col items-center px-3 md:px-4">
-            <div className="my-auto w-full py-6 md:py-10">
+            <div className={`flex w-full flex-col items-center px-3 md:px-4 ${appMode === "vocabulaire-liste" ? "" : "min-h-full"}`}>
+            <div className={`w-full ${appMode === "vocabulaire-liste" ? "py-3" : "my-auto py-6 md:py-10"}`}>
 
               {/* PARTICIPE */}
               {appMode === "participe" && (
@@ -1749,6 +1768,32 @@ export default function App({ session }: { session: Session | null }) {
                   )}
                   {orthographe.state.phase === QuizPhase.Complete && (
                     <OrthographeResultScreen history={orthographe.state.history} score={orthographe.state.score} total={orthographe.progress.total} onRestart={orthographe.restartQuiz} onHome={handleGoHome} />
+                  )}
+                </>
+              )}
+
+              {/* ARTICLES & CONTRACTIONS */}
+              {appMode === "articles" && (
+                <>
+                  {(articles.state.phase === QuizPhase.Answering || articles.state.phase === QuizPhase.Feedback) && articles.currentQuestion && (
+                    <ArticlesQuizCard
+                      question={articles.currentQuestion}
+                      answerState={articles.state.answerState}
+                      selectedIndex={articles.state.selectedIndex}
+                      onSelect={articles.selectAnswer}
+                      onNext={articles.nextQuestion}
+                      questionNumber={articles.progress.index + 1}
+                      total={articles.progress.total}
+                    />
+                  )}
+                  {articles.state.phase === QuizPhase.Complete && (
+                    <OrthographeResultScreen
+                      history={articles.state.history}
+                      score={articles.state.score}
+                      total={articles.progress.total}
+                      onRestart={articles.restartQuiz}
+                      onHome={handleGoHome}
+                    />
                   )}
                 </>
               )}

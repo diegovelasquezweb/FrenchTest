@@ -144,7 +144,7 @@ export function VocabListView({
         </div>
       )}
 
-      <div className="max-h-[65vh] overflow-y-auto px-3 py-3 sm:px-6">
+      <div className="px-3 py-3 sm:px-6">
         {filtered.length === 0 ? (
           <div className="flex items-center justify-center py-12 text-sm text-(--color-muted)">
             Aucun résultat pour cette recherche.

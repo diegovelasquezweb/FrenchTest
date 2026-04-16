@@ -1,3 +1,6 @@
+import * as Accordion from "@radix-ui/react-accordion";
+import { ChevronDown } from "lucide-react";
+
 type PersonForms = {
   je: string;
   tu: string;
@@ -97,54 +100,63 @@ const ESSENTIAL_VERBS: EssentialVerb[] = [
 
 const PRONOUNS: Array<keyof PersonForms> = ["je", "tu", "ilElle", "nous", "vous", "ilsElles"];
 const PRONOUN_LABEL: Record<keyof PersonForms, string> = {
-  je: "je",
-  tu: "tu",
-  ilElle: "il / elle",
-  nous: "nous",
-  vous: "vous",
-  ilsElles: "ils / elles",
+  je: "je", tu: "tu", ilElle: "il / elle", nous: "nous", vous: "vous", ilsElles: "ils / elles",
 };
 
 export function EssentialVerbsGuide() {
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6">
-      {ESSENTIAL_VERBS.map((verb) => (
-        <section key={verb.infinitive} className="rounded-(--radius-card) bg-(--color-surface) p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-(--color-ink)" lang="fr">{verb.infinitive}</h3>
-          <p className="text-xs text-(--color-muted)">
-            <span lang="en">{verb.translationEn}</span> · <span lang="es">{verb.translationEs}</span>
-          </p>
-
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {verb.tenses.map((tense) => (
-              <div key={tense.label} className="rounded border border-(--color-ink)/10 p-3">
-                <p className="text-sm font-semibold text-(--color-ink)">{tense.label}</p>
-                <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-                  {PRONOUNS.map((p) => (
-                    <div key={p} className="flex items-baseline gap-1">
-                      <span className="text-(--color-muted)">{PRONOUN_LABEL[p]}</span>
-                      <span className="font-medium text-(--color-ink)">{tense.forms[p]}</span>
+    <div className="mx-auto w-full max-w-6xl">
+      <Accordion.Root type="single" collapsible className="rounded-(--radius-card) overflow-hidden border border-(--color-ink)/10 bg-(--color-surface) shadow-sm">
+        {ESSENTIAL_VERBS.map((verb, i) => (
+          <Accordion.Item
+            key={verb.infinitive}
+            value={verb.infinitive}
+            className={i > 0 ? "border-t border-(--color-ink)/8" : ""}
+          >
+            <Accordion.Header>
+              <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
+                <div>
+                  <span className="text-base font-bold text-(--color-ink)" lang="fr">{verb.infinitive}</span>
+                  <span className="ml-2 text-xs text-(--color-muted)">{verb.translationEn} · {verb.translationEs}</span>
+                </div>
+                <ChevronDown size={16} className="shrink-0 text-(--color-muted) transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              </Accordion.Trigger>
+            </Accordion.Header>
+            <Accordion.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
+              <div className="px-5 pb-5">
+                <div className="grid gap-3 md:grid-cols-2">
+                  {verb.tenses.map((tense) => (
+                    <div key={tense.label} className="rounded border border-(--color-ink)/10 p-3">
+                      <p className="text-sm font-semibold text-(--color-ink)">{tense.label}</p>
+                      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                        {PRONOUNS.map((p) => (
+                          <div key={p} className="flex items-baseline gap-1">
+                            <span className="text-(--color-muted)">{PRONOUN_LABEL[p]}</span>
+                            <span className="font-medium text-(--color-ink)">{tense.forms[p]}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-2 text-xs text-(--color-muted)" lang="fr">{tense.exampleFr}</p>
+                      <p className="text-xs text-(--color-muted)" lang="es">{tense.exampleEs}</p>
                     </div>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-(--color-muted)" lang="fr">{tense.exampleFr}</p>
-                <p className="text-xs text-(--color-muted)" lang="es">{tense.exampleEs}</p>
-              </div>
-            ))}
-          </div>
 
-          <div className="mt-4 rounded border border-(--color-ink)/10 p-3">
-            <p className="text-sm font-semibold text-(--color-ink)">Impératif</p>
-            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-              <span><span className="text-(--color-muted)">tu</span> <span className="font-medium text-(--color-ink)">{verb.imperative.tu}</span></span>
-              <span><span className="text-(--color-muted)">nous</span> <span className="font-medium text-(--color-ink)">{verb.imperative.nous}</span></span>
-              <span><span className="text-(--color-muted)">vous</span> <span className="font-medium text-(--color-ink)">{verb.imperative.vous}</span></span>
-            </div>
-            <p className="mt-2 text-xs text-(--color-muted)" lang="fr">{verb.imperative.exampleFr}</p>
-            <p className="text-xs text-(--color-muted)" lang="es">{verb.imperative.exampleEs}</p>
-          </div>
-        </section>
-      ))}
+                <div className="mt-3 rounded border border-(--color-ink)/10 p-3">
+                  <p className="text-sm font-semibold text-(--color-ink)">Impératif</p>
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                    <span><span className="text-(--color-muted)">tu </span><span className="font-medium text-(--color-ink)">{verb.imperative.tu}</span></span>
+                    <span><span className="text-(--color-muted)">nous </span><span className="font-medium text-(--color-ink)">{verb.imperative.nous}</span></span>
+                    <span><span className="text-(--color-muted)">vous </span><span className="font-medium text-(--color-ink)">{verb.imperative.vous}</span></span>
+                  </div>
+                  <p className="mt-2 text-xs text-(--color-muted)" lang="fr">{verb.imperative.exampleFr}</p>
+                  <p className="text-xs text-(--color-muted)" lang="es">{verb.imperative.exampleEs}</p>
+                </div>
+              </div>
+            </Accordion.Content>
+          </Accordion.Item>
+        ))}
+      </Accordion.Root>
     </div>
   );
 }
