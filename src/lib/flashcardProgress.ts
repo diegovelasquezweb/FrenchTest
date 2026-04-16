@@ -46,8 +46,8 @@ export function buildDeck(
   const pending = cards.filter((c) => (progress[c.id]?.score ?? 0) < 2);
   // All mastered — show everything in original order
   if (pending.length === 0) return [...cards];
-  // Fixed order — same as source array, dominadas skipped
-  return pending;
+  // score=1 (seen, not mastered) before score=0 (never seen)
+  return [...pending].sort((a, b) => (progress[b.id]?.score ?? 0) - (progress[a.id]?.score ?? 0));
 }
 
 export function totalMastered(progress: Record<string, CardProgress>): number {

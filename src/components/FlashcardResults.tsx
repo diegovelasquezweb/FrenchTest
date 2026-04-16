@@ -29,7 +29,8 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
   const mastered  = sessionResults.filter(r => r.rating === 2).map(r => cards.find(c => c.id === r.id)).filter((c): c is Flashcard => c !== undefined);
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
+    <div className="flex flex-1 items-start justify-center px-4 py-6">
+    <div className="flex w-full max-w-lg flex-col gap-4">
 
       {/* ── Score header ── */}
       <div className="rounded-(--radius-card) bg-(--color-surface) px-6 py-5 shadow-sm">
@@ -122,6 +123,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
           Accueil
         </button>
       </div>
+    </div>
     </div>
   );
 }

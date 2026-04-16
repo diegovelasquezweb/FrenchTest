@@ -1,6 +1,6 @@
 import { getSession } from "./auth";
 
-const WORKER_URL = import.meta.env.VITE_SYNC_URL as string | undefined;
+const WORKER_URL = process.env.NEXT_PUBLIC_SYNC_URL;
 
 export interface ChatMessage {
   role: "user" | "assistant";

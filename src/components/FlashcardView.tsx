@@ -114,7 +114,8 @@ export function FlashcardView({
   const hasEsTranslation = card.translationEs.trim().length > 0 && !isPlaceholderPair;
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <div className="flex flex-1 items-center justify-center px-4 py-6">
+    <div className="w-full max-w-xl">
       {/* Progress + nav */}
       <div className="mb-4 flex items-center justify-center gap-3">
         {onBack && index > 0 ? (
@@ -263,6 +264,7 @@ export function FlashcardView({
           )}
         </div>
       </SwipeCard>
+    </div>
     </div>
   );
 }

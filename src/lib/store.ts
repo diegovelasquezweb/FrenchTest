@@ -1,6 +1,6 @@
 import { getSession, isGuest } from "./auth";
 
-const WORKER_URL = import.meta.env.VITE_SYNC_URL as string | undefined;
+const WORKER_URL = process.env.NEXT_PUBLIC_SYNC_URL;
 const TEF_PREFIX = "tef-";
 
 const cache: Record<string, string> = {};
