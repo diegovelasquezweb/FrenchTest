@@ -40,7 +40,6 @@ export function ArticlesQuizCard({
   questionNumber,
   total,
 }: ArticlesQuizCardProps) {
-  const isCorrectPick = selectedIndex !== null && selectedIndex === question.correctIndex;
   const isWrongPick = selectedIndex !== null && selectedIndex !== question.correctIndex;
   const selectedWord = selectedIndex !== null ? question.options[selectedIndex] : undefined;
   const correctWord = question.options[question.correctIndex] ?? "";
@@ -94,4 +93,3 @@ export function ArticlesQuizCard({
     />
   );
 }
-
