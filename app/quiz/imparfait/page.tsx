@@ -2,7 +2,9 @@
 
 import { useImparfaitQuiz } from "@/src/hooks/useImparfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { ImparfaitQuizCard } from "@/src/components/ImparfaitQuizCard";
+import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
+import { ImparfaitTable } from "@/src/components/ImparfaitTable";
+import { ImparfaitWrongTable } from "@/src/components/ImparfaitWrongTable";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizShell } from "@/src/components/shells";
 
@@ -15,8 +17,19 @@ export default function ImparfaitPage() {
       title="Imparfait"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (
-        <ImparfaitQuizCard
+        <VerbConjugationCard
           question={question}
+          tenseName="Imparfait"
+          correctFeedback={<ImparfaitTable verb={question.verb} imparfait3sg={question.imparfait3sg} />}
+          wrongFeedback={(wrongForm, wrongSubject) => (
+            <ImparfaitWrongTable
+              verb={question.verb}
+              wrongForm={wrongForm}
+              wrongSubject={wrongSubject}
+              targetSubject={question.targetSubject}
+              imparfait3sg={question.imparfait3sg}
+            />
+          )}
           answerState={answerState}
           selectedIndex={selectedIndex}
           onSelect={quiz.selectAnswer}

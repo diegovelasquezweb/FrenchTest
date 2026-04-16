@@ -2,7 +2,9 @@
 
 import { useFuturQuiz } from "@/src/hooks/useFuturQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { FuturQuizCard } from "@/src/components/FuturQuizCard";
+import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
+import { FuturTable } from "@/src/components/FuturTable";
+import { FuturWrongTable } from "@/src/components/FuturWrongTable";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizShell } from "@/src/components/shells";
 
@@ -15,8 +17,19 @@ export default function FuturPage() {
       title="Futur simple"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (
-        <FuturQuizCard
+        <VerbConjugationCard
           question={question}
+          tenseName="Futur simple"
+          correctFeedback={<FuturTable verb={question.verb} futur3sg={question.futur3sg} />}
+          wrongFeedback={(wrongForm, wrongSubject) => (
+            <FuturWrongTable
+              verb={question.verb}
+              wrongForm={wrongForm}
+              wrongSubject={wrongSubject}
+              targetSubject={question.targetSubject}
+              futur3sg={question.futur3sg}
+            />
+          )}
           answerState={answerState}
           selectedIndex={selectedIndex}
           onSelect={quiz.selectAnswer}

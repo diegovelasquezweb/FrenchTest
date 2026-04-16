@@ -2,7 +2,9 @@
 
 import { usePresentQuiz } from "@/src/hooks/usePresentQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { PresentQuizCard } from "@/src/components/PresentQuizCard";
+import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
+import { PresentTable } from "@/src/components/PresentTable";
+import { PresentWrongTable } from "@/src/components/PresentWrongTable";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizShell } from "@/src/components/shells";
 
@@ -15,8 +17,18 @@ export default function PresentPage() {
       title="Présent"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (
-        <PresentQuizCard
+        <VerbConjugationCard
           question={question}
+          tenseName="Présent"
+          correctFeedback={<PresentTable verb={question.verb} />}
+          wrongFeedback={(wrongForm, wrongSubject) => (
+            <PresentWrongTable
+              verb={question.verb}
+              wrongForm={wrongForm}
+              wrongSubject={wrongSubject}
+              targetSubject={question.targetSubject}
+            />
+          )}
           answerState={answerState}
           selectedIndex={selectedIndex}
           onSelect={quiz.selectAnswer}

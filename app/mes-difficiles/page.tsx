@@ -6,10 +6,15 @@ import { AuthGate } from "@/src/layout/AuthGate";
 import { useDifficultesQuiz } from "@/src/hooks/useDifficultesQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
 import { QuizCard } from "@/src/components/QuizCard";
-import { ImparfaitQuizCard } from "@/src/components/ImparfaitQuizCard";
-import { FuturQuizCard } from "@/src/components/FuturQuizCard";
-import { ConditionnelQuizCard } from "@/src/components/ConditionnelQuizCard";
-import { PresentQuizCard } from "@/src/components/PresentQuizCard";
+import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
+import { ImparfaitTable } from "@/src/components/ImparfaitTable";
+import { ImparfaitWrongTable } from "@/src/components/ImparfaitWrongTable";
+import { FuturTable } from "@/src/components/FuturTable";
+import { FuturWrongTable } from "@/src/components/FuturWrongTable";
+import { ConditionnelTable } from "@/src/components/ConditionnelTable";
+import { ConditionnelWrongTable } from "@/src/components/ConditionnelWrongTable";
+import { PresentTable } from "@/src/components/PresentTable";
+import { PresentWrongTable } from "@/src/components/PresentWrongTable";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizPhase } from "@/src/types";
 import { useSetQuizHeader } from "@/src/lib/header-context";
@@ -118,12 +123,81 @@ export default function MesDifficilesPage() {
           };
           const card = (() => {
             switch (wrapper.source) {
-              case "participe":    return <QuizCard {...common} question={wrapper.q} />;
-              case "imparfait":    return <ImparfaitQuizCard {...common} question={wrapper.q} />;
-              case "futur":        return <FuturQuizCard {...common} question={wrapper.q} />;
-              case "conditionnel": return <ConditionnelQuizCard {...common} question={wrapper.q} />;
-              case "présent":      return <PresentQuizCard {...common} question={wrapper.q} />;
-              default:             return null;
+              case "participe":
+                return <QuizCard {...common} question={wrapper.q} />;
+              case "imparfait":
+                return (
+                  <VerbConjugationCard
+                    {...common}
+                    question={wrapper.q}
+                    tenseName="Imparfait"
+                    correctFeedback={<ImparfaitTable verb={wrapper.q.verb} imparfait3sg={wrapper.q.imparfait3sg} />}
+                    wrongFeedback={(wrongForm, wrongSubject) => (
+                      <ImparfaitWrongTable
+                        verb={wrapper.q.verb}
+                        wrongForm={wrongForm}
+                        wrongSubject={wrongSubject}
+                        targetSubject={wrapper.q.targetSubject}
+                        imparfait3sg={wrapper.q.imparfait3sg}
+                      />
+                    )}
+                  />
+                );
+              case "futur":
+                return (
+                  <VerbConjugationCard
+                    {...common}
+                    question={wrapper.q}
+                    tenseName="Futur simple"
+                    correctFeedback={<FuturTable verb={wrapper.q.verb} futur3sg={wrapper.q.futur3sg} />}
+                    wrongFeedback={(wrongForm, wrongSubject) => (
+                      <FuturWrongTable
+                        verb={wrapper.q.verb}
+                        wrongForm={wrongForm}
+                        wrongSubject={wrongSubject}
+                        targetSubject={wrapper.q.targetSubject}
+                        futur3sg={wrapper.q.futur3sg}
+                      />
+                    )}
+                  />
+                );
+              case "conditionnel":
+                return (
+                  <VerbConjugationCard
+                    {...common}
+                    question={wrapper.q}
+                    tenseName="Conditionnel"
+                    correctFeedback={<ConditionnelTable verb={wrapper.q.verb} conditionnel3sg={wrapper.q.conditionnel3sg} />}
+                    wrongFeedback={(wrongForm, wrongSubject) => (
+                      <ConditionnelWrongTable
+                        verb={wrapper.q.verb}
+                        wrongForm={wrongForm}
+                        wrongSubject={wrongSubject}
+                        targetSubject={wrapper.q.targetSubject}
+                        conditionnel3sg={wrapper.q.conditionnel3sg}
+                      />
+                    )}
+                  />
+                );
+              case "présent":
+                return (
+                  <VerbConjugationCard
+                    {...common}
+                    question={wrapper.q}
+                    tenseName="Présent"
+                    correctFeedback={<PresentTable verb={wrapper.q.verb} />}
+                    wrongFeedback={(wrongForm, wrongSubject) => (
+                      <PresentWrongTable
+                        verb={wrapper.q.verb}
+                        wrongForm={wrongForm}
+                        wrongSubject={wrongSubject}
+                        targetSubject={wrapper.q.targetSubject}
+                      />
+                    )}
+                  />
+                );
+              default:
+                return null;
             }
           })();
           return card ?? null;

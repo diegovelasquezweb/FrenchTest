@@ -1,11 +1,21 @@
-import type { PlusQueParfaitQuestion } from "../types";
+import type { ReactNode } from "react";
+import type { Verb } from "../types";
 import { AnswerState } from "../types";
 import { BaseQuizCard } from "./BaseQuizCard";
-import { PlusQueParfaitTable } from "./PlusQueParfaitTable";
-import { PlusQueParfaitWrongTable } from "./PlusQueParfaitWrongTable";
 
-interface PlusQueParfaitQuizCardProps {
-  question: PlusQueParfaitQuestion;
+interface VerbConjugationQuestion {
+  verb: Verb;
+  options: string[];
+  correctIndex: number;
+  targetSubject: string;
+  optionSubjects: string[];
+}
+
+interface VerbConjugationCardProps {
+  question: VerbConjugationQuestion;
+  tenseName: string;
+  correctFeedback: ReactNode;
+  wrongFeedback: (wrongForm: string, wrongSubject: string) => ReactNode;
   answerState: AnswerState;
   selectedIndex: number | null;
   onSelect(i: number): void;
@@ -16,8 +26,11 @@ interface PlusQueParfaitQuizCardProps {
   onToggleWeak?(): void;
 }
 
-export function PlusQueParfaitQuizCard({
+export function VerbConjugationCard({
   question,
+  tenseName,
+  correctFeedback,
+  wrongFeedback,
   answerState,
   selectedIndex,
   onSelect,
@@ -26,7 +39,7 @@ export function PlusQueParfaitQuizCard({
   total,
   isWeak,
   onToggleWeak,
-}: PlusQueParfaitQuizCardProps) {
+}: VerbConjugationCardProps) {
   const wrongSubject =
     selectedIndex !== null && selectedIndex !== question.correctIndex
       ? question.optionSubjects[selectedIndex]
@@ -35,7 +48,7 @@ export function PlusQueParfaitQuizCard({
   const header = (
     <div className="mb-2 text-center">
       <p className="text-xs font-semibold uppercase tracking-wider text-(--color-muted)">
-        Plus-que-parfait
+        {tenseName}
       </p>
       <p className="mt-2 text-3xl font-bold tracking-tight text-(--color-ink) sm:text-4xl" lang="fr">
         {question.verb.infinitive}
@@ -53,17 +66,9 @@ export function PlusQueParfaitQuizCard({
 
   const feedback = (
     <>
-      {selectedIndex !== null && selectedIndex === question.correctIndex && (
-        <PlusQueParfaitTable verb={question.verb} />
-      )}
-      {wrongSubject !== undefined && selectedIndex !== null && (
-        <PlusQueParfaitWrongTable
-          verb={question.verb}
-          wrongForm={question.options[selectedIndex] ?? ""}
-          wrongSubject={wrongSubject}
-          targetSubject={question.targetSubject}
-        />
-      )}
+      {selectedIndex !== null && selectedIndex === question.correctIndex && correctFeedback}
+      {wrongSubject !== undefined && selectedIndex !== null &&
+        wrongFeedback(question.options[selectedIndex] ?? "", wrongSubject)}
     </>
   );
 
@@ -83,4 +88,3 @@ export function PlusQueParfaitQuizCard({
     />
   );
 }
-

@@ -2,7 +2,9 @@
 
 import { usePlusQueParfaitQuiz } from "@/src/hooks/usePlusQueParfaitQuiz";
 import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
-import { PlusQueParfaitQuizCard } from "@/src/components/PlusQueParfaitQuizCard";
+import { VerbConjugationCard } from "@/src/components/VerbConjugationCard";
+import { PlusQueParfaitTable } from "@/src/components/PlusQueParfaitTable";
+import { PlusQueParfaitWrongTable } from "@/src/components/PlusQueParfaitWrongTable";
 import { ResultScreen } from "@/src/components/ResultScreen";
 import { QuizShell } from "@/src/components/shells";
 
@@ -15,8 +17,18 @@ export default function PlusQueParfaitPage() {
       title="Plus-que-parfait"
       quiz={quiz}
       renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (
-        <PlusQueParfaitQuizCard
+        <VerbConjugationCard
           question={question}
+          tenseName="Plus-que-parfait"
+          correctFeedback={<PlusQueParfaitTable verb={question.verb} />}
+          wrongFeedback={(wrongForm, wrongSubject) => (
+            <PlusQueParfaitWrongTable
+              verb={question.verb}
+              wrongForm={wrongForm}
+              wrongSubject={wrongSubject}
+              targetSubject={question.targetSubject}
+            />
+          )}
           answerState={answerState}
           selectedIndex={selectedIndex}
           onSelect={quiz.selectAnswer}
