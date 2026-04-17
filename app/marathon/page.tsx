@@ -163,7 +163,7 @@ export default function MarathonPage() {
         groups={[
           {
             id: "patterns",
-            label: "Patterns",
+            label: "Modèles",
             options: [
               { id: "oral-interaction",   label: "Renseignements",  count: MARATHON_SOURCES["oral-interaction"].length },
               { id: "oral-monologue",     label: "Persuasion",      count: MARATHON_SOURCES["oral-monologue"].length },

@@ -41,7 +41,7 @@ export type NavGroup = NavGroupSingle | NavGroupAccordion;
 export const NAV_GROUPS: NavGroup[] = [
   { id: "marathon",      type: "single", label: "Marathon",               href: "/marathon",                  icon: Gamepad2,   marathon: true },
   { id: "difficiles",    type: "single", label: "Mes difficiles",         href: "/mes-difficiles",            icon: Bookmark },
-  { id: "mes-patterns",  type: "single", label: "Mes patterns",           href: "/mes-patterns",              icon: Bookmark },
+  { id: "mes-patterns",  type: "single", label: "Mes modèles",           href: "/mes-patterns",              icon: Bookmark },
   { id: "mes-vocab",     type: "single", label: "Mon vocabulaire",        href: "/mon-vocabulaire",           icon: Bookmark },
   {
     id: "oral", type: "accordion", label: "Oral",

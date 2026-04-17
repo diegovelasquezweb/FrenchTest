@@ -146,7 +146,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Mes patterns */}
+      {/* Mes modèles */}
       {favoriteCardList.length > 0 && (
         <div className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link
@@ -154,7 +154,7 @@ export default function HomePage() {
             className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-ink transition-colors hover:bg-brand/8 hover:text-brand active:bg-brand/15"
           >
             {(() => { const g = singleGroup("mes-patterns"); return <g.icon size={16} className="shrink-0" />; })()}
-            Mes patterns
+            Mes modèles
             <span className="ml-auto text-[10px] font-bold text-muted">{favoriteCardList.length}</span>
           </Link>
         </div>
