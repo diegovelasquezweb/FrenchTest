@@ -4,7 +4,7 @@ import { Bookmark, HelpCircle } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../../types";
 import { SwipeCard } from "../quiz/SwipeCard";
 
-type FlashColor = "red" | "yellow" | "emerald" | null;
+type FlashColor = "red" | "yellow" | "emerald" | "blue" | null;
 
 const FLASH_DURATION_MS = 280;
 
@@ -12,6 +12,7 @@ const FLASH_RING: Record<Exclude<FlashColor, null>, string> = {
   red: "ring-red-300 dark:ring-red-500/50",
   yellow: "ring-yellow-300 dark:ring-yellow-400/50",
   emerald: "ring-emerald-300 dark:ring-emerald-500/50",
+  blue: "ring-blue-300 dark:ring-blue-400/50",
 };
 
 const CATEGORY_LABEL: Record<Flashcard["category"], string> = {
@@ -37,6 +38,7 @@ const CATEGORY_COLOR: Record<Flashcard["category"], string> = {
 };
 
 export type RepetitionStyle = "intensity" | "masking";
+export type MarathonMode = "lecture" | "révision" | "répétition";
 
 interface FlashcardViewProps {
   card: Flashcard;
@@ -49,7 +51,7 @@ interface FlashcardViewProps {
   onToggleFavorite?(): void;
   autoAdvanceEnabled?: boolean;
   autoAdvanceMs?: number;
-  repetitionEnabled?: boolean;
+  mode?: MarathonMode;
   repetitionStyle?: RepetitionStyle;
 }
 
@@ -64,32 +66,34 @@ export function FlashcardView({
   onToggleFavorite,
   autoAdvanceEnabled = false,
   autoAdvanceMs = 20000,
-  repetitionEnabled = false,
+  mode = "lecture",
   repetitionStyle = "intensity",
 }: FlashcardViewProps) {
   const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const [repStep, setRepStep] = useState(0);
+  const [prevCardId, setPrevCardId] = useState(card.id);
   const pending = useRef(false);
+
+  if (prevCardId !== card.id) {
+    setPrevCardId(card.id);
+    setFlash(null);
+    pending.current = false;
+    setRepStep(0);
+  }
 
   useEffect(() => {
     focusTrapRef.current?.focus({ preventScroll: true });
   }, [index]);
 
-  useEffect(() => {
-    setFlash(null);
-    pending.current = false;
-    setRepStep(0);
-  }, [card.id]);
-
   const triggerRate = useCallback(
     (r: FlashcardRating) => {
       if (pending.current) return;
       pending.current = true;
-      setFlash(r === 2 ? "emerald" : r === 0 ? "red" : "yellow");
+      setFlash(mode === "répétition" ? "blue" : r === 2 ? "emerald" : r === 0 ? "red" : "yellow");
       window.setTimeout(() => onRate(r), FLASH_DURATION_MS);
     },
-    [onRate],
+    [onRate, mode],
   );
 
   const triggerSkip = useCallback(() => {
@@ -99,13 +103,30 @@ export function FlashcardView({
   }, [onSkip]);
 
   const advanceRep = useCallback(() => {
-    setRepStep((s) => s + 1);
+    setRepStep((s) => {
+      if (s === 1) {
+        setFlash("blue");
+        window.setTimeout(() => setFlash(null), FLASH_DURATION_MS);
+      }
+      return s + 1;
+    });
   }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (repetitionEnabled && repStep < 2) {
+      if (mode === "lecture") {
+        if (e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === " " || e.key === "Enter" || e.key === "ArrowDown") {
+          e.preventDefault();
+          triggerSkip();
+        }
+        if (e.key === "Backspace" || e.key === "Escape") {
+          e.preventDefault();
+          onBack?.();
+        }
+        return;
+      }
+      if (mode === "répétition" && repStep < 2) {
         if (
           e.key === "ArrowRight" ||
           e.key === "ArrowUp" ||
@@ -153,14 +174,14 @@ export function FlashcardView({
     triggerSkip,
     onBack,
     advanceRep,
-    repetitionEnabled,
+    mode,
     repStep,
   ]);
 
   useEffect(() => {
     if (!autoAdvanceEnabled || autoAdvanceMs <= 0) return;
     const id = window.setTimeout(() => {
-      if (repetitionEnabled && repStep < 2) advanceRep();
+      if (mode === "répétition" && repStep < 2) advanceRep();
       else triggerSkip();
     }, autoAdvanceMs);
     return () => window.clearTimeout(id);
@@ -171,14 +192,14 @@ export function FlashcardView({
     autoAdvanceMs,
     triggerSkip,
     advanceRep,
-    repetitionEnabled,
+    mode,
   ]);
 
-  const inRepPhase = repetitionEnabled && repStep < 2;
+  const inRepPhase = mode === "répétition" && repStep < 2;
 
   const frontClassName = (() => {
     const base = "mt-3 text-xl sm:text-3xl font-bold leading-[1.2] transition-colors duration-300";
-    if (!repetitionEnabled) return `${base} text-ink`;
+    if (mode !== "répétition") return `${base} text-ink`;
     if (repetitionStyle === "masking") {
       return repStep === 1 ? `${base} text-ink blur-[2px] select-none` : `${base} text-ink`;
     }
@@ -316,10 +337,10 @@ export function FlashcardView({
           className={`relative flex min-h-110 flex-col rounded-card bg-surface p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""} ${inRepPhase ? "cursor-pointer" : ""}`}
           resetKey={card.id}
           onClick={inRepPhase ? advanceRep : undefined}
-          onSwipeRight={inRepPhase ? advanceRep : () => triggerRate(2)}
-          onSwipeLeft={inRepPhase ? advanceRep : () => triggerRate(0)}
+          onSwipeRight={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(2)}
+          onSwipeLeft={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(0)}
           onSwipeDown={triggerSkip}
-          onSwipeUp={inRepPhase ? advanceRep : () => triggerRate(1)}
+          onSwipeUp={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(1)}
         >
           {onToggleFavorite !== undefined && (
             <div className="flex justify-end mb-3">
@@ -347,7 +368,7 @@ export function FlashcardView({
             >
               {CATEGORY_LABEL[card.category]}
             </span>
-            {repetitionEnabled && (
+            {mode === "répétition" && (
               <div className="flex items-center gap-1.5" aria-hidden="true">
                 {[0, 1, 2].map((i) => (
                   <span
@@ -368,7 +389,7 @@ export function FlashcardView({
               {card.usage}
             </p>
 
-            <div className={`mt-5 grid grid-cols-3 gap-2 transition-opacity duration-300 ${inRepPhase ? "invisible" : "visible"}`}>
+            <div className={`mt-5 grid grid-cols-3 gap-2 transition-opacity duration-300 ${(inRepPhase || mode !== "révision") ? "hidden" : ""}`}>
               <button
                 type="button"
                 onClick={() => triggerRate(0)}

@@ -17,7 +17,7 @@ export type FlashcardHeaderData = {
   title: string;
   masteredCount: number;
   totalCards: number;
-  onReset: () => void;
+  onReset?: () => void;
   variant?: "marathon";
   onFilter?: () => void;
   onSettings?: () => void;
@@ -84,7 +84,7 @@ export function useSetFlashcardHeader(
 
 export function useSetMarathonHeader(
   deck: { masteredCount: number; totalCards: number; reset: () => void; state: { phase: string } },
-  callbacks: { onFilter: () => void; onSettings: () => void },
+  callbacks: { onFilter: () => void; onSettings: () => void; showReset?: boolean },
 ) {
   useSetHeader({
     type: "flashcard",
@@ -92,7 +92,7 @@ export function useSetMarathonHeader(
     title: "Marathon",
     masteredCount: deck.masteredCount,
     totalCards: deck.totalCards,
-    onReset: deck.reset,
+    onReset: callbacks.showReset !== false ? deck.reset : undefined,
     onFilter: callbacks.onFilter,
     onSettings: callbacks.onSettings,
     phase: deck.state.phase,

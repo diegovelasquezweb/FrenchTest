@@ -3,7 +3,7 @@ import { SlidersHorizontal, Settings } from "lucide-react";
 interface FlashcardHeaderBaseProps {
   masteredCount: number;
   totalCards: number;
-  onReset: () => void;
+  onReset?: () => void;
 }
 
 interface FlashcardHeaderMarathonProps extends FlashcardHeaderBaseProps {
@@ -26,13 +26,15 @@ export function FlashcardHeader(props: FlashcardHeaderProps) {
           <span className="font-semibold text-ink">{props.masteredCount}</span> / {props.totalCards} dominées
         </p>
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={props.onReset}
-            className="text-xs text-muted underline underline-offset-2 hover:text-red-500 transition-colors duration-150"
-          >
-            Réinitialiser
-          </button>
+          {props.onReset && (
+            <button
+              type="button"
+              onClick={props.onReset}
+              className="text-xs text-muted underline underline-offset-2 hover:text-red-500 transition-colors duration-150"
+            >
+              Réinitialiser
+            </button>
+          )}
           <button
             type="button"
             onClick={props.onFilter}

@@ -1,0 +1,148 @@
+import type { OrthographePhrase } from "./orthographePhrases";
+
+export const PHRASES_COMPLETER_MOTS: OrthographePhrase[] = [
+  {
+    sentence: "___, cette mesure reste difficile à appliquer dans les petites entreprises.",
+    options: ["Cependant", "Cependent", "Ceppendant", "Cépendant"],
+    correctIndex: 0,
+    explanation: "« Cependant » est un connecteur d'opposition très fréquent à l'écrit TEF.",
+  },
+  {
+    sentence: "Cette réforme est coûteuse ; ___, elle pourrait améliorer la qualité du service.",
+    options: ["néanmoins", "neanmoins", "néanmois", "néanmoin"],
+    correctIndex: 0,
+    explanation: "« néanmoins » prend l'accent aigu sur é et s'écrit avec un « s » final.",
+  },
+  {
+    sentence: "Le projet est ambitieux. ___, il nécessite un calendrier réaliste.",
+    options: ["Toutefois", "Toutefoit", "Toute fois", "Toutfois"],
+    correctIndex: 0,
+    explanation: "« Toutefois » s'écrit en un seul mot et introduit une nuance/opposition.",
+  },
+  {
+    sentence: "___ les résultats soient encourageants, des ajustements restent nécessaires.",
+    options: ["Bien que", "Biens que", "Bien-que", "Bient que"],
+    correctIndex: 0,
+    explanation: "« Bien que » est la forme correcte et est suivie du subjonctif.",
+  },
+  {
+    sentence: "___ ces difficultés, l'équipe a respecté les délais.",
+    options: ["Malgré", "Malgrè", "Mal gres", "Malgree"],
+    correctIndex: 0,
+    explanation: "« Malgré » prend un accent aigu et se construit avec un nom.",
+  },
+  {
+    sentence: "___ de la hausse des prix, de nombreux ménages réduisent leurs dépenses.",
+    options: ["En raison", "En raisont", "En réson", "En raisont de"],
+    correctIndex: 0,
+    explanation: "Expression correcte : « en raison de ». Ici on complète « en raison ».",
+  },
+  {
+    sentence: "___, il est indispensable d'investir dans la formation continue.",
+    options: ["Par conséquent", "Par consequant", "Par conséquentt", "Par conséquant"],
+    correctIndex: 0,
+    explanation: "« Par conséquent » est un connecteur de conséquence classique au TEF.",
+  },
+  {
+    sentence: "Le texte manque de clarté ; ___, plusieurs idées restent pertinentes.",
+    options: ["pourtant", "pourtants", "pour temp", "pourtant que"],
+    correctIndex: 0,
+    explanation: "« pourtant » s'écrit en un seul mot et marque l'opposition.",
+  },
+  {
+    sentence: "Il est essentiel d'élargir l'___ à l'éducation pour tous.",
+    options: ["accès", "acces", "accèss", "axès"],
+    correctIndex: 0,
+    explanation: "« accès » prend un accent grave sur « è ».",
+  },
+  {
+    sentence: "Cette politique peut avoir un impact ___ sur l'emploi local.",
+    options: ["bénéfique", "benefique", "bénéfiqu", "bénnéfique"],
+    correctIndex: 0,
+    explanation: "« bénéfique » prend un accent aigu sur le premier « é ».",
+  },
+  {
+    sentence: "Le principal ___ de cette proposition est son coût élevé.",
+    options: ["inconvénient", "inconvéniant", "inconvenient", "inconveniant"],
+    correctIndex: 0,
+    explanation: "Orthographe correcte : « inconvénient » (accent grave + « ient » final).",
+  },
+  {
+    sentence: "À long terme, cette décision aura des ___ positives.",
+    options: ["conséquences", "consequences", "consécquences", "conséquances"],
+    correctIndex: 0,
+    explanation: "« conséquences » prend un accent aigu puis un accent grave.",
+  },
+  {
+    sentence: "La ___ sociale reste un objectif prioritaire de la réforme.",
+    options: ["cohésion", "coésion", "cohèsion", "coheision"],
+    correctIndex: 0,
+    explanation: "« cohésion » s'écrit avec « h » et se termine par « -sion ».",
+  },
+  {
+    sentence: "Le gouvernement doit assumer sa ___ dans ce dossier.",
+    options: ["responsabilité", "responsabilite", "responsabillité", "responsabilités"],
+    correctIndex: 0,
+    explanation: "« responsabilité » prend l'accent aigu final « -ité ».",
+  },
+  {
+    sentence: "Cette ___ technologique transforme déjà le marché du travail.",
+    options: ["évolution", "evolution", "évolussion", "evoluation"],
+    correctIndex: 0,
+    explanation: "« évolution » prend un accent aigu initial.",
+  },
+  {
+    sentence: "Le ___ de ce programme dépend de son financement.",
+    options: ["développement", "developpement", "dévelloppement", "dévelopemment"],
+    correctIndex: 0,
+    explanation: "« développement » prend un accent aigu et deux « p ».",
+  },
+  {
+    sentence: "Cette solution est réaliste ; ___, elle peut être appliquée rapidement.",
+    options: ["de plus", "deplus", "de plux", "de-plus"],
+    correctIndex: 0,
+    explanation: "« de plus » s'écrit en deux mots sans trait d'union.",
+  },
+  {
+    sentence: "___, il faut prévoir un accompagnement pour les publics fragiles.",
+    options: ["Par ailleurs", "Par ailleur", "Parallieurs", "Par ailleures"],
+    correctIndex: 0,
+    explanation: "« Par ailleurs » s'écrit en deux mots et introduit un argument supplémentaire.",
+  },
+  {
+    sentence: "___, je considère que cette mesure est utile, mais insuffisante.",
+    options: ["En somme", "Ensomme", "En sôme", "Ensomes"],
+    correctIndex: 0,
+    explanation: "« En somme » est un marqueur de synthèse en fin d'argumentation.",
+  },
+  {
+    sentence: "___, les autorités doivent agir sans attendre.",
+    options: ["Désormais", "Desormais", "Désormait", "Désormes"],
+    correctIndex: 0,
+    explanation: "« Désormais » prend un accent aigu sur « é ».",
+  },
+  {
+    sentence: "Cette mesure ne sera efficace que si elle est ___ évaluée.",
+    options: ["régulièrement", "regulierement", "réguliérement", "regulièrrement"],
+    correctIndex: 0,
+    explanation: "« régulièrement » prend les accents sur « é » et « è ».",
+  },
+  {
+    sentence: "Le débat public doit rester ___ et respectueux.",
+    options: ["constructif", "construtif", "constructiffe", "construcif"],
+    correctIndex: 0,
+    explanation: "« constructif » est la forme correcte au masculin singulier.",
+  },
+  {
+    sentence: "___ de conclure, il faut examiner les données disponibles.",
+    options: ["Avant", "Avent", "Avan", "Avantt"],
+    correctIndex: 0,
+    explanation: "« avant de + infinitif » est la structure correcte.",
+  },
+  {
+    sentence: "___, il serait pertinent d'adopter une approche progressive.",
+    options: ["En définitive", "En definitive", "En défenitive", "En défénitive"],
+    correctIndex: 0,
+    explanation: "« En définitive » est une formule de conclusion fréquente à l'écrit.",
+  },
+];

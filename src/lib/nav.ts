@@ -58,6 +58,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Argumentatif",  href: "/parcours/ecrit-argumentatif" },
       { label: "Développer ses idées", href: "/parcours/ecrit-developper" },
       { label: "Connecteurs", href: "/parcours/ecrit-connecteurs" },
+      { label: "Compléter les mots", href: "/quiz/completer-mots", icon: FlaskConical },
       { label: "Test connecteurs", href: "/quiz/connecteurs", icon: FlaskConical },
       { label: "Test écrit",    href: "/quiz/ecrit",               icon: FlaskConical },
     ],

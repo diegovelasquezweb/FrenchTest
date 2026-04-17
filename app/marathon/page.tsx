@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
@@ -13,7 +13,6 @@ import { MarathonSettingsDrawer } from "@/src/components/navigation/MarathonSett
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import type { MarathonCategoryId, MarathonGroupId } from "@/src/components/navigation/MarathonCategoryPicker";
 import { ALL_MARATHON_CATEGORY_IDS } from "@/src/components/navigation/MarathonCategoryPicker";
-import { getItem, setItem } from "@/src/lib/store";
 import { FLASHCARDS } from "@/src/data/flashcards";
 import { VOCABULAIRE_CARDS } from "@/src/data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
@@ -22,7 +21,7 @@ import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
 import { TOURISTE_CARDS } from "@/src/data/touristeCards";
 import type { Flashcard } from "@/src/types";
-import type { RepetitionStyle } from "@/src/components/flashcard/FlashcardView";
+import type { MarathonMode, RepetitionStyle } from "@/src/components/flashcard/FlashcardView";
 
 const ALL_VOCAB = [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS];
 
@@ -52,46 +51,35 @@ export default function MarathonPage() {
   const router = useRouter();
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
 
-  const [marathonAutoPlay, setMarathonAutoPlay] = useState<boolean>(() => {
-    try { return getItem("tef-marathon-autoplay") === "1"; }
-    catch { return false; }
-  });
-  const [marathonAutoSeconds, setMarathonAutoSeconds] = useState<number>(() => {
-    try {
-      const raw = Number(getItem("tef-marathon-autoplay-seconds") ?? "5");
-      return Number.isFinite(raw) ? Math.min(30, Math.max(1, Math.round(raw))) : 5;
-    } catch { return 5; }
+  const [marathonAutoPlay, setMarathonAutoPlay] = useState(() => localStorage.getItem("tef-marathon-autoplay") === "1");
+  const [marathonAutoSeconds, setMarathonAutoSeconds] = useState(() => {
+    const v = Number(localStorage.getItem("tef-marathon-autoseconds") ?? "5");
+    return Number.isFinite(v) ? Math.min(30, Math.max(1, v)) : 5;
   });
   const [marathonOrder, setMarathonOrder] = useState<CardOrder>(() => {
-    try {
-      const v = getItem("tef-marathon-order");
-      if (v === "random" || v === "alpha") return v;
-      return "fixed";
-    } catch { return "fixed"; }
+    const v = localStorage.getItem("tef-marathon-order");
+    return v === "alpha" ? "alpha" : v === "fixed" ? "fixed" : "random";
   });
-  const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(
-    () => new Set<MarathonCategoryId>([
+  const [marathonCategories, setMarathonCategories] = useState<Set<MarathonCategoryId>>(() => {
+    const v = localStorage.getItem("tef-marathon-categories");
+    if (v) {
+      const parsed = JSON.parse(v) as MarathonCategoryId[];
+      if (parsed.length > 0) return new Set(parsed);
+    }
+    return new Set<MarathonCategoryId>([
       "oral-interaction", "oral-monologue", "ecrit-faits-divers", "connecteurs", "argumentation",
-    ]),
-  );
-  const [repetitionEnabled, setRepetitionEnabled] = useState<boolean>(() => {
-    try { return getItem("tef-repetition-enabled") === "1"; }
-    catch { return false; }
+    ]);
+  });
+  const [marathonMode, setMarathonMode] = useState<MarathonMode>(() => {
+    const v = localStorage.getItem("tef-marathon-mode");
+    return v === "révision" || v === "répétition" ? v : "lecture";
   });
   const [repetitionStyle, setRepetitionStyle] = useState<RepetitionStyle>(() => {
-    try {
-      const v = getItem("tef-repetition-style");
-      return v === "masking" ? "masking" : "intensity";
-    } catch { return "intensity"; }
+    return localStorage.getItem("tef-marathon-repstyle") === "masking" ? "masking" : "intensity";
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-
-  useEffect(() => { setItem("tef-marathon-autoplay", marathonAutoPlay ? "1" : "0"); }, [marathonAutoPlay]);
-  useEffect(() => { setItem("tef-marathon-autoplay-seconds", String(marathonAutoSeconds)); }, [marathonAutoSeconds]);
-  useEffect(() => { setItem("tef-marathon-order", marathonOrder); }, [marathonOrder]);
-  useEffect(() => { setItem("tef-repetition-enabled", repetitionEnabled ? "1" : "0"); }, [repetitionEnabled]);
-  useEffect(() => { setItem("tef-repetition-style", repetitionStyle); }, [repetitionStyle]);
+  const categoriesSnapshotRef = useRef<Set<MarathonCategoryId>>(new Set());
 
   const marathonCards = useMemo(
     () => Array.from(marathonCategories).flatMap((id) => MARATHON_SOURCES[id] ?? []),
@@ -141,7 +129,11 @@ export default function MarathonPage() {
     });
   }
 
-  useSetMarathonHeader(deck, { onFilter: () => setDrawerOpen(true), onSettings: () => setSettingsOpen(true) });
+  useSetMarathonHeader(deck, {
+    onFilter: () => { categoriesSnapshotRef.current = new Set(marathonCategories); setDrawerOpen(true); },
+    onSettings: () => setSettingsOpen(true),
+    showReset: marathonMode === "révision",
+  });
 
   return (
     <AuthGate>
@@ -157,7 +149,7 @@ export default function MarathonPage() {
           onToggleFavorite={() => toggleFavoriteCard(deck.currentCard!.id)}
           autoAdvanceEnabled={marathonAutoPlay}
           autoAdvanceMs={marathonAutoSeconds * 1000}
-          repetitionEnabled={repetitionEnabled}
+          mode={marathonMode}
           repetitionStyle={repetitionStyle}
         />
       )}
@@ -174,7 +166,15 @@ export default function MarathonPage() {
 
       <MarathonFilterDrawer
         open={drawerOpen}
-        onClose={() => { setDrawerOpen(false); deck.startSession(); }}
+        onClose={() => {
+          setDrawerOpen(false);
+          const prev = categoriesSnapshotRef.current;
+          const changed = prev.size !== marathonCategories.size || Array.from(marathonCategories).some((id) => !prev.has(id));
+          if (changed) {
+            localStorage.setItem("tef-marathon-categories", JSON.stringify(Array.from(marathonCategories)));
+            deck.startSession();
+          }
+        }}
         groups={[
           {
             id: "patterns",
@@ -224,16 +224,23 @@ export default function MarathonPage() {
       />
       <MarathonSettingsDrawer
         open={settingsOpen}
-        onClose={() => { setSettingsOpen(false); deck.startSession(); }}
-        onRestart={() => deck.startSession()}
+        onClose={() => setSettingsOpen(false)}
+        onRestart={() => {
+          localStorage.setItem("tef-marathon-autoplay", marathonAutoPlay ? "1" : "0");
+          localStorage.setItem("tef-marathon-autoseconds", String(marathonAutoSeconds));
+          localStorage.setItem("tef-marathon-order", marathonOrder);
+          localStorage.setItem("tef-marathon-mode", marathonMode);
+          localStorage.setItem("tef-marathon-repstyle", repetitionStyle);
+          deck.startSession();
+        }}
         autoPlay={marathonAutoPlay}
         onAutoPlayChange={setMarathonAutoPlay}
         autoSeconds={marathonAutoSeconds}
         onAutoSecondsChange={setMarathonAutoSeconds}
         order={marathonOrder}
         onOrderChange={setMarathonOrder}
-        repetitionEnabled={repetitionEnabled}
-        onRepetitionEnabledChange={setRepetitionEnabled}
+        mode={marathonMode}
+        onModeChange={setMarathonMode}
         repetitionStyle={repetitionStyle}
         onRepetitionStyleChange={setRepetitionStyle}
       />
