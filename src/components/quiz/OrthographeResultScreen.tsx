@@ -29,7 +29,7 @@ export function OrthographeResultScreen({ history, score, total, onRestart, onHo
     <div className="flex flex-1 items-start justify-center px-4 py-6">
     <div className="w-full max-w-lg flex flex-col gap-4">
 
-      {/* ── Score header ── */}
+
       <div className="rounded-card bg-surface px-6 py-5 shadow-sm">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -60,7 +60,7 @@ export function OrthographeResultScreen({ history, score, total, onRestart, onHo
         </div>
       </div>
 
-      {/* ── Récapitulatif ── */}
+
       <section aria-label="Récapitulatif des réponses">
         <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-muted">
           Récapitulatif
@@ -102,7 +102,7 @@ export function OrthographeResultScreen({ history, score, total, onRestart, onHo
         </ol>
       </section>
 
-      {/* ── Actions ── */}
+
       <div className="flex gap-3">
         <button
           type="button"

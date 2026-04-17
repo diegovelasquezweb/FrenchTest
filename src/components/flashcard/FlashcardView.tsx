@@ -69,7 +69,6 @@ export function FlashcardView({
     focusTrapRef.current?.focus({ preventScroll: true });
   }, [index]);
 
-  // Clear flash overlay whenever a new card renders.
   useEffect(() => { setFlash(null); pending.current = false; }, [card.id]);
 
   const triggerRate = useCallback((r: FlashcardRating) => {
@@ -116,7 +115,7 @@ export function FlashcardView({
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-6">
     <div className="w-full max-w-xl">
-      {/* Progress + nav */}
+
       <div className="mb-4 flex items-center justify-center gap-3">
         {onBack && index > 0 ? (
           <button

@@ -84,7 +84,7 @@ export function DictionaryView() {
         </div>
       </form>
 
-      {/* Error Message */}
+
       {error && (
         <div className="flex gap-3 rounded-card bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 mb-6">
           <AlertCircle size={16} className="shrink-0 mt-0.5" />
@@ -92,10 +92,10 @@ export function DictionaryView() {
         </div>
       )}
 
-      {/* Results */}
+
       {result && (
         <div className="rounded-card bg-surface shadow-sm overflow-hidden">
-          {/* Word Header */}
+
           <div className="border-b border-ink/8 px-6 py-4">
             <h2 className="text-2xl font-bold text-ink mb-1">{result.word}</h2>
             {result.pronunciations.length > 0 && (
@@ -103,7 +103,7 @@ export function DictionaryView() {
             )}
           </div>
 
-          {/* Definitions */}
+
           <div className="px-6 py-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">Définitions</h3>
             <div className="space-y-3">
@@ -120,7 +120,7 @@ export function DictionaryView() {
             </div>
           </div>
 
-          {/* Examples */}
+
           {result.examples.length > 0 && (
             <div className="border-t border-ink/8 px-6 py-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">Exemples</h3>
@@ -136,7 +136,7 @@ export function DictionaryView() {
         </div>
       )}
 
-      {/* Idle State */}
+
       {!result && !loading && !error && (
         <div className="text-center py-12">
           <div className="mx-auto w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mb-4">

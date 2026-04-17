@@ -32,7 +32,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
     <div className="flex flex-1 items-start justify-center px-4 py-6">
     <div className="flex w-full max-w-lg flex-col gap-4">
 
-      {/* ── Score header ── */}
+
       <div className="rounded-card bg-surface px-6 py-5 shadow-sm">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -47,7 +47,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
           </span>
         </div>
 
-        {/* Stats row */}
+
         <div className="mt-4 grid grid-cols-3 gap-2">
           {([
             { count: green,  label: "Savais",      dot: "bg-emerald-500", text: "text-emerald-600 dark:text-emerald-400" },
@@ -65,7 +65,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
         </div>
       </div>
 
-      {/* ── Maîtrise globale ── */}
+
       <div className="rounded-card bg-surface px-5 py-4 shadow-sm">
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted">Maîtrise totale</p>
@@ -82,7 +82,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
         </div>
       </div>
 
-      {/* ── Récapitulatif complet ── */}
+
       {sessionResults.length > 0 && (
         <section aria-label="Récapitulatif de la session">
           <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-muted">
@@ -106,7 +106,7 @@ export function FlashcardResults({ sessionResults, masteredCount, totalCards, ca
         </section>
       )}
 
-      {/* ── Actions ── */}
+
       <div className="flex gap-3">
         <button
           type="button"

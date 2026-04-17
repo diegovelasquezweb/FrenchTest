@@ -146,7 +146,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Mes modèles */}
+
       {favoriteCardList.length > 0 && (
         <div className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link

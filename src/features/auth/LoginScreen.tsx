@@ -20,7 +20,7 @@ export function LoginScreen({ onGitHub: _onGitHub, onGoogle, onGuest }: LoginScr
         <p className="text-sm text-muted mb-8">Connectez-vous pour sauvegarder votre progression</p>
 
         <div className="flex flex-col gap-3">
-          {/* Google */}
+
           <button
             type="button"
             onClick={onGoogle}
@@ -48,7 +48,7 @@ export function LoginScreen({ onGitHub: _onGitHub, onGoogle, onGuest }: LoginScr
           </button>
           */}
 
-          {/* Guest */}
+
           <button
             type="button"
             onClick={onGuest}

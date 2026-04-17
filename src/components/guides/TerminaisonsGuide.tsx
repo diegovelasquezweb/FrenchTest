@@ -206,7 +206,7 @@ export function TerminaisonsGuide() {
           </Accordion.Item>
         ))}
 
-        {/* Comparaisons rapides */}
+
         <Accordion.Item value="comparaisons" className="border-t border-ink/8">
           <Accordion.Header>
             <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">

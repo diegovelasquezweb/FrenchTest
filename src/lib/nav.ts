@@ -56,6 +56,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Faits divers",  href: "/parcours/ecrit-faits-divers" },
       { label: "Argumentatif",  href: "/parcours/ecrit-argumentatif" },
+      { label: "Développer ses idées", href: "/parcours/ecrit-developper" },
       { label: "Test écrit",    href: "/quiz/ecrit",               icon: FlaskConical },
     ],
   },
