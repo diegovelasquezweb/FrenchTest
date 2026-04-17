@@ -41,7 +41,7 @@ export type NavGroup = NavGroupSingle | NavGroupAccordion;
 export const NAV_GROUPS: NavGroup[] = [
   { id: "marathon",      type: "single", label: "Marathon",               href: "/marathon",                  icon: Gamepad2,   marathon: true },
   { id: "difficiles",    type: "single", label: "Mes difficiles",         href: "/mes-difficiles",            icon: Bookmark },
-  { id: "mes-patterns",  type: "single", label: "Mes patterns",           href: "/mes-patterns",              icon: Bookmark },
+  { id: "mes-patterns",  type: "single", label: "Mes modèles",           href: "/mes-patterns",              icon: Bookmark },
   { id: "mes-vocab",     type: "single", label: "Mon vocabulaire",        href: "/mon-vocabulaire",           icon: Bookmark },
   {
     id: "oral", type: "accordion", label: "Oral",
@@ -56,6 +56,9 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Faits divers",  href: "/parcours/ecrit-faits-divers" },
       { label: "Argumentatif",  href: "/parcours/ecrit-argumentatif" },
+      { label: "Développer ses idées", href: "/parcours/ecrit-developper" },
+      { label: "Connecteurs", href: "/parcours/ecrit-connecteurs" },
+      { label: "Test connecteurs", href: "/quiz/connecteurs", icon: FlaskConical },
       { label: "Test écrit",    href: "/quiz/ecrit",               icon: FlaskConical },
     ],
   },
@@ -87,13 +90,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Accents",           href: "/vocabulaire/accents" },
       { label: "Mixte",             href: "/vocabulaire/mix" },
       { label: "Liste vocabulaire", href: "/vocabulaire/liste",    icon: SlidersHorizontal },
-    ],
-  },
-  {
-    id: "connecteurs", type: "accordion", label: "Connecteurs",
-    items: [
-      { label: "Connecteurs",      href: "/parcours/connecteurs" },
-      { label: "Test connecteurs", href: "/quiz/connecteurs",     icon: FlaskConical },
     ],
   },
   {

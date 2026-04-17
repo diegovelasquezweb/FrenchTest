@@ -118,7 +118,6 @@ export function BaseQuizCard({
 
         {feedback}
 
-        {/* Desktop: button inside card */}
         {isRevealed && (
           <div className={`${nextButtonSpacing} hidden md:flex justify-center`}>
             <button
@@ -134,10 +133,8 @@ export function BaseQuizCard({
       </div>
       </div>
 
-      {/* Mobile spacer so fixed bottom CTA doesn't cover card content */}
       {isRevealed && <div className="h-24 md:hidden" aria-hidden="true" />}
 
-      {/* Mobile: sticky bar pinned to bottom of viewport */}
       {isRevealed && (
         <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-ink/8 bg-bg/90 px-4 py-3 backdrop-blur-sm">
           <button

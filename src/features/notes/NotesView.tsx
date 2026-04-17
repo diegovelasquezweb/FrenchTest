@@ -31,7 +31,7 @@ export function NotesView({ notes, onAdd, onDelete }: NotesViewProps) {
 
   return (
     <div className="self-center mx-auto w-full max-w-xl px-4 py-6">
-      {/* Add form */}
+
       <div className="rounded-card bg-surface shadow-sm mb-4 overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-4 border-b border-ink/8">
           <NotebookPen size={15} className="text-ink" />
@@ -80,7 +80,7 @@ export function NotesView({ notes, onAdd, onDelete }: NotesViewProps) {
         </form>
       </div>
 
-      {/* Notes list */}
+
       {notes.length === 0 ? (
         <div className="flex flex-col items-center gap-3 px-6 py-12 text-center text-muted">
           <NotebookPen size={32} strokeWidth={1.5} />

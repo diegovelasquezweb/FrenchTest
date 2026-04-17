@@ -37,21 +37,21 @@ export function MarathonFilterDrawer({
 
   return (
     <>
-      {/* Backdrop */}
+
       <div
         aria-hidden="true"
         onClick={onClose}
         className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       />
 
-      {/* Drawer */}
+
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Filtrer le Marathon"
         className={`fixed top-0 right-0 z-50 h-full w-80 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
-        {/* Header */}
+
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink/8 shrink-0">
           <span className="text-sm font-semibold text-ink">Filtrer le Marathon</span>
           <button
@@ -64,7 +64,7 @@ export function MarathonFilterDrawer({
           </button>
         </div>
 
-        {/* Select all / Unselect all */}
+
         <div className="flex items-center justify-between px-4 py-2 border-b border-ink/8 shrink-0 bg-bg/40">
           <p className="text-xs text-muted">
             {totalSelectedCards > 0 ? `${totalSelectedCards} cartes` : "Aucune carte"}
@@ -102,7 +102,7 @@ export function MarathonFilterDrawer({
           </div>
         </div>
 
-        {/* Content */}
+
         <div className="flex-1 overflow-y-auto px-3 py-3">
           <MarathonCategoryPicker
             groups={groups}

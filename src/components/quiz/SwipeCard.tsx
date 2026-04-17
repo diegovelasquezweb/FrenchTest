@@ -5,6 +5,7 @@ interface SwipeCardProps {
   className?: string;
   "aria-label"?: string;
   resetKey?: string | number;
+  onClick?: () => void;
   onSwipeRight?: () => void;
   onSwipeLeft?: () => void;
   onSwipeUp?: () => void;
@@ -19,6 +20,7 @@ export function SwipeCard({
   className,
   "aria-label": ariaLabel,
   resetKey,
+  onClick,
   onSwipeRight,
   onSwipeLeft,
   onSwipeUp,
@@ -93,6 +95,7 @@ export function SwipeCard({
       ref={divRef}
       className={className}
       aria-label={ariaLabel}
+      onClick={onClick}
       style={{ touchAction: hasVertical ? "none" : hasCallbacks ? "pan-y" : "auto" }}
     >
       {children}

@@ -29,7 +29,7 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
     <div className="flex flex-1 items-start justify-center px-4 py-6">
     <div className="w-full max-w-lg flex flex-col gap-4">
 
-      {/* ── Score header ── */}
+
       <div className="rounded-card bg-surface px-6 py-5 shadow-sm">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -60,7 +60,7 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
         </div>
       </div>
 
-      {/* ── Résultats détaillés ── */}
+
       <section aria-label="Récapitulatif des verbes">
         <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-widest text-muted">
           Récapitulatif
@@ -94,7 +94,7 @@ export function ResultScreen({ history, score, total, onRestart, onHome }: Resul
         </ol>
       </section>
 
-      {/* ── Actions ── */}
+
       <div className="flex gap-3">
         <button
           type="button"

@@ -41,7 +41,6 @@ export async function fetchWiktionary(word: string, language: "fr" | "es" | "en"
     const extract = page?.extract;
     if (!extract) return null;
 
-    // Parse the extract to find definitions and examples
     const definitions: Definition[] = [];
     const examples: string[] = [];
     const pronunciations: string[] = [];

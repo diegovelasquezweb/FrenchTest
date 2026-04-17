@@ -93,7 +93,6 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
 
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-ink/8 bg-surface">
-      {/* Logo */}
       <div className="px-5 py-5 border-b border-ink/8">
         <Link
           href="/"
@@ -103,9 +102,7 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
         </Link>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-1" aria-label="Navigation">
-        {/* Marathon — always first */}
         {(() => {
           const g = NAV_GROUPS.find(g => g.id === "marathon")!;
           if (g.type !== "single") return null;
@@ -127,7 +124,6 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
           );
         })()}
 
-        {/* Leçons favorites — collapsible accordion, open by default, hidden when empty */}
         {favorites.length > 0 && (() => {
           const hrefMap = new Map<string, string>();
           for (const g of NAV_GROUPS) {
@@ -292,7 +288,6 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
         })}
       </nav>
 
-      {/* AI Chat (authed only) */}
       {status === "authed" && (
         <div className="px-4 py-2 border-t border-ink/8">
           <button
@@ -306,7 +301,6 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
         </div>
       )}
 
-      {/* User footer */}
       <div className="border-t border-ink/8 flex items-center justify-between px-4 py-3">
         <Popover.Root>
           <Popover.Trigger asChild>

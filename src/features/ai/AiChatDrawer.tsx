@@ -86,7 +86,7 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
         aria-label="Poser une question à l'IA"
         className={`fixed top-0 right-0 z-50 h-full w-80 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
-        {/* Header */}
+
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink/8 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-ink">Poser une question à l'IA</span>
@@ -114,7 +114,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
           </div>
         </div>
 
-        {/* Body */}
         {keyConfigured === null ? (
           <div className="flex flex-1 items-center justify-center">
             <span className="text-xs text-muted">Chargement…</span>
@@ -134,7 +133,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
           </div>
         ) : (
           <>
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
               {messages.length === 0 && (
                 <p className="text-xs text-muted text-center mt-4">
@@ -178,7 +176,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
               <div ref={bottomRef} />
             </div>
 
-            {/* Input */}
             <div className="shrink-0 border-t border-ink/8 px-3 py-3">
               <div className="flex items-end gap-2">
                 <textarea

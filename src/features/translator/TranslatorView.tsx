@@ -50,7 +50,6 @@ export function TranslatorView() {
     }
   }, [sourceLanguage]);
 
-  // Debounced search
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
@@ -92,7 +91,7 @@ export function TranslatorView() {
         </div>
       </div>
 
-      {/* Search Input */}
+
       <div className="mb-8">
         <input
           type="text"
@@ -110,7 +109,7 @@ export function TranslatorView() {
         )}
       </div>
 
-      {/* Error Message */}
+
       {error && (
         <div className="flex gap-3 rounded-card bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 mb-6">
           <AlertCircle size={16} className="shrink-0 mt-0.5" />
@@ -118,7 +117,7 @@ export function TranslatorView() {
         </div>
       )}
 
-      {/* Results */}
+
       {result && (
         <div className="rounded-card bg-surface shadow-sm overflow-hidden">
           <div className="px-6 py-4">
@@ -137,7 +136,7 @@ export function TranslatorView() {
         </div>
       )}
 
-      {/* Idle State */}
+
       {!result && !loading && !error && searchTerm.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted text-sm">Écris un mot pour voir sa traduction</p>

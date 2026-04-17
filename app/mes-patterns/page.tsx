@@ -8,7 +8,7 @@ export default function MesPatternsPage() {
 
   return (
     <FavoriteCollectionTemplate
-      title="Mes patterns"
+      title="Mes modèles"
       storageKey="tef-mes-patterns-progress"
       favoriteList={favoriteCardList}
       isFavoriteCard={isFavoriteCard}
@@ -16,7 +16,7 @@ export default function MesPatternsPage() {
       copy={{
         emptyHeading: "Aucun pattern sauvegardé",
         emptyDescription:
-          "Marque des patterns comme favoris pendant tes sessions pour les retrouver ici.",
+          "Marque des modèles comme favoris pendant tes sessions pour les retrouver ici.",
         countLabel: (n) => `${n} pattern${n > 1 ? "s" : ""}`,
       }}
     />
