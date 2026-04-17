@@ -1,6 +1,6 @@
-const WORKER_URL    = import.meta.env.VITE_SYNC_URL         as string | undefined;
-const GITHUB_CLIENT = import.meta.env.VITE_GITHUB_CLIENT_ID as string | undefined;
-const GOOGLE_CLIENT = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+const WORKER_URL    = process.env.NEXT_PUBLIC_SYNC_URL;
+const GITHUB_CLIENT = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+const GOOGLE_CLIENT = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 const SESSION_KEY = "tef-session";
 

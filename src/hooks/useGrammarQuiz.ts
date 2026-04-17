@@ -17,7 +17,7 @@ import { buildConditionnelQuestions } from "../lib/conditionnelQuestions";
 import { buildPresentQuestion } from "../lib/presentQuestions";
 import { buildSubjonctifQuestion } from "../lib/subjonctifQuestions";
 import { buildPlusQueParfaitQuestion } from "../lib/plusQueParfaitQuestions";
-import { generateDistractors } from "../lib/distractors";
+import { buildParticipeQuestion } from "../lib/participeQuestions";
 import { fisherYates } from "../lib/shuffle";
 
 export type GrammarQuizQuestion =
@@ -60,15 +60,6 @@ const initialState: GrammarQuizState = {
 
 const TOTAL_QUESTIONS = 10;
 
-function buildParticipeQuestion(verb: Verb, rng: () => number): QuizQuestion {
-  const distractors = generateDistractors(verb, VERBS, rng);
-  const all = fisherYates([verb.participle, ...distractors], rng);
-  return {
-    verb,
-    options: all,
-    correctIndex: all.indexOf(verb.participle),
-  };
-}
 
 function buildMixedQuestions(count: number, rng: () => number): GrammarQuizQuestion[] {
   const sources: GrammarQuizQuestion["source"][] = ["participe", "imparfait", "présent", "futur", "conditionnel", "subjonctif", "plus-que-parfait"];

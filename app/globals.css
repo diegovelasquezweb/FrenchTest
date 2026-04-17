@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: oklch(0.97 0.006 260);
+  --color-surface: oklch(1 0 0);
+  --color-ink: oklch(0.2 0.03 260);
+  --color-muted: oklch(0.52 0.02 260);
+  --color-brand: oklch(0.52 0.19 265);
+  --color-correct: oklch(0.56 0.17 150);
+  --color-wrong: oklch(0.56 0.2 25);
+  --color-ring: oklch(0.68 0.16 265);
+  --color-btn-bg: oklch(1 0 0);
+  --color-btn-border: oklch(0 0 0 / 0.13);
+  --radius-card: 4px;
+  --radius-button: 4px;
+}
+
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-bg: oklch(0.15 0.02 265);
+      --color-surface: oklch(0.21 0.025 265);
+      --color-ink: oklch(0.97 0 0);
+      --color-muted: oklch(0.62 0.02 260);
+      --color-btn-bg: oklch(0.38 0.03 265);
+      --color-btn-border: oklch(1 0 0 / 0.32);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --color-bg: oklch(0.15 0.02 265);
+    --color-surface: oklch(0.21 0.025 265);
+    --color-ink: oklch(0.97 0 0);
+    --color-muted: oklch(0.62 0.02 260);
+    --color-btn-bg: oklch(0.38 0.03 265);
+    --color-btn-border: oklch(1 0 0 / 0.32);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@keyframes flash-shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-2px); }
+  75%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-flash-shake {
+  animation: flash-shake 180ms ease-in-out;
+}
+
+@keyframes progress-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-shimmer {
+  animation: progress-shimmer 1.8s ease-in-out infinite;
+}

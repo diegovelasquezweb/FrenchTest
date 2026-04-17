@@ -2,6 +2,7 @@
 node_modules/
 
 # Build output
+.next/
 dist/
 dist-ssr/
 
@@ -28,6 +29,9 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+# Next.js
+next-env.d.ts
 
 # Vite
 *.local

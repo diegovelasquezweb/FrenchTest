@@ -1,0 +1,53 @@
+"use client";
+
+import { usePresentQuiz } from "@/src/hooks/usePresentQuiz";
+import { useWeakVerbs } from "@/src/hooks/useWeakVerbs";
+import { VerbConjugationCard } from "@/src/components/quiz/VerbConjugationCard";
+import { PresentTable } from "@/src/components/tables/PresentTable";
+import { PresentWrongTable } from "@/src/components/tables/PresentWrongTable";
+import { ResultScreen } from "@/src/components/quiz/ResultScreen";
+import { QuizTemplate } from "@/src/components/templates";
+
+export default function PresentPage() {
+  const quiz = usePresentQuiz();
+  const { isWeak, toggleWeak } = useWeakVerbs();
+
+  return (
+    <QuizTemplate
+      title="Présent"
+      quiz={quiz}
+      renderCard={({ question, answerState, selectedIndex, questionNumber, total }) => (
+        <VerbConjugationCard
+          question={question}
+          tenseName="Présent"
+          correctFeedback={<PresentTable verb={question.verb} />}
+          wrongFeedback={(wrongForm, wrongSubject) => (
+            <PresentWrongTable
+              verb={question.verb}
+              wrongForm={wrongForm}
+              wrongSubject={wrongSubject}
+              targetSubject={question.targetSubject}
+            />
+          )}
+          answerState={answerState}
+          selectedIndex={selectedIndex}
+          onSelect={quiz.selectAnswer}
+          onNext={quiz.nextQuestion}
+          questionNumber={questionNumber}
+          total={total}
+          isWeak={isWeak(question.verb.infinitive)}
+          onToggleWeak={() => toggleWeak(question.verb.infinitive)}
+        />
+      )}
+      renderResult={({ score, total, onRestart, onHome }) => (
+        <ResultScreen
+          history={quiz.state.history}
+          score={score}
+          total={total}
+          onRestart={onRestart}
+          onHome={onHome}
+        />
+      )}
+    />
+  );
+}

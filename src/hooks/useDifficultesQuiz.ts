@@ -1,12 +1,11 @@
 import { useReducer, useCallback } from "react";
-import type { QuizQuestion, Verb } from "../types";
+import type { Verb } from "../types";
 import { AnswerState, QuizPhase } from "../types";
-import { VERBS } from "../data/verbs";
 import { buildImparfaitQuestions } from "../lib/imparfaitQuestions";
 import { buildFuturQuestions } from "../lib/futurQuestions";
 import { buildConditionnelQuestions } from "../lib/conditionnelQuestions";
 import { buildPresentQuestion } from "../lib/presentQuestions";
-import { generateDistractors } from "../lib/distractors";
+import { buildParticipeQuestion } from "../lib/participeQuestions";
 import { fisherYates } from "../lib/shuffle";
 import type { GrammarQuizQuestion } from "./useGrammarQuiz";
 
@@ -41,11 +40,6 @@ const initialState: DifficultesState = {
 
 const TOTAL_QUESTIONS = 10;
 
-function buildParticipeQuestion(verb: Verb, rng: () => number): QuizQuestion {
-  const distractors = generateDistractors(verb, VERBS, rng);
-  const all = fisherYates([verb.participle, ...distractors], rng);
-  return { verb, options: all, correctIndex: all.indexOf(verb.participle) };
-}
 
 function buildDifficultesQuestions(
   verbs: Verb[],
