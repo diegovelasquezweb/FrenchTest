@@ -9,6 +9,7 @@ import { FlashcardCategoryTemplate } from "@/src/components/templates";
 
 type ParcoursCategory =
   | "connecteurs"
+  | "ecrit-connecteurs"
   | "oral-interaction"
   | "oral-monologue"
   | "ecrit-faits-divers"
@@ -17,6 +18,7 @@ type ParcoursCategory =
 
 const VALID = new Set<string>([
   "connecteurs",
+  "ecrit-connecteurs",
   "oral-interaction",
   "oral-monologue",
   "ecrit-faits-divers",
@@ -35,6 +37,7 @@ const developperCards = FLASHCARDS.filter((c) => c.category === "argumentation" 
 
 const PARCOURS_TITLES: Record<ParcoursCategory, string> = {
   connecteurs: "Connecteurs",
+  "ecrit-connecteurs": "Connecteurs",
   "oral-interaction": "Renseignements",
   "oral-monologue": "Persuasion",
   "ecrit-faits-divers": "Faits divers",
@@ -51,6 +54,7 @@ export default function ParcoursCategoryPage({
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
 
   const connecteurs = useFlashcards(connecteursCards, "tef-p-connecteurs");
+  const ecritConnecteurs = useFlashcards(connecteursCards, "tef-p-ecrit-connecteurs");
   const oral = useFlashcards(oralCards, "tef-p-oral-interaction");
   const monologue = useFlashcards(persuasionCards, "tef-p-oral-monologue");
   const faits = useFlashcards(faitsDiversCards, "tef-p-ecrit-faits-divers");
@@ -59,6 +63,7 @@ export default function ParcoursCategoryPage({
 
   const deckMap: Record<ParcoursCategory, typeof connecteurs> = {
     connecteurs,
+    "ecrit-connecteurs": ecritConnecteurs,
     "oral-interaction": oral,
     "oral-monologue": monologue,
     "ecrit-faits-divers": faits,
