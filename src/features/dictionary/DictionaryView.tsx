@@ -62,7 +62,6 @@ export function DictionaryView() {
         </div>
       </div>
 
-      {/* Search Form */}
       <form onSubmit={handleSearch} className="mb-8">
         <div className="flex gap-2">
           <input

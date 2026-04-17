@@ -174,7 +174,6 @@ export function FlashcardView({
         </Popover.Root>
       </div>
 
-      {/* Hidden focus trap — receives focus on card change without scrolling or activating a button */}
       <input ref={focusTrapRef} type="text" readOnly tabIndex={-1} className="sr-only" aria-hidden="true" />
 
       <SwipeCard

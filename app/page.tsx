@@ -87,7 +87,6 @@ export default function HomePage() {
         <p className="text-sm text-muted">Choisissez un exercice ci-dessous.</p>
       </div>
 
-      {/* Marathon — featured */}
       <div className="w-full rounded overflow-hidden border border-brand/25 bg-brand/6 shadow-sm">
         <Link
           href="/marathon"
@@ -98,7 +97,6 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Leçons favorites */}
       {favorites.length > 0 && (
         <div className="w-full">
           <p className="mb-2 px-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted">
@@ -132,7 +130,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Mes difficiles */}
       {weakVerbList.length > 0 && (
         <div className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link
@@ -160,7 +157,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Accordion sections */}
       <Accordion.Root type="multiple" className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
         {ACCORDION_SECTIONS.map((section, si) => (
           <Accordion.Item
@@ -206,7 +202,6 @@ export default function HomePage() {
         ))}
       </Accordion.Root>
 
-      {/* Standalone single buttons (Verbes essentiels, Terminaisons verbales) */}
       {STANDALONE_SINGLES.map((group) => (
         <div key={group.id} className="w-full rounded overflow-hidden border border-ink/10 bg-surface shadow-sm">
           <Link

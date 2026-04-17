@@ -121,7 +121,6 @@ export function MarathonSettingsDrawer({
               />
             </div>
 
-            {/* Speed slider — horizontal */}
             <div
               aria-hidden={!autoPlay}
               className={`flex items-center gap-3 transition-opacity duration-200 ${autoPlay ? "opacity-100" : "opacity-40 pointer-events-none"}`}

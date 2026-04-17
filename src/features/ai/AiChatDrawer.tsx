@@ -114,7 +114,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
           </div>
         </div>
 
-        {/* Body */}
         {keyConfigured === null ? (
           <div className="flex flex-1 items-center justify-center">
             <span className="text-xs text-muted">Chargement…</span>
@@ -134,7 +133,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
           </div>
         ) : (
           <>
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
               {messages.length === 0 && (
                 <p className="text-xs text-muted text-center mt-4">
@@ -178,7 +176,6 @@ export function AiChatDrawer({ open, onClose }: AiChatDrawerProps) {
               <div ref={bottomRef} />
             </div>
 
-            {/* Input */}
             <div className="shrink-0 border-t border-ink/8 px-3 py-3">
               <div className="flex items-end gap-2">
                 <textarea
