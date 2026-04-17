@@ -313,12 +313,13 @@ export function FlashcardView({
         />
 
         <SwipeCard
-          className={`relative flex min-h-110 flex-col rounded-card bg-surface p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""}`}
+          className={`relative flex min-h-110 flex-col rounded-card bg-surface p-4 shadow-sm sm:min-h-0 sm:p-8 transition-shadow duration-150 ease-out ${flash ? `ring-4 ${FLASH_RING[flash]} animate-flash-shake` : ""} ${inRepPhase ? "cursor-pointer" : ""}`}
           resetKey={card.id}
-          onSwipeRight={() => triggerRate(2)}
-          onSwipeLeft={() => triggerRate(0)}
+          onClick={inRepPhase ? advanceRep : undefined}
+          onSwipeRight={inRepPhase ? advanceRep : () => triggerRate(2)}
+          onSwipeLeft={inRepPhase ? advanceRep : () => triggerRate(0)}
           onSwipeDown={triggerSkip}
-          onSwipeUp={() => triggerRate(1)}
+          onSwipeUp={inRepPhase ? advanceRep : () => triggerRate(1)}
         >
           {onToggleFavorite !== undefined && (
             <div className="flex justify-end mb-3">
@@ -367,69 +368,35 @@ export function FlashcardView({
               {card.usage}
             </p>
 
-            {inRepPhase ? (
+            <div className={`mt-5 grid grid-cols-3 gap-2 transition-opacity duration-300 ${inRepPhase ? "invisible" : "visible"}`}>
               <button
                 type="button"
-                onClick={advanceRep}
-                className="mt-5 w-full rounded-button bg-brand/10 py-3 text-sm font-semibold text-brand transition-colors duration-150 hover:bg-brand/18 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                onClick={() => triggerRate(0)}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
               >
-                Continuer →
+                <span className="inline-block h-3 w-3 rounded-full bg-red-500" aria-hidden="true" />
+                <span className="leading-tight">Pas du tout</span>
+                <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">1</span>
               </button>
-            ) : (
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => triggerRate(0)}
-                  className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-red-500/10 px-2 py-3 text-xs font-medium text-red-600 transition-colors duration-150 hover:bg-red-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500/60 dark:text-red-400"
-                >
-                  <span
-                    className="inline-block h-3 w-3 rounded-full bg-red-500"
-                    aria-hidden="true"
-                  />
-                  <span className="leading-tight">Pas du tout</span>
-                  <span
-                    className="hidden md:inline tabular-nums text-muted opacity-50"
-                    aria-hidden="true"
-                  >
-                    1
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => triggerRate(1)}
-                  className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-yellow-500/10 px-2 py-3 text-xs font-medium text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500/60 dark:text-yellow-400"
-                >
-                  <span
-                    className="inline-block h-3 w-3 rounded-full bg-yellow-400"
-                    aria-hidden="true"
-                  />
-                  <span className="leading-tight">Hésité</span>
-                  <span
-                    className="hidden md:inline tabular-nums text-muted opacity-50"
-                    aria-hidden="true"
-                  >
-                    2
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => triggerRate(2)}
-                  className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-emerald-500/10 px-2 py-3 text-xs font-medium text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500/60 dark:text-emerald-400"
-                >
-                  <span
-                    className="inline-block h-3 w-3 rounded-full bg-emerald-500"
-                    aria-hidden="true"
-                  />
-                  <span className="leading-tight">Savais</span>
-                  <span
-                    className="hidden md:inline tabular-nums text-muted opacity-50"
-                    aria-hidden="true"
-                  >
-                    3
-                  </span>
-                </button>
-              </div>
-            )}
+              <button
+                type="button"
+                onClick={() => triggerRate(1)}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-yellow-500/10 px-2 py-3 text-xs font-medium text-yellow-600 transition-colors duration-150 hover:bg-yellow-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500/60 dark:text-yellow-400"
+              >
+                <span className="inline-block h-3 w-3 rounded-full bg-yellow-400" aria-hidden="true" />
+                <span className="leading-tight">Hésité</span>
+                <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">2</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => triggerRate(2)}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-button bg-emerald-500/10 px-2 py-3 text-xs font-medium text-emerald-600 transition-colors duration-150 hover:bg-emerald-500/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500/60 dark:text-emerald-400"
+              >
+                <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" aria-hidden="true" />
+                <span className="leading-tight">Savais</span>
+                <span className="hidden md:inline tabular-nums text-muted opacity-50" aria-hidden="true">3</span>
+              </button>
+            </div>
 
             {(hasEnTranslation || hasEsTranslation) && (
               <div className="mt-4 flex flex-col gap-1 border-t border-ink/8 pt-3">
