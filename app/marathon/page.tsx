@@ -22,6 +22,7 @@ import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
 import { TOURISTE_CARDS } from "@/src/data/touristeCards";
 import type { Flashcard } from "@/src/types";
+import type { RepetitionStyle } from "@/src/components/flashcard/FlashcardView";
 
 const ALL_VOCAB = [...VOCABULAIRE_CARDS, ...VOCABULAIRE_EXTRA_CARDS];
 
@@ -73,12 +74,24 @@ export default function MarathonPage() {
       "oral-interaction", "oral-monologue", "ecrit-faits-divers", "connecteurs", "argumentation",
     ]),
   );
+  const [repetitionEnabled, setRepetitionEnabled] = useState<boolean>(() => {
+    try { return getItem("tef-repetition-enabled") === "1"; }
+    catch { return false; }
+  });
+  const [repetitionStyle, setRepetitionStyle] = useState<RepetitionStyle>(() => {
+    try {
+      const v = getItem("tef-repetition-style");
+      return v === "masking" ? "masking" : "intensity";
+    } catch { return "intensity"; }
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => { setItem("tef-marathon-autoplay", marathonAutoPlay ? "1" : "0"); }, [marathonAutoPlay]);
   useEffect(() => { setItem("tef-marathon-autoplay-seconds", String(marathonAutoSeconds)); }, [marathonAutoSeconds]);
   useEffect(() => { setItem("tef-marathon-order", marathonOrder); }, [marathonOrder]);
+  useEffect(() => { setItem("tef-repetition-enabled", repetitionEnabled ? "1" : "0"); }, [repetitionEnabled]);
+  useEffect(() => { setItem("tef-repetition-style", repetitionStyle); }, [repetitionStyle]);
 
   const marathonCards = useMemo(
     () => Array.from(marathonCategories).flatMap((id) => MARATHON_SOURCES[id] ?? []),
@@ -144,6 +157,8 @@ export default function MarathonPage() {
           onToggleFavorite={() => toggleFavoriteCard(deck.currentCard!.id)}
           autoAdvanceEnabled={marathonAutoPlay}
           autoAdvanceMs={marathonAutoSeconds * 1000}
+          repetitionEnabled={repetitionEnabled}
+          repetitionStyle={repetitionStyle}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -217,6 +232,10 @@ export default function MarathonPage() {
         onAutoSecondsChange={setMarathonAutoSeconds}
         order={marathonOrder}
         onOrderChange={setMarathonOrder}
+        repetitionEnabled={repetitionEnabled}
+        onRepetitionEnabledChange={setRepetitionEnabled}
+        repetitionStyle={repetitionStyle}
+        onRepetitionStyleChange={setRepetitionStyle}
       />
     </AuthGate>
   );

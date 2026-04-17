@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import type { CardOrder } from "../../hooks/useFlashcards";
+import type { RepetitionStyle } from "../flashcard/FlashcardView";
 
 interface MarathonSettingsDrawerProps {
   open: boolean;
@@ -12,6 +13,10 @@ interface MarathonSettingsDrawerProps {
   onAutoSecondsChange(v: number): void;
   order: CardOrder;
   onOrderChange(v: CardOrder): void;
+  repetitionEnabled: boolean;
+  onRepetitionEnabledChange(v: boolean): void;
+  repetitionStyle: RepetitionStyle;
+  onRepetitionStyleChange(v: RepetitionStyle): void;
 }
 
 function Toggle({
@@ -67,6 +72,10 @@ export function MarathonSettingsDrawer({
   onAutoSecondsChange,
   order,
   onOrderChange,
+  repetitionEnabled,
+  onRepetitionEnabledChange,
+  repetitionStyle,
+  onRepetitionStyleChange,
 }: MarathonSettingsDrawerProps) {
   useEffect(() => {
     if (!open) return;
@@ -146,6 +155,53 @@ export function MarathonSettingsDrawer({
 
           <div className="border-t border-ink/8" />
 
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-ink">Répétition</p>
+                <p className="text-xs text-muted">Mémoriser en 3 étapes</p>
+              </div>
+              <Toggle
+                checked={repetitionEnabled}
+                onChange={onRepetitionEnabledChange}
+                label={repetitionEnabled ? "Désactiver la répétition" : "Activer la répétition"}
+              />
+            </div>
+
+            <div className={`flex flex-col gap-2 transition-opacity duration-200 ${repetitionEnabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+              {(["intensity", "masking"] as const).map((style) => (
+                <button
+                  key={style}
+                  type="button"
+                  disabled={!repetitionEnabled}
+                  onClick={() => onRepetitionStyleChange(style)}
+                  className={`flex items-start gap-3 rounded-button border px-3 py-2.5 text-left transition-colors duration-150 ${
+                    repetitionStyle === style
+                      ? "border-brand/40 bg-brand/8"
+                      : "border-ink/12 hover:bg-ink/4"
+                  }`}
+                >
+                  <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                    repetitionStyle === style ? "border-brand bg-brand" : "border-ink/30"
+                  }`}>
+                    {repetitionStyle === style && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold text-ink">
+                      {style === "intensity" ? "Intensité progressive" : "Masquage"}
+                    </p>
+                    <p className="text-[11px] text-muted leading-snug">
+                      {style === "intensity"
+                        ? "La phrase s'affirme visuellement à chaque étape"
+                        : "La phrase se floute puis disparaît pour forcer le rappel"}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-ink/8" />
 
           <div className="flex flex-col gap-3">
             <p className="text-sm font-medium text-ink">Ordre</p>
