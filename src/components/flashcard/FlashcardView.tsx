@@ -177,18 +177,14 @@ export function FlashcardView({
   const inRepPhase = repetitionEnabled && repStep < 2;
 
   const frontClassName = (() => {
-    const base =
-      "mt-3 text-xl leading-snug sm:text-3xl transition-all duration-300 font-bold";
+    const base = "mt-3 text-xl sm:text-3xl font-bold leading-[1.2] transition-colors duration-300";
     if (!repetitionEnabled) return `${base} text-ink`;
     if (repetitionStyle === "masking") {
-      return repStep === 1
-        ? `${base} text-ink blur-[4px] select-none`
-        : `${base} text-ink`;
+      return repStep === 1 ? `${base} text-ink blur-[2px] select-none` : `${base} text-ink`;
     }
-    if (repStep === 0)
-      return "mt-3 text-xl leading-snug sm:text-3xl transition-all duration-300 font-normal text-muted";
-    if (repStep === 1)
-      return "mt-3 text-xl leading-snug sm:text-3xl transition-all duration-300 font-semibold text-ink";
+    // intensity: color only — no weight change prevents layout shift
+    if (repStep === 0) return `${base} text-muted/50`;
+    if (repStep === 1) return `${base} text-ink`;
     return `${base} text-brand`;
   })();
 
