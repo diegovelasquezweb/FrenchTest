@@ -116,11 +116,11 @@ export function FlashcardView({
     const handleKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (mode === "lecture") {
-        if (e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === " " || e.key === "Enter" || e.key === "ArrowDown") {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter" || e.key === "ArrowDown") {
           e.preventDefault();
           triggerSkip();
         }
-        if (e.key === "Backspace" || e.key === "Escape") {
+        if (e.key === "ArrowLeft" || e.key === "Backspace" || e.key === "Escape") {
           e.preventDefault();
           onBack?.();
         }
@@ -140,7 +140,7 @@ export function FlashcardView({
           e.preventDefault();
           triggerSkip();
         }
-        if (e.key === "Backspace" || e.key === "Escape") {
+        if (e.key === "ArrowLeft" || e.key === "Backspace" || e.key === "Escape") {
           e.preventDefault();
           onBack?.();
         }
@@ -260,36 +260,77 @@ export function FlashcardView({
                 </p>
                 <ul className="flex flex-col gap-1.5">
                   {(
-                    [
-                      {
-                        gesture: "←",
-                        keys: ["←", "1"],
-                        label: "Ne savais pas",
-                        color: "text-red-500 dark:text-red-400",
-                        bg: "bg-red-500/8",
-                      },
-                      {
-                        gesture: "→",
-                        keys: ["→", "3"],
-                        label: "Savais",
-                        color: "text-emerald-600 dark:text-emerald-400",
-                        bg: "bg-emerald-500/8",
-                      },
-                      {
-                        gesture: "↑",
-                        keys: ["↑", "2"],
-                        label: "Hésité",
-                        color: "text-yellow-600 dark:text-yellow-400",
-                        bg: "bg-yellow-500/8",
-                      },
-                      {
-                        gesture: "↓",
-                        keys: ["↓", "␣"],
-                        label: "Passer",
-                        color: "text-muted",
-                        bg: "bg-ink/5",
-                      },
-                    ] as const
+                    mode === "lecture"
+                      ? [
+                          {
+                            gesture: "→",
+                            keys: ["→", "␣"],
+                            label: "Suivante",
+                            color: "text-ink",
+                            bg: "bg-ink/5",
+                          },
+                          {
+                            gesture: "←",
+                            keys: ["←", "Esc"],
+                            label: "Précédente",
+                            color: "text-muted",
+                            bg: "bg-ink/5",
+                          },
+                        ]
+                      : mode === "répétition"
+                      ? [
+                          {
+                            gesture: "→",
+                            keys: ["→", "␣"],
+                            label: "Révéler",
+                            color: "text-brand",
+                            bg: "bg-brand/8",
+                          },
+                          {
+                            gesture: "↓",
+                            keys: ["↓"],
+                            label: "Passer",
+                            color: "text-muted",
+                            bg: "bg-ink/5",
+                          },
+                          {
+                            gesture: "←",
+                            keys: ["←", "Esc"],
+                            label: "Précédente",
+                            color: "text-muted",
+                            bg: "bg-ink/5",
+                          },
+                        ]
+                      : [
+                          {
+                            gesture: "←",
+                            keys: ["←", "1"],
+                            label: "Ne savais pas",
+                            color: "text-red-500 dark:text-red-400",
+                            bg: "bg-red-500/8",
+                          },
+                          {
+                            gesture: "→",
+                            keys: ["→", "3"],
+                            label: "Savais",
+                            color: "text-emerald-600 dark:text-emerald-400",
+                            bg: "bg-emerald-500/8",
+                          },
+                          {
+                            gesture: "↑",
+                            keys: ["↑", "2"],
+                            label: "Hésité",
+                            color: "text-yellow-600 dark:text-yellow-400",
+                            bg: "bg-yellow-500/8",
+                          },
+                          {
+                            gesture: "↓",
+                            keys: ["↓", "␣"],
+                            label: "Passer",
+                            color: "text-muted",
+                            bg: "bg-ink/5",
+                          },
+                        ]
                   ).map(({ gesture, keys, label, color, bg }) => (
                     <li
                       key={label}
@@ -338,7 +379,7 @@ export function FlashcardView({
           resetKey={card.id}
           onClick={inRepPhase ? advanceRep : undefined}
           onSwipeRight={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(2)}
-          onSwipeLeft={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(0)}
+          onSwipeLeft={mode === "lecture" ? () => onBack?.() : inRepPhase ? () => onBack?.() : () => triggerRate(0)}
           onSwipeDown={triggerSkip}
           onSwipeUp={mode === "lecture" ? triggerSkip : inRepPhase ? advanceRep : () => triggerRate(1)}
         >
