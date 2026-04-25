@@ -1,145 +1,24 @@
+"use client";
+
+import { useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
+import * as Tabs from "@radix-ui/react-tabs";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { ChevronDown } from "lucide-react";
-
-type Row = { subject: string; ending: string; example: string };
-
-interface TenseBlock {
-  title: string;
-  note?: string;
-  usage: string;
-  dailyExamples: string[];
-  rows: Row[];
-}
+import {
+  TENSES,
+  TENSE_GROUPS,
+  VERB_MODELS,
+  type Conjugation,
+  type TenseGroup,
+  type TenseMeta,
+  type VerbModel,
+} from "../../data/verbConjugations";
 
 interface ComparisonBlock {
   title: string;
   points: string[];
 }
-
-const TENSES: TenseBlock[] = [
-  {
-    title: "Présent (-er)",
-    usage: "S'utilise pour les habitudes, les faits généraux et les actions actuelles.",
-    dailyExamples: [
-      "Je prends le métro tous les matins.",
-      "Nous travaillons à distance aujourd'hui.",
-      "Ils dînent à 20 h.",
-    ],
-    rows: [
-      { subject: "je", ending: "-e", example: "je parle" },
-      { subject: "tu", ending: "-es", example: "tu parles" },
-      { subject: "il / elle", ending: "-e", example: "il parle" },
-      { subject: "nous", ending: "-ons", example: "nous parlons" },
-      { subject: "vous", ending: "-ez", example: "vous parlez" },
-      { subject: "ils / elles", ending: "-ent", example: "ils parlent" },
-    ],
-  },
-  {
-    title: "Imparfait",
-    usage: "S'utilise pour les descriptions dans le passé, le contexte et les habitudes passées.",
-    dailyExamples: [
-      "Quand j'étais enfant, je jouais au parc.",
-      "Il pleuvait, alors on restait à la maison.",
-      "Tous les soirs, nous regardions un film.",
-    ],
-    rows: [
-      { subject: "je", ending: "-ais", example: "je parlais" },
-      { subject: "tu", ending: "-ais", example: "tu parlais" },
-      { subject: "il / elle", ending: "-ait", example: "elle parlait" },
-      { subject: "nous", ending: "-ions", example: "nous parlions" },
-      { subject: "vous", ending: "-iez", example: "vous parliez" },
-      { subject: "ils / elles", ending: "-aient", example: "ils parlaient" },
-    ],
-  },
-  {
-    title: "Futur simple",
-    usage: "S'utilise pour les actions futures, les plans et les promesses.",
-    dailyExamples: [
-      "Je t'appellerai ce soir.",
-      "Nous finirons ce projet demain.",
-      "Ils arriveront vers 19 h.",
-    ],
-    rows: [
-      { subject: "je", ending: "-ai", example: "je parlerai" },
-      { subject: "tu", ending: "-as", example: "tu parleras" },
-      { subject: "il / elle", ending: "-a", example: "il parlera" },
-      { subject: "nous", ending: "-ons", example: "nous parlerons" },
-      { subject: "vous", ending: "-ez", example: "vous parlerez" },
-      { subject: "ils / elles", ending: "-ont", example: "elles parleront" },
-    ],
-  },
-  {
-    title: "Conditionnel présent",
-    usage: "S'utilise pour demander poliment, donner un conseil ou exprimer une hypothèse.",
-    dailyExamples: [
-      "Je voudrais un café, s'il vous plaît.",
-      "Tu devrais te reposer un peu.",
-      "On pourrait sortir ce week-end.",
-    ],
-    rows: [
-      { subject: "je", ending: "-ais", example: "je parlerais" },
-      { subject: "tu", ending: "-ais", example: "tu parlerais" },
-      { subject: "il / elle", ending: "-ait", example: "elle parlerait" },
-      { subject: "nous", ending: "-ions", example: "nous parlerions" },
-      { subject: "vous", ending: "-iez", example: "vous parleriez" },
-      { subject: "ils / elles", ending: "-aient", example: "ils parleraient" },
-    ],
-  },
-  {
-    title: "Subjonctif présent",
-    note: "Schéma clé : il faut que + subjonctif",
-    usage: "Règle pratique à mémoriser : après « il faut que », on utilise le subjonctif.",
-    dailyExamples: [
-      "Il faut que tu viennes à l'heure.",
-      "Il faut que nous finissions avant midi.",
-      "Il faut qu'ils soient prêts demain.",
-    ],
-    rows: [
-      { subject: "que je", ending: "-e", example: "que je parle" },
-      { subject: "que tu", ending: "-es", example: "que tu parles" },
-      { subject: "qu'il / elle", ending: "-e", example: "qu'il parle" },
-      { subject: "que nous", ending: "-ions", example: "que nous parlions" },
-      { subject: "que vous", ending: "-iez", example: "que vous parliez" },
-      { subject: "qu'ils / elles", ending: "-ent", example: "qu'elles parlent" },
-    ],
-  },
-  {
-    title: "Passé composé (avoir)",
-    note: "Auxiliaire au présent + participe passé",
-    usage: "S'utilise pour les actions terminées et ponctuelles dans le passé.",
-    dailyExamples: [
-      "J'ai fini mon travail à 18 h.",
-      "Nous avons réservé une table.",
-      "Elles ont regardé la série hier soir.",
-    ],
-    rows: [
-      { subject: "je", ending: "ai + PP", example: "j'ai parlé" },
-      { subject: "tu", ending: "as + PP", example: "tu as parlé" },
-      { subject: "il / elle", ending: "a + PP", example: "elle a parlé" },
-      { subject: "nous", ending: "avons + PP", example: "nous avons parlé" },
-      { subject: "vous", ending: "avez + PP", example: "vous avez parlé" },
-      { subject: "ils / elles", ending: "ont + PP", example: "ils ont parlé" },
-    ],
-  },
-  {
-    title: "Plus-que-parfait (avoir)",
-    note: "Auxiliaire à l'imparfait + participe passé",
-    usage: "S'utilise pour une action passée antérieure à une autre action passée.",
-    dailyExamples: [
-      "J'avais déjà mangé quand tu es arrivé.",
-      "Nous avions préparé la réunion avant 9 h.",
-      "Il avait oublié ses clés, donc il est rentré tard.",
-    ],
-    rows: [
-      { subject: "je", ending: "avais + PP", example: "j'avais parlé" },
-      { subject: "tu", ending: "avais + PP", example: "tu avais parlé" },
-      { subject: "il / elle", ending: "avait + PP", example: "il avait parlé" },
-      { subject: "nous", ending: "avions + PP", example: "nous avions parlé" },
-      { subject: "vous", ending: "aviez + PP", example: "vous aviez parlé" },
-      { subject: "ils / elles", ending: "avaient + PP", example: "elles avaient parlé" },
-    ],
-  },
-];
 
 const QUICK_COMPARISONS: ComparisonBlock[] = [
   {
@@ -158,78 +37,266 @@ const QUICK_COMPARISONS: ComparisonBlock[] = [
       "Exemple : J'avais mangé avant de sortir.",
     ],
   },
+  {
+    title: "Passé composé vs Passé récent",
+    points: [
+      "Passé composé = action terminée à n'importe quel moment du passé.",
+      "Passé récent = action qui vient juste de se terminer (il y a quelques secondes/minutes).",
+      "Exemple : J'ai mangé à midi / Je viens de manger.",
+    ],
+  },
+  {
+    title: "Futur simple vs Futur proche",
+    points: [
+      "Futur simple = projet, promesse ou action lointaine/abstraite.",
+      "Futur proche = action imminente ou planifiée à court terme.",
+      "Exemple : Je partirai en vacances en juillet / Je vais partir dans cinq minutes.",
+    ],
+  },
+  {
+    title: "Conditionnel présent vs Conditionnel passé",
+    points: [
+      "Conditionnel présent = hypothèse, demande polie ou conseil au présent.",
+      "Conditionnel passé = regret, reproche ou action irréalisée dans le passé.",
+      "Exemple : J'aimerais venir / J'aurais aimé venir.",
+    ],
+  },
+  {
+    title: "Indicatif présent vs Présent progressif",
+    points: [
+      "Indicatif présent = habitude, fait général ou action actuelle.",
+      "Présent progressif (être en train de) = insiste sur une action en cours maintenant.",
+      "Exemple : Je travaille à Paris / Je suis en train de travailler, rappelle plus tard.",
+    ],
+  },
+  {
+    title: "Subjonctif présent vs Indicatif présent",
+    points: [
+      "Indicatif = fait, certitude (« je sais que tu viens »).",
+      "Subjonctif = nécessité, doute, émotion (« il faut que tu viennes »).",
+      "Déclencheur fréquent : il faut que, je veux que, bien que, pour que.",
+    ],
+  },
 ];
 
-export function TerminaisonsGuide() {
+function ConjugationRenderer({ conjugation }: { conjugation: Conjugation }) {
+  if (conjugation.kind === "full") {
+    const rows: { label: string; value: string }[] = [
+      { label: "je", value: conjugation.je },
+      { label: "tu", value: conjugation.tu },
+      { label: "il / elle", value: conjugation.il },
+      { label: "nous", value: conjugation.nous },
+      { label: "vous", value: conjugation.vous },
+      { label: "ils / elles", value: conjugation.ils },
+    ];
+    return (
+      <div className="space-y-2">
+        {conjugation.template && (
+          <div className="rounded border border-ink/8 bg-ink/3 px-3 py-2">
+            <p className="text-xs font-semibold text-muted">Structure</p>
+            <p className="text-sm font-semibold text-brand" lang="fr">
+              {conjugation.template}
+            </p>
+          </div>
+        )}
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {rows.map((row) => (
+            <div key={row.label} className="rounded border border-ink/8 px-3 py-2">
+              <p className="text-xs font-semibold text-muted">{row.label}</p>
+              <p className="text-sm text-ink" lang="fr">
+                {row.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (conjugation.kind === "imperative") {
+    const rows = [
+      { label: "(tu)", value: conjugation.tu },
+      { label: "(nous)", value: conjugation.nous },
+      { label: "(vous)", value: conjugation.vous },
+    ];
+    return (
+      <div className="grid gap-2 sm:grid-cols-3">
+        {rows.map((row) => (
+          <div key={row.label} className="rounded border border-ink/8 px-3 py-2">
+            <p className="text-xs font-semibold text-muted">{row.label}</p>
+            <p className="text-sm text-ink" lang="fr">
+              {row.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-6">
-      <Accordion.Root type="single" collapsible className="rounded-card overflow-hidden border border-ink/10 bg-surface shadow-sm">
-        {TENSES.map((tense, i) => (
-          <Accordion.Item
-            key={tense.title}
-            value={tense.title}
-            className={i > 0 ? "border-t border-ink/8" : ""}
-          >
+    <div className="space-y-2">
+      <div className="rounded border border-ink/8 px-3 py-2">
+        <p className="text-xs font-semibold text-muted">Forme</p>
+        <p className="text-sm font-semibold text-brand" lang="fr">
+          {conjugation.form}
+        </p>
+      </div>
+      <div className="rounded border border-ink/8 px-3 py-2">
+        <p className="text-xs font-semibold text-muted">Exemple</p>
+        <p className="text-sm text-ink" lang="fr">
+          {conjugation.exampleSentence}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function TenseAccordionItem({ tense, verb }: { tense: TenseMeta; verb: VerbModel }) {
+  const conjugation = verb.conjugations[tense.id];
+  return (
+    <Accordion.Item value={tense.id} className="border-t border-ink/8 first:border-t-0">
+      <Accordion.Header>
+        <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-bold text-ink">{tense.label}</span>
+            {tense.note && <span className="text-xs text-muted">{tense.note}</span>}
+          </div>
+          <ChevronDown
+            size={16}
+            className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180"
+          />
+        </Accordion.Trigger>
+      </Accordion.Header>
+      <Accordion.Content className="overflow-hidden">
+        <div className="space-y-3 px-5 pb-5">
+          <p className="text-sm text-ink">{tense.usage}</p>
+
+          <div className="rounded border border-ink/8 bg-ink/3 px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+              Usage quotidien
+            </p>
+            <ul className="mt-1 space-y-1">
+              {tense.dailyExamples.map((example) => (
+                <li key={example} className="text-sm text-ink" lang="fr">
+                  • {example}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <ConjugationRenderer conjugation={conjugation} />
+        </div>
+      </Accordion.Content>
+    </Accordion.Item>
+  );
+}
+
+function TenseGroupPanel({ group, verb }: { group: TenseGroup; verb: VerbModel }) {
+  const tenses = TENSES.filter((t) => t.group === group);
+  return (
+    <Accordion.Root
+      type="single"
+      collapsible
+      className="rounded-card overflow-hidden border border-ink/10 bg-surface shadow-sm"
+    >
+      {tenses.map((tense) => (
+        <TenseAccordionItem key={tense.id} tense={tense} verb={verb} />
+      ))}
+    </Accordion.Root>
+  );
+}
+
+export function TerminaisonsGuide() {
+  const [verbId, setVerbId] = useState<string>(VERB_MODELS[0].id);
+  const verb = VERB_MODELS.find((v) => v.id === verbId) ?? VERB_MODELS[0];
+
+  return (
+    <div className="mx-auto w-full max-w-5xl space-y-5 px-4 py-6">
+      <section className="rounded-card border border-ink/10 bg-surface p-4 shadow-sm">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+          Verbe modèle
+        </p>
+        <ToggleGroup.Root
+          type="single"
+          value={verb.id}
+          onValueChange={(value) => {
+            if (value) setVerbId(value);
+          }}
+          className="mt-2 -mx-1 flex flex-wrap gap-2 overflow-x-auto px-1"
+          aria-label="Choisir un verbe modèle"
+        >
+          {VERB_MODELS.map((v) => (
+            <ToggleGroup.Item
+              key={v.id}
+              value={v.id}
+              className="rounded-button cursor-pointer whitespace-nowrap border border-ink/15 px-3 py-1.5 text-sm font-semibold text-ink transition-colors hover:bg-ink/5 data-[state=on]:border-brand data-[state=on]:bg-brand data-[state=on]:text-white"
+            >
+              {v.infinitive}
+            </ToggleGroup.Item>
+          ))}
+        </ToggleGroup.Root>
+        <p className="mt-2 text-xs text-muted" lang="es">
+          {verb.translationEs} · auxiliaire :{" "}
+          <span className="font-semibold text-ink" lang="fr">
+            {verb.auxiliary}
+          </span>
+        </p>
+      </section>
+
+      <Tabs.Root defaultValue="passe" className="space-y-4">
+        <Tabs.List
+          className="flex gap-1 rounded-card border border-ink/10 bg-surface p-1 shadow-sm"
+          aria-label="Groupes temporels"
+        >
+          {TENSE_GROUPS.map((group) => (
+            <Tabs.Trigger
+              key={group.id}
+              value={group.id}
+              className="rounded-button flex-1 cursor-pointer px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-ink data-[state=active]:bg-brand data-[state=active]:text-white"
+            >
+              {group.label}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+
+        {TENSE_GROUPS.map((group) => (
+          <Tabs.Content key={group.id} value={group.id} className="outline-none">
+            <TenseGroupPanel group={group.id} verb={verb} />
+          </Tabs.Content>
+        ))}
+      </Tabs.Root>
+
+      <section className="rounded-card overflow-hidden border border-ink/10 bg-surface shadow-sm">
+        <Accordion.Root type="single" collapsible>
+          <Accordion.Item value="comparaisons">
             <Accordion.Header>
               <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
-                <div>
-                  <span className="text-sm font-bold text-ink">{tense.title}</span>
-                  {tense.note && <span className="ml-2 text-xs text-muted">{tense.note}</span>}
-                </div>
-                <ChevronDown size={16} className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <span className="text-sm font-bold text-ink">Comparaisons rapides</span>
+                <ChevronDown
+                  size={16}
+                  className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180"
+                />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
-              <div className="px-5 pb-5 space-y-3">
-                <p className="text-sm text-ink">{tense.usage}</p>
-
-                <div className="rounded border border-ink/8 bg-ink/3 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">Usage quotidien</p>
-                  <ul className="mt-1 space-y-1">
-                    {tense.dailyExamples.map((example) => (
-                      <li key={example} className="text-sm text-ink" lang="fr">• {example}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {tense.rows.map((row) => (
-                    <div key={row.subject} className="rounded border border-ink/8 px-3 py-2">
-                      <p className="text-xs font-semibold text-muted">{row.subject}</p>
-                      <p className="text-sm font-semibold text-brand">{row.ending}</p>
-                      <p className="text-sm text-ink" lang="fr">{row.example}</p>
-                    </div>
-                  ))}
-                </div>
+            <Accordion.Content className="overflow-hidden">
+              <div className="grid gap-3 px-5 pb-5 md:grid-cols-2">
+                {QUICK_COMPARISONS.map((block) => (
+                  <article key={block.title} className="rounded border border-ink/8 px-3 py-2">
+                    <h4 className="text-sm font-semibold text-brand">{block.title}</h4>
+                    <ul className="mt-1 space-y-1">
+                      {block.points.map((point) => (
+                        <li key={point} className="text-sm text-ink">
+                          • {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
               </div>
             </Accordion.Content>
           </Accordion.Item>
-        ))}
-
-
-        <Accordion.Item value="comparaisons" className="border-t border-ink/8">
-          <Accordion.Header>
-            <Accordion.Trigger className="group flex w-full items-center justify-between px-5 py-4 text-left">
-              <span className="text-sm font-bold text-ink">Comparaisons rapides</span>
-              <ChevronDown size={16} className="shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
-            </Accordion.Trigger>
-          </Accordion.Header>
-          <Accordion.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
-            <div className="px-5 pb-5 grid gap-3 md:grid-cols-2">
-              {QUICK_COMPARISONS.map((block) => (
-                <article key={block.title} className="rounded border border-ink/8 px-3 py-2">
-                  <h4 className="text-sm font-semibold text-brand">{block.title}</h4>
-                  <ul className="mt-1 space-y-1">
-                    {block.points.map((point) => (
-                      <li key={point} className="text-sm text-ink">• {point}</li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+        </Accordion.Root>
+      </section>
     </div>
   );
 }
