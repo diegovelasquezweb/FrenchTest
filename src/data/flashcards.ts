@@ -306,22 +306,6 @@ export const FLASHCARDS: Flashcard[] = [
     usage: "Marque une opposition ou une limite à l'argument précédent.",
     category: "argumentation",
   },
-  {
-    id: "ecrit-11",
-    front: "Certes…, mais…",
-    translationEn: "Admittedly…, but…",
-    translationEs: "Ciertamente…, pero…",
-    usage: "Structure clé de concession/réfutation en argumentation B2.",
-    category: "argumentation",
-  },
-  {
-    id: "ecrit-12",
-    front: "En définitive,…",
-    translationEn: "Ultimately,…",
-    translationEs: "En definitiva,…",
-    usage: "Annonce clairement la conclusion du point de vue.",
-    category: "argumentation",
-  },
   // ── CONNECTEURS — Opposition ─────────────────────────────────────────────
   {
     id: "conn-01",
@@ -330,6 +314,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "sin embargo / no obstante",
     usage: "Connecteurs d'opposition en début de phrase. Toujours suivis d'une virgule.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-02",
@@ -338,6 +323,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "aunque + subjuntivo",
     usage: "\"Bien que\" exige le subjonctif. ≠ \"même si\" qui prend l'indicatif.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-03",
@@ -346,6 +332,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a pesar de + sustantivo",
     usage: "\"Malgré\" est toujours suivi d'un nom (jamais d'un verbe conjugué).",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   // ── CONNECTEURS — Addition ───────────────────────────────────────────────
   {
@@ -355,6 +342,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "además / por otra parte",
     usage: "Ajoutent un argument supplémentaire. \"En outre\" est le plus formel.",
     category: "connecteurs",
+    subCategory: "addition",
   },
   {
     id: "conn-05",
@@ -363,6 +351,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por un lado… por otro lado…",
     usage: "Structure binaire pour présenter deux arguments. Toujours en paire.",
     category: "connecteurs",
+    subCategory: "addition",
   },
   // ── CONNECTEURS — Cause et conséquence ──────────────────────────────────
   {
@@ -372,6 +361,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "gracias a + sustantivo (resultado positivo)",
     usage: "\"Grâce à\" = cause positive. ≠ \"à cause de\" = cause négative.",
     category: "connecteurs",
+    subCategory: "cause",
   },
   {
     id: "conn-07",
@@ -380,6 +370,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por eso / por lo tanto / de ahí que",
     usage: "Connecteurs de conséquence. \"Ainsi\" peut aussi signifier \"de cette façon\".",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-08",
@@ -388,6 +379,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "con el fin de + infinitivo",
     usage: "\"Afin de\" exprime le but. Plus formel que \"pour\". Toujours + infinitif.",
     category: "connecteurs",
+    subCategory: "but",
   },
   // ── CONNECTEURS — Argumentation ──────────────────────────────────────────
   {
@@ -397,6 +389,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en efecto / de hecho",
     usage: "Introduit une explication ou confirmation. ≠ \"en fait\" (= actually, correction).",
     category: "connecteurs",
+    subCategory: "nuance",
   },
   {
     id: "conn-10",
@@ -405,6 +398,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "es cierto que…",
     usage: "Formule de concession — reconnaît un argument adverse avant de le contrer.",
     category: "connecteurs",
+    subCategory: "nuance",
   },
   {
     id: "conn-11",
@@ -413,6 +407,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en suma / en resumen,…",
     usage: "Connecteur de synthèse pour reformuler brièvement l'idée principale.",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-12",
@@ -421,6 +416,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en cuanto a… / por lo que respecta a…",
     usage: "\"Quant à\" introduit un nouveau sujet ou une nuance. Toujours suivi de \"à\".",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-13",
@@ -429,6 +425,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a condición de que + subjuntivo",
     usage: "Exprime une condition. Toujours + subjonctif. ≠ \"si\" qui prend l'indicatif.",
     category: "connecteurs",
+    subCategory: "condition",
   },
   {
     id: "conn-14",
@@ -437,6 +434,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a pesar de + sustantivo",
     usage: "Synonyme formel de \"malgré\". Toujours suivi d'un nom.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
 
   // ── ORAL — Questions de processus ──────────────────────────────────────
@@ -613,14 +611,6 @@ export const FLASHCARDS: Flashcard[] = [
     category: "argumentation",
   },
   {
-    id: "arg-03",
-    front: "Il convient de souligner que…",
-    translationEn: "It is worth emphasizing that…",
-    translationEs: "Conviene subrayar que…",
-    usage: "Formule formelle utile pour mettre en valeur un point clé sans agressivité.",
-    category: "argumentation",
-  },
-  {
     id: "arg-04",
     front: "Certes… mais en réalité…",
     translationEn: "Granted… but in reality…",
@@ -658,14 +648,6 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Be that as it may… / Whatever the case…",
     translationEs: "Sea como sea… / En cualquier caso…",
     usage: "Concession globale — accepte les objections avant de maintenir sa position. Très naturel à l'oral.",
-    category: "argumentation",
-  },
-  {
-    id: "arg-09",
-    front: "En définitive,…",
-    translationEn: "Ultimately… / In the final analysis…",
-    translationEs: "En definitiva…",
-    usage: "Marqueur de conclusion formelle. Signale que vous allez conclure — valorisé par l'examinateur.",
     category: "argumentation",
   },
   {
@@ -709,6 +691,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "dicho de otro modo,…",
     usage: "Reformulation — explique ou simplifie ce qui vient d'être dit. Très utile à l'oral.",
     category: "connecteurs",
+    subCategory: "nuance",
   },
   {
     id: "conn-16",
@@ -717,6 +700,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "sobre este punto,…",
     usage: "Renvoie à l'idée précédente avec une formulation directe.",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-17",
@@ -725,6 +709,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en este contexto,…",
     usage: "Relie une idée à la situation décrite, avec un registre B2 clair.",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-18",
@@ -733,6 +718,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "dado que…",
     usage: "Cause formelle. Plus soutenu que \"parce que\". Toujours suivi d'un verbe conjugué.",
     category: "connecteurs",
+    subCategory: "cause",
   },
   {
     id: "conn-19",
@@ -741,6 +727,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "de tal modo que… / tanto es así que…",
     usage: "Conséquence emphase — \"il a travaillé si bien qu'il a réussi\". Plus expressif que \"donc\".",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-20",
@@ -749,6 +736,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a partir de ahí,…",
     usage: "Conséquence avec dimension temporelle, en formulation plus simple.",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-22",
@@ -757,6 +745,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a saber… / es decir…",
     usage: "Introduit une explication ou une liste précise. Synonyme formel de \"c'est-à-dire\".",
     category: "connecteurs",
+    subCategory: "illustration",
   },
 
   // ── 11 fichas pour arriver à 100 ────────────────────────────────────────
@@ -1088,6 +1077,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "En cierta medida,…",
     usage: "Nuance une affirmation — évite l'absolu. Très valorisé car montre une pensée nuancée.",
     category: "argumentation",
+    subCategory: "nuance",
   },
   {
     id: "arg-16",
@@ -1104,6 +1094,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "Dicho esto,…",
     usage: "Concession + pivot. Reconnaît un point valide de l'autre côté avant de maintenir sa position. Très naturel à l'oral.",
     category: "argumentation",
+    subCategory: "transitions",
   },
   {
     id: "arg-18",
@@ -1180,14 +1171,6 @@ export const FLASHCARDS: Flashcard[] = [
     category: "argumentation",
   },
   {
-    id: "dev-02",
-    front: "En premier lieu,…",
-    translationEn: "In the first place,…",
-    translationEs: "En primer lugar,…",
-    usage: "Ex. « En premier lieu, il faut améliorer l'accès aux transports publics. »",
-    category: "argumentation",
-  },
-  {
     id: "dev-03",
     front: "En ce qui concerne…, …",
     translationEn: "As regards…, …",
@@ -1212,22 +1195,6 @@ export const FLASHCARDS: Flashcard[] = [
     category: "argumentation",
   },
   {
-    id: "dev-06",
-    front: "Autrement dit,…",
-    translationEn: "In other words,…",
-    translationEs: "Dicho de otro modo,…",
-    usage: "Ex. « Autrement dit, sans aide financière, une partie de la population est exclue. »",
-    category: "argumentation",
-  },
-  {
-    id: "dev-07",
-    front: "En d'autres termes,…",
-    translationEn: "In other terms,…",
-    translationEs: "En otros términos,…",
-    usage: "Ex. « En d'autres termes, la situation actuelle n'est pas durable. »",
-    category: "argumentation",
-  },
-  {
     id: "dev-08",
     front: "Par exemple,…",
     translationEn: "For example,…",
@@ -1241,22 +1208,6 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "Let's take the case of…",
     translationEs: "Tomemos el caso de…",
     usage: "Ex. « Prenons le cas de Lyon, où ce système a donné de bons résultats. »",
-    category: "argumentation",
-  },
-  {
-    id: "dev-10",
-    front: "Un exemple concret est…",
-    translationEn: "A concrete example is…",
-    translationEs: "Un ejemplo concreto es…",
-    usage: "Ex. « Un exemple concret est la gratuité partielle pour les moins de 26 ans. »",
-    category: "argumentation",
-  },
-  {
-    id: "dev-11",
-    front: "De plus,…",
-    translationEn: "Moreover,…",
-    translationEs: "Además,…",
-    usage: "Ex. « De plus, cette solution profite aussi aux petites entreprises locales. »",
     category: "argumentation",
   },
   {
@@ -1281,14 +1232,6 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "On the one hand…, on the other hand…",
     translationEs: "Por una parte…, por otra parte…",
     usage: "Ex. « D'une part, cela coûte moins cher ; d'autre part, cela renforce la cohésion sociale. »",
-    category: "argumentation",
-  },
-  {
-    id: "dev-15",
-    front: "Certes…, mais…",
-    translationEn: "Admittedly…, but…",
-    translationEs: "Ciertamente…, pero…",
-    usage: "Ex. « Certes, la mise en place est coûteuse, mais les bénéfices sont durables. »",
     category: "argumentation",
   },
   {
@@ -1337,14 +1280,6 @@ export const FLASHCARDS: Flashcard[] = [
     translationEn: "In short,…",
     translationEs: "En suma,…",
     usage: "Ex. « En somme, cette proposition est utile, à condition d'être bien encadrée. »",
-    category: "argumentation",
-  },
-  {
-    id: "dev-22",
-    front: "En définitive,…",
-    translationEn: "Ultimately,…",
-    translationEs: "En definitiva,…",
-    usage: "Ex. « En définitive, je suis favorable à cette solution. »",
     category: "argumentation",
   },
 
@@ -1511,6 +1446,541 @@ export const FLASHCARDS: Flashcard[] = [
     usage: "Synthèse finale formelle. Montre que vous avez structuré votre pensée — impression de maîtrise B2.",
     category: "argumentation",
   },
+
+  // ── ARGUMENTATION — Lexique thématique : Environnement ──────────────────
+  {
+    id: "lex-env-01",
+    front: "le réchauffement climatique",
+    translationEn: "global warming",
+    translationEs: "el calentamiento global",
+    usage: "Terme central dans tout sujet écologique. \"Lutter contre le réchauffement climatique\" = collocation TEF.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-02",
+    front: "l'empreinte carbone",
+    translationEn: "carbon footprint",
+    translationEs: "la huella de carbono",
+    usage: "\"Réduire son empreinte carbone\" = collocation. Indispensable pour argumenter sur transports, télétravail, voyages.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-03",
+    front: "la transition énergétique",
+    translationEn: "the energy transition",
+    translationEs: "la transición energética",
+    usage: "Désigne le passage des énergies fossiles aux renouvelables. Mot-clé des sujets sur l'énergie, les voitures électriques, etc.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-04",
+    front: "préserver la biodiversité",
+    translationEn: "to preserve biodiversity",
+    translationEs: "preservar la biodiversidad",
+    usage: "Collocation fixe. \"La biodiversité\" = ensemble des espèces vivantes. Argument de poids dans les sujets éco.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-05",
+    front: "les énergies renouvelables",
+    translationEn: "renewable energy",
+    translationEs: "las energías renovables",
+    usage: "Solaire, éolien, hydraulique. À opposer aux \"énergies fossiles\" (pétrole, gaz, charbon).",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-06",
+    front: "le développement durable",
+    translationEn: "sustainable development",
+    translationEs: "el desarrollo sostenible",
+    usage: "Concept clé : satisfaire les besoins présents sans compromettre les générations futures. Vocabulaire institutionnel.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-07",
+    front: "la pollution atmosphérique",
+    translationEn: "air pollution",
+    translationEs: "la contaminación atmosférica",
+    usage: "Plus précis que \"la pollution\" tout court. Voir aussi : pollution sonore, pollution plastique, pollution lumineuse.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-08",
+    front: "le tri sélectif des déchets",
+    translationEn: "waste sorting / recycling",
+    translationEs: "la recogida selectiva de residuos",
+    usage: "\"Trier les déchets\" = collocation. Vocabulaire de geste citoyen — utile pour argumenter sur consommation responsable.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-09",
+    front: "réduire la consommation",
+    translationEn: "to reduce consumption",
+    translationEs: "reducir el consumo",
+    usage: "Verbe-clé de l'argumentation écologique. Variantes : \"diminuer\", \"limiter\". Appliquer à : énergie, eau, plastique.",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+  {
+    id: "lex-env-10",
+    front: "les générations futures",
+    translationEn: "future generations",
+    translationEs: "las generaciones futuras",
+    usage: "Argument moral fort en argumentation écologique. \"Il en va de la responsabilité envers les générations futures.\"",
+    category: "argumentation",
+    subCategory: "lexique-environnement",
+  },
+
+  // ── ARGUMENTATION — Lexique thématique : Numérique et technologie ───────
+  {
+    id: "lex-num-01",
+    front: "la fracture numérique",
+    translationEn: "the digital divide",
+    translationEs: "la brecha digital",
+    usage: "Inégalité d'accès au numérique. Argument-clé pour les sujets sur l'éducation, les seniors, les zones rurales.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-02",
+    front: "l'intelligence artificielle (IA)",
+    translationEn: "artificial intelligence (AI)",
+    translationEs: "la inteligencia artificial",
+    usage: "Sujet récurrent au TEF 2026. \"L'IA générative\", \"les outils d'IA\". Indispensable pour défendre une position.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-03",
+    front: "la protection des données personnelles",
+    translationEn: "personal data protection",
+    translationEs: "la protección de datos personales",
+    usage: "Argument central dans les sujets sur les réseaux sociaux, l'IA, la surveillance. \"Les données personnelles\" = collocation.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-04",
+    front: "la dépendance aux écrans",
+    translationEn: "screen addiction / dependence",
+    translationEs: "la dependencia de las pantallas",
+    usage: "Phénomène souvent évoqué pour les enfants/ados. \"Lutter contre la dépendance aux écrans\" = collocation.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-05",
+    front: "les réseaux sociaux",
+    translationEn: "social media / social networks",
+    translationEs: "las redes sociales",
+    usage: "Sujet TEF récurrent. Voir aussi : \"un utilisateur\", \"une plateforme\", \"un contenu en ligne\".",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-06",
+    front: "le harcèlement en ligne",
+    translationEn: "online harassment",
+    translationEs: "el acoso en línea",
+    usage: "Cyberharcèlement = synonyme. Argument fort dans les sujets sur réseaux sociaux et adolescents.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-07",
+    front: "la désinformation",
+    translationEn: "misinformation / disinformation",
+    translationEs: "la desinformación",
+    usage: "\"Lutter contre la désinformation\" = collocation. Vocabulaire des fake news en français formel.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-08",
+    front: "la sobriété numérique",
+    translationEn: "digital sobriety / mindful tech use",
+    translationEs: "la sobriedad digital",
+    usage: "Concept récent : limiter sa consommation numérique. Argumentaire écologie + numérique combinés.",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-09",
+    front: "automatiser des tâches",
+    translationEn: "to automate tasks",
+    translationEs: "automatizar tareas",
+    usage: "Verbe central des sujets sur l'IA et l'emploi. Voir aussi : \"remplacer\", \"substituer\", \"supprimer des emplois\".",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+  {
+    id: "lex-num-10",
+    front: "l'accès à l'information",
+    translationEn: "access to information",
+    translationEs: "el acceso a la información",
+    usage: "Bénéfice classique du numérique. À mettre en balance avec \"la qualité de l'information\".",
+    category: "argumentation",
+    subCategory: "lexique-numerique",
+  },
+
+  // ── ARGUMENTATION — Lexique thématique : Travail et emploi ──────────────
+  {
+    id: "lex-tra-01",
+    front: "l'équilibre entre vie professionnelle et vie personnelle",
+    translationEn: "work-life balance",
+    translationEs: "el equilibrio entre vida laboral y personal",
+    usage: "Expression-clé pour télétravail, horaires, semaine de 4 jours. Forme abrégée : \"l'équilibre vie pro / vie perso\".",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-02",
+    front: "la productivité au travail",
+    translationEn: "workplace productivity",
+    translationEs: "la productividad laboral",
+    usage: "\"Augmenter / améliorer la productivité\" = collocations. Argument économique en faveur du télétravail ou de la flexibilité.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-03",
+    front: "le marché du travail",
+    translationEn: "the job market",
+    translationEs: "el mercado laboral",
+    usage: "\"Entrer sur le marché du travail\" = collocation. Voir aussi : \"un secteur\", \"une branche\", \"un métier en tension\".",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-04",
+    front: "la formation continue",
+    translationEn: "lifelong learning / continuing education",
+    translationEs: "la formación continua",
+    usage: "Concept central pour défendre la reconversion, la montée en compétences. \"Se former tout au long de la vie\".",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-05",
+    front: "le bien-être au travail",
+    translationEn: "well-being at work",
+    translationEs: "el bienestar laboral",
+    usage: "Argument moderne en RH. \"Garantir le bien-être\" = collocation. Inclut la santé mentale, l'ergonomie, le sens du travail.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-06",
+    front: "le burn-out / l'épuisement professionnel",
+    translationEn: "burnout / professional exhaustion",
+    translationEs: "el agotamiento laboral",
+    usage: "L'OMS reconnaît officiellement le burn-out depuis 2019. \"L'épuisement professionnel\" = version française formelle.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-07",
+    front: "la précarité de l'emploi",
+    translationEn: "job insecurity / precarity",
+    translationEs: "la precariedad laboral",
+    usage: "Argument social fort. \"Un emploi précaire\" = CDD, temps partiel subi, intérim. À opposer à \"un emploi stable\".",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-08",
+    front: "concilier vie professionnelle et vie de famille",
+    translationEn: "to reconcile work and family life",
+    translationEs: "conciliar vida laboral y familiar",
+    usage: "Verbe \"concilier\" = harmoniser deux exigences. Très utilisé pour défendre congés parentaux, télétravail, horaires flexibles.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-09",
+    front: "favoriser l'insertion professionnelle",
+    translationEn: "to promote professional integration",
+    translationEs: "favorecer la inserción profesional",
+    usage: "Vocabulaire institutionnel pour parler des jeunes, des migrants, des personnes éloignées de l'emploi.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+  {
+    id: "lex-tra-10",
+    front: "les conditions de travail",
+    translationEn: "working conditions",
+    translationEs: "las condiciones laborales",
+    usage: "\"Améliorer les conditions de travail\" = collocation. Inclut salaire, horaires, environnement, sécurité.",
+    category: "argumentation",
+    subCategory: "lexique-travail",
+  },
+
+  // ── ARGUMENTATION — Lexique thématique : Société et vivre-ensemble ──────
+  {
+    id: "lex-soc-01",
+    front: "la cohésion sociale",
+    translationEn: "social cohesion",
+    translationEs: "la cohesión social",
+    usage: "Concept central des sujets sur l'intégration, le vivre-ensemble, les politiques publiques. \"Renforcer la cohésion sociale\".",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-02",
+    front: "le vivre-ensemble",
+    translationEn: "living together / coexistence",
+    translationEs: "la convivencia",
+    usage: "Notion politique française très utilisée. \"Favoriser le vivre-ensemble\" = formule consensuelle.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-03",
+    front: "lutter contre les inégalités",
+    translationEn: "to fight inequalities",
+    translationEs: "luchar contra las desigualdades",
+    usage: "Verbe \"lutter contre\" + nom abstrait = structure-clé en argumentation sociale. Variantes : combattre, réduire.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-04",
+    front: "l'égalité des chances",
+    translationEn: "equal opportunities",
+    translationEs: "la igualdad de oportunidades",
+    usage: "Principe républicain français. \"Garantir l'égalité des chances\" = collocation. Argument en faveur de l'éducation, des bourses.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-05",
+    front: "la diversité culturelle",
+    translationEn: "cultural diversity",
+    translationEs: "la diversidad cultural",
+    usage: "\"Promouvoir la diversité\" = collocation. À utiliser dans les sujets sur l'immigration, les médias, l'éducation.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-06",
+    front: "la santé publique",
+    translationEn: "public health",
+    translationEs: "la salud pública",
+    usage: "Vocabulaire institutionnel. \"Une politique de santé publique\" = expression fixe. Argument fort dans sujets alimentation, écrans, sport.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-07",
+    front: "le pouvoir d'achat",
+    translationEn: "purchasing power",
+    translationEs: "el poder adquisitivo",
+    usage: "Notion économique très médiatisée en France. \"Préserver le pouvoir d'achat\" = collocation. Sujets : impôts, salaires, inflation.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-08",
+    front: "l'engagement citoyen",
+    translationEn: "civic engagement",
+    translationEs: "el compromiso ciudadano",
+    usage: "Inclut bénévolat, vote, associations. \"Encourager l'engagement citoyen\" = collocation. Argument pour service civique, démocratie.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-09",
+    front: "les services publics",
+    translationEn: "public services",
+    translationEs: "los servicios públicos",
+    usage: "Santé, éducation, transports, justice. \"Garantir l'accès aux services publics\" = collocation politique.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+  {
+    id: "lex-soc-10",
+    front: "l'isolement social",
+    translationEn: "social isolation",
+    translationEs: "el aislamiento social",
+    usage: "Phénomène lié aux personnes âgées, au télétravail, au numérique. \"Rompre l'isolement\" = collocation.",
+    category: "argumentation",
+    subCategory: "lexique-societe",
+  },
+
+  // ── ARGUMENTATION — Transitions inter-paragraphes (Sec. B) ──────────────
+  {
+    id: "trans-01",
+    front: "Avant d'aborder ce point, il convient de rappeler que…",
+    translationEn: "Before addressing this point, it is worth recalling that…",
+    translationEs: "Antes de abordar este punto, conviene recordar que…",
+    usage: "Transition d'ouverture de paragraphe — pose un préalable. Très valorisé en Sec. B argumentation, montre une pensée structurée.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-02",
+    front: "Passons maintenant à un second aspect…",
+    translationEn: "Let us now turn to a second aspect…",
+    translationEs: "Pasemos ahora a un segundo aspecto…",
+    usage: "Transition explicite entre deux arguments. Plus naturel que \"deuxièmement\". Marque une vraie progression de la pensée.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-03",
+    front: "Si l'on considère maintenant…",
+    translationEn: "If we now consider…",
+    translationEs: "Si ahora consideramos…",
+    usage: "Ouverture de paragraphe qui invite à examiner un nouvel angle. Registre soutenu. Pronom \"on\" valorisé en argumentation TEF.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-04",
+    front: "Il convient d'examiner également…",
+    translationEn: "It is also worth examining…",
+    translationEs: "Conviene examinar también…",
+    usage: "Ajoute un nouvel argument avec poids. \"Examiner\" = analyser sérieusement (plus B2 que \"voir\").",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-05",
+    front: "Ces arguments étant posés, on peut s'interroger sur…",
+    translationEn: "These arguments being established, one may wonder about…",
+    translationEs: "Establecidos estos argumentos, cabe preguntarse sobre…",
+    usage: "Transition vers une nuance ou un contre-argument. Effet de \"pivot\" très apprécié. Niveau B2/C1.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-06",
+    front: "Au-delà de cette première observation,…",
+    translationEn: "Beyond this initial observation,…",
+    translationEs: "Más allá de esta primera observación,…",
+    usage: "Approfondit l'argumentation au lieu de simplement ajouter. Marque une montée en complexité.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-08",
+    front: "Reste à savoir si…",
+    translationEn: "It remains to be seen whether…",
+    translationEs: "Queda por saber si…",
+    usage: "Ouvre une question ouverte vers la suite du raisonnement. Excellent pour amener une nuance ou une conclusion.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-09",
+    front: "Une autre dimension mérite d'être soulignée :…",
+    translationEn: "Another dimension is worth highlighting:…",
+    translationEs: "Otra dimensión merece ser destacada:…",
+    usage: "Annonce un argument important. \"Mériter d'être + participe passé\" = construction soutenue.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+  {
+    id: "trans-10",
+    front: "À ce stade de la réflexion,…",
+    translationEn: "At this stage of the reflection,…",
+    translationEs: "En esta etapa de la reflexión,…",
+    usage: "Transition métaréflexive — montre que vous suivez votre propre raisonnement. Marque le niveau B2+ très clairement.",
+    category: "argumentation",
+    subCategory: "transitions",
+  },
+
+  // ── ARGUMENTATION — Nuancer / relativiser une position ──────────────────
+  {
+    id: "nuance-01",
+    front: "Il n'en demeure pas moins que…",
+    translationEn: "It nonetheless remains that…",
+    translationEs: "No deja de ser cierto que…",
+    usage: "Concession + retour fort. Reconnaît un point adverse mais réaffirme la position. Très valorisé en Sec. B.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-02",
+    front: "Force est de reconnaître que…",
+    translationEn: "One must acknowledge that…",
+    translationEs: "Hay que reconocer que…",
+    usage: "Concession honnête à un argument fort. Différent de \"force est de constater\" : ici on RECONNAÎT (admet), on ne CONSTATE pas seulement.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-03",
+    front: "Tout porte à croire que…",
+    translationEn: "Everything suggests that…",
+    translationEs: "Todo lleva a creer que…",
+    usage: "Affirme une opinion en l'atténuant — laisse une place au doute. Idéal pour défendre une position sans dogmatisme.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-05",
+    front: "Sans pour autant…",
+    translationEn: "Without however…",
+    translationEs: "Sin por ello…",
+    usage: "Apporte une nuance restrictive. Ex. : « Cette mesure est efficace, sans pour autant être suffisante. » Construction B2/C1.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-06",
+    front: "Bien entendu,… mais…",
+    translationEn: "Of course,… but…",
+    translationEs: "Por supuesto,… pero…",
+    usage: "Concession polie + opposition. Désamorce une objection prévisible. Plus naturel que \"certes\" à l'écrit moderne.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-07",
+    front: "Si tant est que…",
+    translationEn: "Provided that / assuming that…",
+    translationEs: "Suponiendo que…",
+    usage: "Concession hypothétique sophistiquée. Suivi du subjonctif. Niveau C1 — usage parcimonieux mais marquant.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-08",
+    front: "Pour autant, il serait excessif d'affirmer que…",
+    translationEn: "However, it would be excessive to claim that…",
+    translationEs: "Sin embargo, sería excesivo afirmar que…",
+    usage: "Réserve forte contre un argument trop tranché. Conditionnel d'atténuation. Marque l'esprit critique valorisé au TEF.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-09",
+    front: "Il convient toutefois de relativiser…",
+    translationEn: "It is nonetheless important to put into perspective…",
+    translationEs: "Conviene sin embargo relativizar…",
+    usage: "Demande de prendre du recul sur un argument. \"Relativiser\" = nuancer. Vocabulaire B2+ de la pensée critique.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+  {
+    id: "nuance-10",
+    front: "À nuancer cependant :…",
+    translationEn: "To be qualified, however:…",
+    translationEs: "Conviene matizar, sin embargo:…",
+    usage: "Formule courte et efficace pour introduire une réserve. Idéale en milieu de paragraphe. Registre élevé.",
+    category: "argumentation",
+    subCategory: "nuance",
+  },
+
   {
     id: "conn-23",
     front: "par conséquent,…",
@@ -1518,6 +1988,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por consiguiente… / en consecuencia…",
     usage: "Conséquence logique formelle. Plus neutre que \"c'est pourquoi\" (qui a une nuance causale émotionnelle). Toujours suivi d'une virgule.",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-24",
@@ -1526,6 +1997,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "para concluir,…",
     usage: "Annonce clairement la conclusion d'un développement oral ou écrit.",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-25",
@@ -1534,6 +2006,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en cambio,…",
     usage: "Opposition nette entre deux éléments comparables.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-26",
@@ -1542,6 +2015,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por otra parte / además,…",
     usage: "Ajout argumentatif clair et courant au niveau B2.",
     category: "connecteurs",
+    subCategory: "addition",
   },
   {
     id: "conn-27",
@@ -1550,6 +2024,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por este motivo / por ello,…",
     usage: "Conséquence directe d'un fait mentionné juste avant.",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-28",
@@ -1558,6 +2033,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a primera vista,…",
     usage: "Nuance initiale utile avant une reformulation plus précise.",
     category: "connecteurs",
+    subCategory: "transitions",
   },
   {
     id: "conn-30",
@@ -1566,6 +2042,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "paralelamente,…",
     usage: "Introduit une action ou tendance simultanée.",
     category: "connecteurs",
+    subCategory: "temps",
   },
 
   // ── CONNECTEURS — Opposition (compléments) ───────────────────────────────
@@ -1576,6 +2053,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "mientras que",
     usage: "Opposition entre deux situations parallèles. \"Alors que\" est plus neutre, \"tandis que\" plus formel. Toujours indicatif.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-32",
@@ -1584,6 +2062,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "aunque + subjuntivo",
     usage: "Synonyme formel de \"bien que\". Le subjonctif est obligatoire. Très soutenu, idéal à l'écrit TEF.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-33",
@@ -1592,6 +2071,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en cambio / por el contrario,…",
     usage: "Opposition courante. À éviter à l'écrit formel — préférez \"en revanche\". Acceptable à l'oral.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
   {
     id: "conn-34",
@@ -1600,6 +2080,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "ahora bien,…",
     usage: "Introduit une opposition logique forte dans un raisonnement. Très utile pour structurer un argument.",
     category: "connecteurs",
+    subCategory: "opposition",
   },
 
   // ── CONNECTEURS — Cause (compléments) ────────────────────────────────────
@@ -1610,6 +2091,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "puesto que",
     usage: "Cause présentée comme évidente, partagée avec l'interlocuteur. Différent de \"parce que\" (cause neuve).",
     category: "connecteurs",
+    subCategory: "cause",
   },
   {
     id: "conn-36",
@@ -1618,6 +2100,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "como (al inicio)",
     usage: "Cause toujours en début de phrase. \"Comme il pleuvait, je suis resté.\" Met la cause en valeur.",
     category: "connecteurs",
+    subCategory: "cause",
   },
   {
     id: "conn-37",
@@ -1626,6 +2109,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "debido a + sustantivo",
     usage: "Cause formelle, neutre. Très utilisé dans les communiqués et la presse écrite. Toujours + nom.",
     category: "connecteurs",
+    subCategory: "cause",
   },
   {
     id: "conn-38",
@@ -1634,6 +2118,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a causa de + sustantivo",
     usage: "Cause à connotation négative. ≠ \"grâce à\" (positive). Toujours + nom.",
     category: "connecteurs",
+    subCategory: "cause",
   },
 
   // ── CONNECTEURS — Conséquence (compléments) ──────────────────────────────
@@ -1644,6 +2129,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "entonces / así que",
     usage: "Conséquence simple, registre courant. \"Donc\" est plus logique, \"alors\" plus narratif. Évitez à l'écrit formel : préférez \"par conséquent\".",
     category: "connecteurs",
+    subCategory: "consequence",
   },
   {
     id: "conn-40",
@@ -1652,6 +2138,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "de modo que",
     usage: "Indicatif = conséquence réelle. Subjonctif = but recherché. Différence subtile importante au TEF écrit.",
     category: "connecteurs",
+    subCategory: "consequence",
   },
 
   // ── CONNECTEURS — But ────────────────────────────────────────────────────
@@ -1662,6 +2149,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "para que + subjuntivo",
     usage: "But avec deux sujets différents. Subjonctif obligatoire : \"je travaille pour qu'il soit fier\".",
     category: "connecteurs",
+    subCategory: "but",
   },
   {
     id: "conn-42",
@@ -1670,6 +2158,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a fin de que + subjuntivo",
     usage: "Synonyme formel de \"pour que\". Subjonctif. Préféré à l'écrit TEF.",
     category: "connecteurs",
+    subCategory: "but",
   },
   {
     id: "conn-43",
@@ -1678,6 +2167,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "de manera que / de modo que",
     usage: "But + infinitif. Plus précis que \"pour\". \"De manière à\" est plus formel que \"de façon à\".",
     category: "connecteurs",
+    subCategory: "but",
   },
   {
     id: "conn-44",
@@ -1686,6 +2176,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "con el objetivo de",
     usage: "But explicite et formel. Idéal en argumentation écrite. Toujours + infinitif.",
     category: "connecteurs",
+    subCategory: "but",
   },
 
   // ── CONNECTEURS — Temps ──────────────────────────────────────────────────
@@ -1696,6 +2187,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "cuando (formal)",
     usage: "Synonyme formel de \"quand\". Préféré à l'écrit TEF. Toujours + indicatif.",
     category: "connecteurs",
+    subCategory: "temps",
   },
   {
     id: "conn-46",
@@ -1704,6 +2196,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en cuanto / tan pronto como",
     usage: "Action immédiatement suivante. \"Aussitôt que\" est plus formel. Au futur, le verbe suit aussi : \"dès qu'il arrivera\".",
     category: "connecteurs",
+    subCategory: "temps",
   },
   {
     id: "conn-47",
@@ -1712,6 +2205,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "mientras (simultaneidad)",
     usage: "Simultanéité neutre. Différent de \"tandis que\" qui suggère une opposition.",
     category: "connecteurs",
+    subCategory: "temps",
   },
   {
     id: "conn-48",
@@ -1720,6 +2214,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "antes de que + subjuntivo",
     usage: "Subjonctif obligatoire. Le \"ne\" explétif est facultatif : \"avant qu'il (ne) parte\". Piège classique TEF.",
     category: "connecteurs",
+    subCategory: "temps",
   },
   {
     id: "conn-49",
@@ -1728,6 +2223,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "después de que + indicativo",
     usage: "Indicatif (et non subjonctif comme \"avant que\"). Erreur très fréquente au TEF.",
     category: "connecteurs",
+    subCategory: "temps",
   },
   {
     id: "conn-50",
@@ -1736,6 +2232,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "desde que",
     usage: "Marque le point de départ d'une action qui continue. \"Depuis qu'il est parti, je suis triste.\"",
     category: "connecteurs",
+    subCategory: "temps",
   },
 
   // ── CONNECTEURS — Condition ──────────────────────────────────────────────
@@ -1746,6 +2243,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "si",
     usage: "Condition simple. Jamais de subjonctif après \"si\" (erreur fréquente). Si présent → futur ; si imparfait → conditionnel.",
     category: "connecteurs",
+    subCategory: "condition",
   },
   {
     id: "conn-52",
@@ -1754,6 +2252,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "a menos que + subjuntivo",
     usage: "Condition négative. Subjonctif obligatoire. \"Je viendrai à moins qu'il (ne) pleuve.\"",
     category: "connecteurs",
+    subCategory: "condition",
   },
   {
     id: "conn-53",
@@ -1762,6 +2261,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "con tal de que + subjuntivo",
     usage: "Condition positive forte. Exprime aussi un souhait : \"pourvu qu'il fasse beau !\".",
     category: "connecteurs",
+    subCategory: "condition",
   },
   {
     id: "conn-54",
@@ -1770,6 +2270,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "en caso de que + condicional",
     usage: "Particularité française : \"au cas où\" prend le conditionnel, pas le subjonctif. \"Au cas où il pleuvrait, prends un parapluie.\"",
     category: "connecteurs",
+    subCategory: "condition",
   },
 
   // ── CONNECTEURS — Illustration ───────────────────────────────────────────
@@ -1780,6 +2281,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "por ejemplo",
     usage: "Introduit un cas concret. Le plus neutre. Peut s'abréger en \"p. ex.\" à l'écrit informel.",
     category: "connecteurs",
+    subCategory: "illustration",
   },
   {
     id: "conn-56",
@@ -1788,6 +2290,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "especialmente / en particular",
     usage: "Mentionne un exemple privilégié dans une liste. Plus formel que \"par exemple\". Idéal au TEF écrit.",
     category: "connecteurs",
+    subCategory: "illustration",
   },
   {
     id: "conn-57",
@@ -1796,6 +2299,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "es decir,…",
     usage: "Reformulation explicative. Précise ce qui vient d'être dit. Toujours suivi d'une virgule.",
     category: "connecteurs",
+    subCategory: "illustration",
   },
   {
     id: "conn-58",
@@ -1804,6 +2308,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "así / de este modo",
     usage: "Double sens : (1) conséquence (= donc) ou (2) illustration (= par exemple). Le contexte tranche.",
     category: "connecteurs",
+    subCategory: "illustration",
   },
 
   // ── CONNECTEURS — Nuance et concession ───────────────────────────────────
@@ -1814,6 +2319,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "ciertamente,… pero…",
     usage: "Concession + opposition. Reconnaît un argument adverse avant de le contrer. TRÈS apprécié au TEF Section B.",
     category: "connecteurs",
+    subCategory: "nuance",
   },
   {
     id: "conn-60",
@@ -1822,6 +2328,7 @@ export const FLASHCARDS: Flashcard[] = [
     translationEs: "aun + gerundio",
     usage: "Concession compacte : \"tout en reconnaissant…\", \"tout en étant…\". Élève le niveau de la production.",
     category: "connecteurs",
+    subCategory: "nuance",
   },
 
   // ── ORAL PART B — Présentation & Persuasion (registre informel : TU) ──────
