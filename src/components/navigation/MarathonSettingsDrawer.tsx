@@ -1,4 +1,4 @@
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronDown, Play } from "lucide-react";
 import { useEffect } from "react";
 import * as Select from "@radix-ui/react-select";
 import type { CardOrder } from "../../hooks/useFlashcards";
@@ -18,7 +18,32 @@ interface MarathonSettingsDrawerProps {
   onModeChange(v: MarathonMode): void;
   repetitionStyle: RepetitionStyle;
   onRepetitionStyleChange(v: RepetitionStyle): void;
+  ttsAutoplay?: boolean;
+  onTtsAutoplayChange?(v: boolean): void;
+  ttsRate?: number;
+  onTtsRateChange?(v: number): void;
+  ttsPitch?: number;
+  onTtsPitchChange?(v: number): void;
+  ttsVolume?: number;
+  onTtsVolumeChange?(v: number): void;
+  ttsVoiceURI?: string | null;
+  onTtsVoiceURIChange?(v: string | null): void;
+  ttsVoices?: SpeechSynthesisVoice[];
+  onTtsTest?(): void;
   hideRevisionMode?: boolean;
+}
+
+const FR_REGION_FLAGS: Record<string, string> = {
+  "fr-fr": "🇫🇷",
+  "fr-ca": "🇨🇦",
+  "fr-be": "🇧🇪",
+  "fr-ch": "🇨🇭",
+  "fr-lu": "🇱🇺",
+  "fr-mc": "🇲🇨",
+};
+
+function voiceFlag(lang: string): string {
+  return FR_REGION_FLAGS[lang.toLowerCase()] ?? "🇫🇷";
 }
 
 function Toggle({
@@ -78,8 +103,29 @@ export function MarathonSettingsDrawer({
   onModeChange,
   repetitionStyle: _repetitionStyle,
   onRepetitionStyleChange: _onRepetitionStyleChange,
+  ttsAutoplay,
+  onTtsAutoplayChange,
+  ttsRate,
+  onTtsRateChange,
+  ttsPitch,
+  onTtsPitchChange,
+  ttsVolume,
+  onTtsVolumeChange,
+  ttsVoiceURI,
+  onTtsVoiceURIChange,
+  ttsVoices,
+  onTtsTest,
   hideRevisionMode = false,
 }: MarathonSettingsDrawerProps) {
+  const showTts =
+    ttsAutoplay !== undefined &&
+    onTtsAutoplayChange !== undefined &&
+    ttsRate !== undefined &&
+    onTtsRateChange !== undefined;
+  const showVoiceSelector =
+    showTts && ttsVoices && ttsVoices.length > 0 && onTtsVoiceURIChange !== undefined;
+  const showPitch = showTts && ttsPitch !== undefined && onTtsPitchChange !== undefined;
+  const showVolume = showTts && ttsVolume !== undefined && onTtsVolumeChange !== undefined;
   const MODE_OPTIONS = (
     [
       { value: "lecture",    label: "Lecture",    description: "Défilement sans évaluation" },
@@ -162,6 +208,150 @@ export function MarathonSettingsDrawer({
               </span>
             </div>
           </div>
+
+          {showTts && (
+            <>
+              <div className="border-t border-ink/8" />
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-ink">Voix</p>
+                    <p className="text-xs text-muted">Lecture automatique au changement</p>
+                  </div>
+                  <Toggle
+                    checked={ttsAutoplay!}
+                    onChange={onTtsAutoplayChange!}
+                    label={ttsAutoplay ? "Désactiver la lecture auto" : "Activer la lecture auto"}
+                  />
+                </div>
+
+                {showVoiceSelector && (
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-medium text-muted shrink-0">Voix</p>
+                    <Select.Root
+                      value={ttsVoiceURI ?? "__auto__"}
+                      onValueChange={(v) => onTtsVoiceURIChange!(v === "__auto__" ? null : v)}
+                    >
+                      <Select.Trigger
+                        aria-label="Sélection de la voix"
+                        className="flex max-w-45 items-center gap-1.5 rounded-button border border-ink/12 bg-surface px-3 py-1.5 text-xs font-medium text-ink hover:bg-ink/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-colors duration-150"
+                      >
+                        <Select.Value />
+                        <Select.Icon><ChevronDown size={12} /></Select.Icon>
+                      </Select.Trigger>
+                      <Select.Portal>
+                        <Select.Content
+                          position="popper"
+                          sideOffset={4}
+                          className="z-60 max-h-72 min-w-48 overflow-y-auto rounded-card border border-ink/8 bg-surface py-1 shadow-lg"
+                        >
+                          <Select.Viewport>
+                            <Select.Item
+                              value="__auto__"
+                              className="flex flex-col px-3 py-2 text-xs text-ink cursor-pointer select-none hover:bg-ink/5 focus:bg-ink/5 focus:outline-none data-[state=checked]:text-brand"
+                            >
+                              <Select.ItemText>Automatique (féminine)</Select.ItemText>
+                              <span className="text-[10px] text-muted">Sélection prioritaire</span>
+                            </Select.Item>
+                            {ttsVoices!.map((voice) => (
+                              <Select.Item
+                                key={voice.voiceURI}
+                                value={voice.voiceURI}
+                                className="flex flex-col px-3 py-2 text-xs text-ink cursor-pointer select-none hover:bg-ink/5 focus:bg-ink/5 focus:outline-none data-[state=checked]:text-brand"
+                              >
+                                <Select.ItemText>
+                                  {voiceFlag(voice.lang)} {voice.name}
+                                </Select.ItemText>
+                                <span className="text-[10px] text-muted">{voice.lang}</span>
+                              </Select.Item>
+                            ))}
+                          </Select.Viewport>
+                        </Select.Content>
+                      </Select.Portal>
+                    </Select.Root>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs font-medium text-muted">Vitesse</p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted w-8 shrink-0">0.5×</span>
+                    <input
+                      type="range"
+                      min={0.5}
+                      max={1.5}
+                      step={0.05}
+                      value={ttsRate!}
+                      onChange={(e) => onTtsRateChange!(Number(e.target.value))}
+                      aria-label="Vitesse de la voix"
+                      className="flex-1 accent-brand h-1"
+                    />
+                    <span className="text-xs text-muted w-8 shrink-0">1.5×</span>
+                    <span className="text-xs font-semibold text-ink w-10 text-right shrink-0 tabular-nums">
+                      {ttsRate!.toFixed(2)}×
+                    </span>
+                  </div>
+                </div>
+
+                {showPitch && (
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-muted">Tonalité</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted w-8 shrink-0">0.5</span>
+                      <input
+                        type="range"
+                        min={0.5}
+                        max={1.5}
+                        step={0.05}
+                        value={ttsPitch!}
+                        onChange={(e) => onTtsPitchChange!(Number(e.target.value))}
+                        aria-label="Tonalité de la voix"
+                        className="flex-1 accent-brand h-1"
+                      />
+                      <span className="text-xs text-muted w-8 shrink-0">1.5</span>
+                      <span className="text-xs font-semibold text-ink w-10 text-right shrink-0 tabular-nums">
+                        {ttsPitch!.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {showVolume && (
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-muted">Volume</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted w-8 shrink-0">0%</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        value={ttsVolume!}
+                        onChange={(e) => onTtsVolumeChange!(Number(e.target.value))}
+                        aria-label="Volume de la voix"
+                        className="flex-1 accent-brand h-1"
+                      />
+                      <span className="text-xs text-muted w-8 shrink-0">100%</span>
+                      <span className="text-xs font-semibold text-ink w-10 text-right shrink-0 tabular-nums">
+                        {Math.round(ttsVolume! * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {onTtsTest && (
+                  <button
+                    type="button"
+                    onClick={onTtsTest}
+                    className="flex items-center justify-center gap-2 rounded-button border border-ink/12 bg-ink/4 py-2 text-xs font-medium text-ink hover:bg-ink/8 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  >
+                    <Play size={12} fill="currentColor" />
+                    Tester la voix
+                  </button>
+                )}
+              </div>
+            </>
+          )}
 
           <div className="border-t border-ink/8" />
 

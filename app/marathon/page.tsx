@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import type { CardOrder } from "@/src/hooks/useFlashcards";
+import { useTts } from "@/src/hooks/useTts";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
 import { FlashcardResults } from "@/src/components/flashcard/FlashcardResults";
 import { useSetMarathonHeader } from "@/src/lib/header-context";
@@ -76,6 +77,30 @@ export default function MarathonPage() {
   });
   const [repetitionStyle, setRepetitionStyle] = useState<RepetitionStyle>(() => {
     return localStorage.getItem("tef-marathon-repstyle") === "masking" ? "masking" : "intensity";
+  });
+  const [marathonTtsAutoplay, setMarathonTtsAutoplay] = useState(
+    () => localStorage.getItem("tef-marathon-ttsautoplay") === "1",
+  );
+  const [marathonTtsRate, setMarathonTtsRate] = useState(() => {
+    const v = Number(localStorage.getItem("tef-marathon-ttsrate") ?? "0.95");
+    return Number.isFinite(v) ? Math.min(1.5, Math.max(0.5, v)) : 0.95;
+  });
+  const [marathonTtsPitch, setMarathonTtsPitch] = useState(() => {
+    const v = Number(localStorage.getItem("tef-marathon-ttspitch") ?? "1");
+    return Number.isFinite(v) ? Math.min(1.5, Math.max(0.5, v)) : 1;
+  });
+  const [marathonTtsVolume, setMarathonTtsVolume] = useState(() => {
+    const v = Number(localStorage.getItem("tef-marathon-ttsvolume") ?? "1");
+    return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 1;
+  });
+  const [marathonTtsVoiceURI, setMarathonTtsVoiceURI] = useState<string | null>(
+    () => localStorage.getItem("tef-marathon-ttsvoiceuri"),
+  );
+  const tts = useTts({
+    rate: marathonTtsRate,
+    pitch: marathonTtsPitch,
+    volume: marathonTtsVolume,
+    voiceURI: marathonTtsVoiceURI,
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -151,6 +176,11 @@ export default function MarathonPage() {
           autoAdvanceMs={marathonAutoSeconds * 1000}
           mode={marathonMode}
           repetitionStyle={repetitionStyle}
+          ttsAutoplay={marathonTtsAutoplay}
+          ttsRate={marathonTtsRate}
+          ttsPitch={marathonTtsPitch}
+          ttsVolume={marathonTtsVolume}
+          ttsVoiceURI={marathonTtsVoiceURI}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -231,6 +261,15 @@ export default function MarathonPage() {
           localStorage.setItem("tef-marathon-order", marathonOrder);
           localStorage.setItem("tef-marathon-mode", marathonMode);
           localStorage.setItem("tef-marathon-repstyle", repetitionStyle);
+          localStorage.setItem("tef-marathon-ttsautoplay", marathonTtsAutoplay ? "1" : "0");
+          localStorage.setItem("tef-marathon-ttsrate", String(marathonTtsRate));
+          localStorage.setItem("tef-marathon-ttspitch", String(marathonTtsPitch));
+          localStorage.setItem("tef-marathon-ttsvolume", String(marathonTtsVolume));
+          if (marathonTtsVoiceURI) {
+            localStorage.setItem("tef-marathon-ttsvoiceuri", marathonTtsVoiceURI);
+          } else {
+            localStorage.removeItem("tef-marathon-ttsvoiceuri");
+          }
           deck.startSession();
         }}
         autoPlay={marathonAutoPlay}
@@ -243,6 +282,18 @@ export default function MarathonPage() {
         onModeChange={setMarathonMode}
         repetitionStyle={repetitionStyle}
         onRepetitionStyleChange={setRepetitionStyle}
+        ttsAutoplay={marathonTtsAutoplay}
+        onTtsAutoplayChange={setMarathonTtsAutoplay}
+        ttsRate={marathonTtsRate}
+        onTtsRateChange={setMarathonTtsRate}
+        ttsPitch={marathonTtsPitch}
+        onTtsPitchChange={setMarathonTtsPitch}
+        ttsVolume={marathonTtsVolume}
+        onTtsVolumeChange={setMarathonTtsVolume}
+        ttsVoiceURI={marathonTtsVoiceURI}
+        onTtsVoiceURIChange={setMarathonTtsVoiceURI}
+        ttsVoices={tts.voices}
+        onTtsTest={() => tts.speak("Bonjour, voici un exemple de phrase en français.")}
       />
     </AuthGate>
   );

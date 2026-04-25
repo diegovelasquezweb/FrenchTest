@@ -15,6 +15,16 @@ export interface FlashcardSettings {
   setMode(v: MarathonMode): void;
   repetitionStyle: RepetitionStyle;
   setRepetitionStyle(v: RepetitionStyle): void;
+  ttsAutoplay: boolean;
+  setTtsAutoplay(v: boolean): void;
+  ttsRate: number;
+  setTtsRate(v: number): void;
+  ttsPitch: number;
+  setTtsPitch(v: number): void;
+  ttsVolume: number;
+  setTtsVolume(v: number): void;
+  ttsVoiceURI: string | null;
+  setTtsVoiceURI(v: string | null): void;
   persist(): void;
 }
 
@@ -62,6 +72,14 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
   const [repetitionStyle, setRepetitionStyle] = useState<RepetitionStyle>(() =>
     readRepStyle(k("repstyle"), "intensity"),
   );
+  const [ttsAutoplay, setTtsAutoplay] = useState(() => readBool(k("ttsautoplay"), false));
+  const [ttsRate, setTtsRate] = useState(() => readNumber(k("ttsrate"), 0.95, 0.5, 1.5));
+  const [ttsPitch, setTtsPitch] = useState(() => readNumber(k("ttspitch"), 1, 0.5, 1.5));
+  const [ttsVolume, setTtsVolume] = useState(() => readNumber(k("ttsvolume"), 1, 0, 1));
+  const [ttsVoiceURI, setTtsVoiceURI] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem(k("ttsvoiceuri"));
+  });
 
   function persist() {
     if (typeof window === "undefined") return;
@@ -70,6 +88,15 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
     localStorage.setItem(k("order"), order);
     localStorage.setItem(k("mode"), mode);
     localStorage.setItem(k("repstyle"), repetitionStyle);
+    localStorage.setItem(k("ttsautoplay"), ttsAutoplay ? "1" : "0");
+    localStorage.setItem(k("ttsrate"), String(ttsRate));
+    localStorage.setItem(k("ttspitch"), String(ttsPitch));
+    localStorage.setItem(k("ttsvolume"), String(ttsVolume));
+    if (ttsVoiceURI) {
+      localStorage.setItem(k("ttsvoiceuri"), ttsVoiceURI);
+    } else {
+      localStorage.removeItem(k("ttsvoiceuri"));
+    }
   }
 
   return {
@@ -83,6 +110,16 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
     setMode,
     repetitionStyle,
     setRepetitionStyle,
+    ttsAutoplay,
+    setTtsAutoplay,
+    ttsRate,
+    setTtsRate,
+    ttsPitch,
+    setTtsPitch,
+    ttsVolume,
+    setTtsVolume,
+    ttsVoiceURI,
+    setTtsVoiceURI,
     persist,
   };
 }

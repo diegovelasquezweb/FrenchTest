@@ -8,8 +8,11 @@ import { SessionDone } from "@/src/components/flashcard/SessionDone";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFlashcardSettings } from "@/src/hooks/useFlashcardSettings";
+import { useTts } from "@/src/hooks/useTts";
 import { MarathonSettingsDrawer } from "@/src/components/navigation/MarathonSettingsDrawer";
 import type { Flashcard } from "@/src/types";
+
+const TEST_PHRASE = "Bonjour, voici un exemple de phrase en français.";
 
 interface FlashcardCategoryTemplateProps {
   title: string;
@@ -30,6 +33,13 @@ export function FlashcardCategoryTemplate({
   const settings = useFlashcardSettings(storageKey);
   const deck = useFlashcards(cards, storageKey, settings.order);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const tts = useTts({
+    rate: settings.ttsRate,
+    pitch: settings.ttsPitch,
+    volume: settings.ttsVolume,
+    voiceURI: settings.ttsVoiceURI,
+  });
 
   useSetFlashcardHeader(title, deck, { onSettings: () => setSettingsOpen(true) });
 
@@ -53,6 +63,11 @@ export function FlashcardCategoryTemplate({
           autoAdvanceMs={settings.autoSeconds * 1000}
           mode={settings.mode}
           repetitionStyle={settings.repetitionStyle}
+          ttsAutoplay={settings.ttsAutoplay}
+          ttsRate={settings.ttsRate}
+          ttsPitch={settings.ttsPitch}
+          ttsVolume={settings.ttsVolume}
+          ttsVoiceURI={settings.ttsVoiceURI}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -76,6 +91,18 @@ export function FlashcardCategoryTemplate({
         onModeChange={settings.setMode}
         repetitionStyle={settings.repetitionStyle}
         onRepetitionStyleChange={settings.setRepetitionStyle}
+        ttsAutoplay={settings.ttsAutoplay}
+        onTtsAutoplayChange={settings.setTtsAutoplay}
+        ttsRate={settings.ttsRate}
+        onTtsRateChange={settings.setTtsRate}
+        ttsPitch={settings.ttsPitch}
+        onTtsPitchChange={settings.setTtsPitch}
+        ttsVolume={settings.ttsVolume}
+        onTtsVolumeChange={settings.setTtsVolume}
+        ttsVoiceURI={settings.ttsVoiceURI}
+        onTtsVoiceURIChange={settings.setTtsVoiceURI}
+        ttsVoices={tts.voices}
+        onTtsTest={() => tts.speak(TEST_PHRASE)}
         hideRevisionMode
       />
     </AuthGate>

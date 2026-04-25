@@ -6,6 +6,7 @@ import { Bookmark } from "lucide-react";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFlashcardSettings } from "@/src/hooks/useFlashcardSettings";
+import { useTts } from "@/src/hooks/useTts";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
 import { SessionDone } from "@/src/components/flashcard/SessionDone";
 import { MarathonSettingsDrawer } from "@/src/components/navigation/MarathonSettingsDrawer";
@@ -34,6 +35,12 @@ export function FavoriteCollectionTemplate({
   const settings = useFlashcardSettings(storageKey);
   const deck = useFlashcards(favoriteList, storageKey, settings.order);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const tts = useTts({
+    rate: settings.ttsRate,
+    pitch: settings.ttsPitch,
+    volume: settings.ttsVolume,
+    voiceURI: settings.ttsVoiceURI,
+  });
   useSetFlashcardHeader(title, deck, { onSettings: () => setSettingsOpen(true) });
 
   return (
@@ -118,6 +125,11 @@ export function FavoriteCollectionTemplate({
           autoAdvanceMs={settings.autoSeconds * 1000}
           mode={settings.mode}
           repetitionStyle={settings.repetitionStyle}
+          ttsAutoplay={settings.ttsAutoplay}
+          ttsRate={settings.ttsRate}
+          ttsPitch={settings.ttsPitch}
+          ttsVolume={settings.ttsVolume}
+          ttsVoiceURI={settings.ttsVoiceURI}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -141,6 +153,18 @@ export function FavoriteCollectionTemplate({
         onModeChange={settings.setMode}
         repetitionStyle={settings.repetitionStyle}
         onRepetitionStyleChange={settings.setRepetitionStyle}
+        ttsAutoplay={settings.ttsAutoplay}
+        onTtsAutoplayChange={settings.setTtsAutoplay}
+        ttsRate={settings.ttsRate}
+        onTtsRateChange={settings.setTtsRate}
+        ttsPitch={settings.ttsPitch}
+        onTtsPitchChange={settings.setTtsPitch}
+        ttsVolume={settings.ttsVolume}
+        onTtsVolumeChange={settings.setTtsVolume}
+        ttsVoiceURI={settings.ttsVoiceURI}
+        onTtsVoiceURIChange={settings.setTtsVoiceURI}
+        ttsVoices={tts.voices}
+        onTtsTest={() => tts.speak("Bonjour, voici un exemple de phrase en français.")}
         hideRevisionMode
       />
     </AuthGate>

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
-import { Bookmark, HelpCircle } from "lucide-react";
+import { Bookmark, HelpCircle, Volume2 } from "lucide-react";
 import type { Flashcard, FlashcardRating } from "../../types";
 import { SwipeCard } from "../quiz/SwipeCard";
+import { useTts } from "../../hooks/useTts";
 
 type FlashColor = "red" | "yellow" | "emerald" | "blue" | null;
 
@@ -53,6 +54,11 @@ interface FlashcardViewProps {
   autoAdvanceMs?: number;
   mode?: MarathonMode;
   repetitionStyle?: RepetitionStyle;
+  ttsAutoplay?: boolean;
+  ttsRate?: number;
+  ttsPitch?: number;
+  ttsVolume?: number;
+  ttsVoiceURI?: string | null;
 }
 
 export function FlashcardView({
@@ -68,12 +74,23 @@ export function FlashcardView({
   autoAdvanceMs = 20000,
   mode = "lecture",
   repetitionStyle = "intensity",
+  ttsAutoplay = false,
+  ttsRate = 0.95,
+  ttsPitch = 1,
+  ttsVolume = 1,
+  ttsVoiceURI = null,
 }: FlashcardViewProps) {
   const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
   const [repStep, setRepStep] = useState(0);
   const [prevCardId, setPrevCardId] = useState(card.id);
   const pending = useRef(false);
+  const { speak, isSpeaking, isSupported: ttsSupported } = useTts({
+    rate: ttsRate,
+    pitch: ttsPitch,
+    volume: ttsVolume,
+    voiceURI: ttsVoiceURI,
+  });
 
   if (prevCardId !== card.id) {
     setPrevCardId(card.id);
@@ -85,6 +102,12 @@ export function FlashcardView({
   useEffect(() => {
     focusTrapRef.current?.focus({ preventScroll: true });
   }, [index]);
+
+  useEffect(() => {
+    if (!ttsAutoplay || !ttsSupported) return;
+    const id = window.setTimeout(() => speak(card.front), 120);
+    return () => window.clearTimeout(id);
+  }, [card.id, card.front, ttsAutoplay, ttsSupported, speak]);
 
   const triggerRate = useCallback(
     (r: FlashcardRating) => {
@@ -115,6 +138,11 @@ export function FlashcardView({
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "s" || e.key === "S") {
+        e.preventDefault();
+        if (ttsSupported) speak(card.front);
+        return;
+      }
       if (mode === "lecture") {
         if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter" || e.key === "ArrowDown") {
           e.preventDefault();
@@ -176,6 +204,9 @@ export function FlashcardView({
     advanceRep,
     mode,
     repStep,
+    speak,
+    ttsSupported,
+    card.front,
   ]);
 
   useEffect(() => {
@@ -276,6 +307,17 @@ export function FlashcardView({
                             color: "text-muted",
                             bg: "bg-ink/5",
                           },
+                          ...(ttsSupported
+                            ? [
+                                {
+                                  gesture: "S",
+                                  keys: ["S"],
+                                  label: "Écouter",
+                                  color: "text-brand",
+                                  bg: "bg-brand/8",
+                                },
+                              ]
+                            : []),
                         ]
                       : mode === "répétition"
                       ? [
@@ -300,6 +342,17 @@ export function FlashcardView({
                             color: "text-muted",
                             bg: "bg-ink/5",
                           },
+                          ...(ttsSupported
+                            ? [
+                                {
+                                  gesture: "S",
+                                  keys: ["S"],
+                                  label: "Écouter",
+                                  color: "text-brand",
+                                  bg: "bg-brand/8",
+                                },
+                              ]
+                            : []),
                         ]
                       : [
                           {
@@ -330,6 +383,17 @@ export function FlashcardView({
                             color: "text-muted",
                             bg: "bg-ink/5",
                           },
+                          ...(ttsSupported
+                            ? [
+                                {
+                                  gesture: "S",
+                                  keys: ["S"],
+                                  label: "Écouter",
+                                  color: "text-brand",
+                                  bg: "bg-brand/8",
+                                },
+                              ]
+                            : []),
                         ]
                   ).map(({ gesture, keys, label, color, bg }) => (
                     <li
@@ -409,16 +473,35 @@ export function FlashcardView({
             >
               {CATEGORY_LABEL[card.category]}
             </span>
-            {mode === "répétition" && (
-              <div className="flex items-center gap-1.5" aria-hidden="true">
-                {[0, 1, 2].map((i) => (
-                  <span
-                    key={i}
-                    className={`h-1.5 w-1.5 rounded-full transition-colors duration-200 ${i <= repStep ? "bg-brand" : "bg-ink/15"}`}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {ttsSupported && (
+                <button
+                  type="button"
+                  aria-label="Écouter la phrase"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speak(card.front);
+                  }}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                    isSpeaking
+                      ? "bg-brand/15 text-brand"
+                      : "text-muted hover:bg-ink/5 hover:text-ink"
+                  }`}
+                >
+                  <Volume2 size={15} />
+                </button>
+              )}
+              {mode === "répétition" && (
+                <div className="flex items-center gap-1.5" aria-hidden="true">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className={`h-1.5 w-1.5 rounded-full transition-colors duration-200 ${i <= repStep ? "bg-brand" : "bg-ink/15"}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <p className={frontClassName} lang="fr">
