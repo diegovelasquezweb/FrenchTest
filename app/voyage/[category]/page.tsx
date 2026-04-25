@@ -2,10 +2,10 @@
 
 import { use } from "react";
 import { notFound } from "next/navigation";
-import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { TOURISTE_CARDS } from "@/src/data/touristeCards";
 import { FlashcardCategoryTemplate } from "@/src/components/templates";
+import type { Flashcard } from "@/src/types";
 
 type VoyageCategory =
   | "restaurant"
@@ -31,13 +31,13 @@ const shoppingCards = TOURISTE_CARDS.filter((c) => c.subCategory === "shopping")
 const orientationCards = TOURISTE_CARDS.filter((c) => c.subCategory === "orientation");
 const urgencesCards = TOURISTE_CARDS.filter((c) => c.subCategory === "urgences");
 
-const VOYAGE_TITLES: Record<VoyageCategory, string> = {
-  restaurant: "Restaurant",
-  transport: "Transport",
-  hebergement: "Hébergement",
-  shopping: "Shopping",
-  orientation: "Orientation",
-  urgences: "Urgences",
+const SOURCES: Record<VoyageCategory, { cards: Flashcard[]; storageKey: string; title: string }> = {
+  restaurant:  { cards: restaurantCards,  storageKey: "tef-voyage-restaurant",  title: "Restaurant" },
+  transport:   { cards: transportCards,   storageKey: "tef-voyage-transport",   title: "Transport" },
+  hebergement: { cards: hebergementCards, storageKey: "tef-voyage-hebergement", title: "Hébergement" },
+  shopping:    { cards: shoppingCards,    storageKey: "tef-voyage-shopping",    title: "Shopping" },
+  orientation: { cards: orientationCards, storageKey: "tef-voyage-orientation", title: "Orientation" },
+  urgences:    { cards: urgencesCards,    storageKey: "tef-voyage-urgences",    title: "Urgences" },
 };
 
 export default function VoyageCategoryPage({
@@ -48,31 +48,15 @@ export default function VoyageCategoryPage({
   const { category } = use(params);
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
 
-  const restaurant = useFlashcards(restaurantCards, "tef-voyage-restaurant");
-  const transport = useFlashcards(transportCards, "tef-voyage-transport");
-  const hebergement = useFlashcards(hebergementCards, "tef-voyage-hebergement");
-  const shopping = useFlashcards(shoppingCards, "tef-voyage-shopping");
-  const orientation = useFlashcards(orientationCards, "tef-voyage-orientation");
-  const urgences = useFlashcards(urgencesCards, "tef-voyage-urgences");
-
-  const deckMap: Record<VoyageCategory, typeof restaurant> = {
-    restaurant,
-    transport,
-    hebergement,
-    shopping,
-    orientation,
-    urgences,
-  };
-
   if (!VALID.has(category)) notFound();
 
-  const deck = deckMap[category as VoyageCategory];
-  const title = VOYAGE_TITLES[category as VoyageCategory] ?? category;
+  const source = SOURCES[category as VoyageCategory];
 
   return (
     <FlashcardCategoryTemplate
-      title={title}
-      deck={deck}
+      title={source.title}
+      cards={source.cards}
+      storageKey={source.storageKey}
       isFavoriteCard={isFavoriteCard}
       toggleFavoriteCard={toggleFavoriteCard}
     />

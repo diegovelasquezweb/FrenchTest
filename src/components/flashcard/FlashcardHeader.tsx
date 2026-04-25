@@ -12,11 +12,19 @@ interface FlashcardHeaderMarathonProps extends FlashcardHeaderBaseProps {
   onSettings: () => void;
 }
 
+interface FlashcardHeaderSettingsProps extends FlashcardHeaderBaseProps {
+  variant: "flashcard";
+  onSettings: () => void;
+}
+
 interface FlashcardHeaderDefaultProps extends FlashcardHeaderBaseProps {
   variant?: "default";
 }
 
-type FlashcardHeaderProps = FlashcardHeaderMarathonProps | FlashcardHeaderDefaultProps;
+type FlashcardHeaderProps =
+  | FlashcardHeaderMarathonProps
+  | FlashcardHeaderSettingsProps
+  | FlashcardHeaderDefaultProps;
 
 export function FlashcardHeader(props: FlashcardHeaderProps) {
   if (props.variant === "marathon") {
@@ -52,6 +60,21 @@ export function FlashcardHeader(props: FlashcardHeaderProps) {
             Réglages
           </button>
         </div>
+      </div>
+    );
+  }
+
+  if (props.variant === "flashcard") {
+    return (
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={props.onSettings}
+          className="flex items-center gap-1 text-xs text-muted hover:text-ink transition-colors duration-150"
+        >
+          <Settings size={12} />
+          Réglages
+        </button>
       </div>
     );
   }

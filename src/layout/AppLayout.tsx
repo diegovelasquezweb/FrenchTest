@@ -53,6 +53,13 @@ export function AppLayout({ children }: AppLayoutProps) {
                     onFilter={headerData.onFilter!}
                     onSettings={headerData.onSettings!}
                   />
+                ) : headerData.variant === "flashcard" && headerData.onSettings ? (
+                  <FlashcardHeader
+                    variant="flashcard"
+                    masteredCount={headerData.masteredCount}
+                    totalCards={headerData.totalCards}
+                    onSettings={headerData.onSettings}
+                  />
                 ) : (
                   <FlashcardHeader
                     masteredCount={headerData.masteredCount}

@@ -1,4 +1,4 @@
-import type { AnswerState, QuizPhase, Flashcard, FlashcardRating } from "@/src/types";
+import type { AnswerState, QuizPhase } from "@/src/types";
 
 export type { AnswerState, QuizPhase };
 
@@ -44,25 +44,6 @@ export function defaultAnnouncement(
   if (answerState === "correct") return "Correct !";
   const correct = question.options[question.correctIndex] ?? "";
   return `Incorrect. La bonne réponse est ${correct}.`;
-}
-
-/** Minimal interface a flashcard deck must satisfy for FlashcardCategoryTemplate. */
-export interface FlashcardDeckLike {
-  state: {
-    phase: "idle" | "session" | "complete";
-    sessionResults: { id: string; rating: FlashcardRating }[];
-    deck: Flashcard[];
-  };
-  currentCard: Flashcard | null;
-  progress: { index: number; total: number };
-  masteredCount: number;
-  totalCards: number;
-  startSession(): void;
-  rate(r: FlashcardRating): void;
-  back(): void;
-  skip(): void;
-  restart(): void;
-  goHome(): void;
 }
 
 /** Varying copy for FavoriteCollectionTemplate idle state. */

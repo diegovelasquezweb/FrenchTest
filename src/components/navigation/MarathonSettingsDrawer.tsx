@@ -18,6 +18,7 @@ interface MarathonSettingsDrawerProps {
   onModeChange(v: MarathonMode): void;
   repetitionStyle: RepetitionStyle;
   onRepetitionStyleChange(v: RepetitionStyle): void;
+  hideRevisionMode?: boolean;
 }
 
 function Toggle({
@@ -77,7 +78,15 @@ export function MarathonSettingsDrawer({
   onModeChange,
   repetitionStyle: _repetitionStyle,
   onRepetitionStyleChange: _onRepetitionStyleChange,
+  hideRevisionMode = false,
 }: MarathonSettingsDrawerProps) {
+  const MODE_OPTIONS = (
+    [
+      { value: "lecture",    label: "Lecture",    description: "Défilement sans évaluation" },
+      { value: "répétition", label: "Répétition", description: "3 taps avant d'évaluer" },
+      { value: "révision",   label: "Révision",   description: "Swipe + évaluation immédiate" },
+    ] as const
+  ).filter((opt) => !(hideRevisionMode && opt.value === "révision"));
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -158,11 +167,7 @@ export function MarathonSettingsDrawer({
 
           <div className="flex flex-col gap-2">
             <p className="text-sm font-medium text-ink">Mode</p>
-            {([
-              { value: "lecture",    label: "Lecture",    description: "Défilement sans évaluation" },
-              { value: "répétition", label: "Répétition", description: "3 taps avant d'évaluer" },
-              { value: "révision",   label: "Révision",   description: "Swipe + évaluation immédiate" },
-            ] as const).map(({ value, label, description }) => (
+            {MODE_OPTIONS.map(({ value, label, description }) => (
               <button
                 key={value}
                 type="button"

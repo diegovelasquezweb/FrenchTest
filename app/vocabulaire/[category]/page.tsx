@@ -2,7 +2,6 @@
 
 import { use } from "react";
 import { notFound } from "next/navigation";
-import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { VOCABULAIRE_CARDS } from "@/src/data/vocabulaireCards";
 import { VOCABULAIRE_EXTRA_CARDS } from "@/src/data/vocabulaireExtraCards";
@@ -10,6 +9,7 @@ import { GENRE_CARDS } from "@/src/data/genreCards";
 import { PIEGES_CARDS } from "@/src/data/piegesCards";
 import { ACCENTS_CARDS } from "@/src/data/accentsCards";
 import { FlashcardCategoryTemplate } from "@/src/components/templates";
+import type { Flashcard } from "@/src/types";
 
 type VocabCategory =
   | "verbes"
@@ -39,15 +39,15 @@ const adjectifsCards = VOCAB_CARDS.filter((c) => c.subCategory === "adjectifs");
 const nomsCards = VOCAB_CARDS.filter((c) => c.subCategory === "noms");
 const expressionsCards = VOCAB_CARDS.filter((c) => c.subCategory === "expressions");
 
-const VOCAB_TITLES: Record<VocabCategory, string> = {
-  verbes: "Verbes",
-  adjectifs: "Adjectifs",
-  noms: "Noms",
-  expressions: "Expressions",
-  genre: "Genre",
-  erreurs: "Erreurs",
-  accents: "Accents",
-  mix: "Mix",
+const SOURCES: Record<VocabCategory, { cards: Flashcard[]; storageKey: string; title: string }> = {
+  verbes:      { cards: verbesCards,      storageKey: "tef-vocab-verbes",      title: "Verbes" },
+  adjectifs:   { cards: adjectifsCards,   storageKey: "tef-vocab-adjectifs",   title: "Adjectifs" },
+  noms:        { cards: nomsCards,        storageKey: "tef-vocab-noms",        title: "Noms" },
+  expressions: { cards: expressionsCards, storageKey: "tef-vocab-expressions", title: "Expressions" },
+  genre:       { cards: GENRE_CARDS,      storageKey: "tef-vocab-genre",       title: "Genre" },
+  erreurs:     { cards: PIEGES_CARDS,     storageKey: "tef-vocab-erreurs",     title: "Erreurs" },
+  accents:     { cards: ACCENTS_CARDS,    storageKey: "tef-vocab-accents",     title: "Accents" },
+  mix:         { cards: VOCAB_CARDS,      storageKey: "tef-vocab-mix",         title: "Mix" },
 };
 
 export default function VocabulaireCategoryPage({
@@ -58,35 +58,15 @@ export default function VocabulaireCategoryPage({
   const { category } = use(params);
   const { isFavoriteCard, toggleFavoriteCard } = useFavoriteCards();
 
-  const verbes = useFlashcards(verbesCards, "tef-vocab-verbes");
-  const adjectifs = useFlashcards(adjectifsCards, "tef-vocab-adjectifs");
-  const noms = useFlashcards(nomsCards, "tef-vocab-noms");
-  const expressions = useFlashcards(expressionsCards, "tef-vocab-expressions");
-  const genre = useFlashcards(GENRE_CARDS, "tef-vocab-genre");
-  const erreurs = useFlashcards(PIEGES_CARDS, "tef-vocab-erreurs");
-  const accents = useFlashcards(ACCENTS_CARDS, "tef-vocab-accents");
-  const mix = useFlashcards(VOCAB_CARDS, "tef-vocab-mix");
-
-  const deckMap: Record<VocabCategory, typeof verbes> = {
-    verbes,
-    adjectifs,
-    noms,
-    expressions,
-    genre,
-    erreurs,
-    accents,
-    mix,
-  };
-
   if (!VALID.has(category)) notFound();
 
-  const deck = deckMap[category as VocabCategory];
-  const title = VOCAB_TITLES[category as VocabCategory] ?? category;
+  const source = SOURCES[category as VocabCategory];
 
   return (
     <FlashcardCategoryTemplate
-      title={title}
-      deck={deck}
+      title={source.title}
+      cards={source.cards}
+      storageKey={source.storageKey}
       isFavoriteCard={isFavoriteCard}
       toggleFavoriteCard={toggleFavoriteCard}
     />

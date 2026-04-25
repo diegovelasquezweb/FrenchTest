@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bookmark } from "lucide-react";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
+import { useFlashcardSettings } from "@/src/hooks/useFlashcardSettings";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
 import { SessionDone } from "@/src/components/flashcard/SessionDone";
+import { MarathonSettingsDrawer } from "@/src/components/navigation/MarathonSettingsDrawer";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import type { Flashcard } from "@/src/types";
 import type { FavoriteCollectionCopy } from "./types";
@@ -28,8 +31,10 @@ export function FavoriteCollectionTemplate({
   copy,
 }: FavoriteCollectionTemplateProps) {
   const router = useRouter();
-  const deck = useFlashcards(favoriteList, storageKey);
-  useSetFlashcardHeader(title, deck);
+  const settings = useFlashcardSettings(storageKey);
+  const deck = useFlashcards(favoriteList, storageKey, settings.order);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  useSetFlashcardHeader(title, deck, { onSettings: () => setSettingsOpen(true) });
 
   return (
     <AuthGate>
@@ -109,11 +114,35 @@ export function FavoriteCollectionTemplate({
           onBack={deck.back}
           isFavorite={isFavoriteCard(deck.currentCard.id)}
           onToggleFavorite={() => toggleFavoriteCard(deck.currentCard!.id)}
+          autoAdvanceEnabled={settings.autoPlay}
+          autoAdvanceMs={settings.autoSeconds * 1000}
+          mode={settings.mode}
+          repetitionStyle={settings.repetitionStyle}
         />
       )}
       {deck.state.phase === "complete" && (
         <SessionDone onRestart={deck.restart} onHome={deck.goHome} />
       )}
+
+      <MarathonSettingsDrawer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onRestart={() => {
+          settings.persist();
+          deck.startSession();
+        }}
+        autoPlay={settings.autoPlay}
+        onAutoPlayChange={settings.setAutoPlay}
+        autoSeconds={settings.autoSeconds}
+        onAutoSecondsChange={settings.setAutoSeconds}
+        order={settings.order}
+        onOrderChange={settings.setOrder}
+        mode={settings.mode}
+        onModeChange={settings.setMode}
+        repetitionStyle={settings.repetitionStyle}
+        onRepetitionStyleChange={settings.setRepetitionStyle}
+        hideRevisionMode
+      />
     </AuthGate>
   );
 }
