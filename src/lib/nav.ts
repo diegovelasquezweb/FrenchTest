@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Siren,
   SlidersHorizontal,
+  Info,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -60,6 +61,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Connecteurs", href: "/parcours/ecrit-connecteurs" },
       { label: "Compléter les mots", href: "/quiz/completer-mots", icon: FlaskConical },
       { label: "Test connecteurs", href: "/quiz/connecteurs", icon: FlaskConical },
+      { label: "Production connecteurs", href: "/quiz/connecteurs-production", icon: FlaskConical },
+      { label: "Simulateur écrit", href: "/simulator/ecrit", icon: PenSquare },
       { label: "Test écrit",    href: "/quiz/ecrit",               icon: FlaskConical },
     ],
   },
@@ -115,10 +118,11 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   { id: "verbes",       type: "single", label: "Verbes essentiels",    href: "/guides/verbes-essentiels", icon: Columns3 },
   { id: "terminaisons", type: "single", label: "Terminaisons verbales", href: "/guides/terminaisons",     icon: PenSquare },
+  { id: "comment-tef",  type: "single", label: "Comment fonctionne le TEF", href: "/guides/comment-fonctionne-tef", icon: Info },
   { id: "traducteur",   type: "single", label: "Traducteur",            href: "/traducteur",               icon: Globe,     sidebarOnly: true },
 ];
 
-export const NO_SEPARATOR_IDS = new Set(["difficiles", "mes-patterns", "mes-vocab", "terminaisons", "traducteur"]);
+export const NO_SEPARATOR_IDS = new Set(["difficiles", "mes-patterns", "mes-vocab", "terminaisons", "comment-tef", "traducteur"]);
 
 /** Flat label→href lookup built from all accordion items. Used for the favorites section. */
 export const ITEM_HREF_LOOKUP: Record<string, string> = Object.fromEntries(
