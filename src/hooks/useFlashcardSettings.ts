@@ -25,6 +25,10 @@ export interface FlashcardSettings {
   setTtsVolume(v: number): void;
   ttsVoiceURI: string | null;
   setTtsVoiceURI(v: string | null): void;
+  ttsAdvanceOnEnd: boolean;
+  setTtsAdvanceOnEnd(v: boolean): void;
+  ttsAdvanceDelayMs: number;
+  setTtsAdvanceDelayMs(v: number): void;
   persist(): void;
 }
 
@@ -80,6 +84,10 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
     if (typeof window === "undefined") return null;
     return localStorage.getItem(k("ttsvoiceuri"));
   });
+  const [ttsAdvanceOnEnd, setTtsAdvanceOnEnd] = useState(() => readBool(k("ttsadvanceonend"), false));
+  const [ttsAdvanceDelayMs, setTtsAdvanceDelayMs] = useState(() =>
+    readNumber(k("ttsadvancedelay"), 1500, 0, 4000),
+  );
 
   function persist() {
     if (typeof window === "undefined") return;
@@ -97,6 +105,8 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
     } else {
       localStorage.removeItem(k("ttsvoiceuri"));
     }
+    localStorage.setItem(k("ttsadvanceonend"), ttsAdvanceOnEnd ? "1" : "0");
+    localStorage.setItem(k("ttsadvancedelay"), String(ttsAdvanceDelayMs));
   }
 
   return {
@@ -120,6 +130,10 @@ export function useFlashcardSettings(storageKey: string): FlashcardSettings {
     setTtsVolume,
     ttsVoiceURI,
     setTtsVoiceURI,
+    ttsAdvanceOnEnd,
+    setTtsAdvanceOnEnd,
+    ttsAdvanceDelayMs,
+    setTtsAdvanceDelayMs,
     persist,
   };
 }

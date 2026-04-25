@@ -31,9 +31,19 @@ const oralCards = FLASHCARDS.filter((c) => c.category === "oral");
 const persuasionCards = FLASHCARDS.filter((c) => c.category === "oral-persuasion");
 const faitsDiversCards = FLASHCARDS.filter((c) => c.category === "écrit-faits-divers");
 const argumentatifCards = FLASHCARDS.filter(
-  (c) => c.category === "argumentation" && !c.id.startsWith("dev-"),
+  (c) =>
+    c.category === "argumentation" &&
+    !c.id.startsWith("dev-") &&
+    !c.id.startsWith("struct-") &&
+    !c.id.startsWith("trans-"),
 );
-const developperCards = FLASHCARDS.filter((c) => c.category === "argumentation" && c.id.startsWith("dev-"));
+const developperCards = FLASHCARDS.filter(
+  (c) =>
+    c.category === "argumentation" &&
+    (c.id.startsWith("dev-") ||
+      c.id.startsWith("struct-") ||
+      c.id.startsWith("trans-")),
+);
 
 const SOURCES: Record<ParcoursCategory, { cards: Flashcard[]; storageKey: string; title: string }> = {
   connecteurs:          { cards: connecteursCards, storageKey: "tef-p-connecteurs",          title: "Connecteurs" },

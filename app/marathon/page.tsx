@@ -96,6 +96,13 @@ export default function MarathonPage() {
   const [marathonTtsVoiceURI, setMarathonTtsVoiceURI] = useState<string | null>(
     () => localStorage.getItem("tef-marathon-ttsvoiceuri"),
   );
+  const [marathonTtsAdvanceOnEnd, setMarathonTtsAdvanceOnEnd] = useState(
+    () => localStorage.getItem("tef-marathon-ttsadvanceonend") === "1",
+  );
+  const [marathonTtsAdvanceDelayMs, setMarathonTtsAdvanceDelayMs] = useState(() => {
+    const v = Number(localStorage.getItem("tef-marathon-ttsadvancedelay") ?? "1500");
+    return Number.isFinite(v) ? Math.min(4000, Math.max(0, v)) : 1500;
+  });
   const tts = useTts({
     rate: marathonTtsRate,
     pitch: marathonTtsPitch,
@@ -181,6 +188,8 @@ export default function MarathonPage() {
           ttsPitch={marathonTtsPitch}
           ttsVolume={marathonTtsVolume}
           ttsVoiceURI={marathonTtsVoiceURI}
+          ttsAdvanceOnEnd={marathonTtsAdvanceOnEnd}
+          ttsAdvanceDelayMs={marathonTtsAdvanceDelayMs}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -270,6 +279,8 @@ export default function MarathonPage() {
           } else {
             localStorage.removeItem("tef-marathon-ttsvoiceuri");
           }
+          localStorage.setItem("tef-marathon-ttsadvanceonend", marathonTtsAdvanceOnEnd ? "1" : "0");
+          localStorage.setItem("tef-marathon-ttsadvancedelay", String(marathonTtsAdvanceDelayMs));
           deck.startSession();
         }}
         autoPlay={marathonAutoPlay}
@@ -294,6 +305,10 @@ export default function MarathonPage() {
         onTtsVoiceURIChange={setMarathonTtsVoiceURI}
         ttsVoices={tts.voices}
         onTtsTest={() => tts.speak("Bonjour, voici un exemple de phrase en français.")}
+        ttsAdvanceOnEnd={marathonTtsAdvanceOnEnd}
+        onTtsAdvanceOnEndChange={setMarathonTtsAdvanceOnEnd}
+        ttsAdvanceDelayMs={marathonTtsAdvanceDelayMs}
+        onTtsAdvanceDelayMsChange={setMarathonTtsAdvanceDelayMs}
       />
     </AuthGate>
   );

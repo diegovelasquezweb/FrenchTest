@@ -31,6 +31,10 @@ interface MarathonSettingsDrawerProps {
   onTtsVoiceURIChange?(v: string | null): void;
   ttsVoices?: SpeechSynthesisVoice[];
   onTtsTest?(): void;
+  ttsAdvanceOnEnd?: boolean;
+  onTtsAdvanceOnEndChange?(v: boolean): void;
+  ttsAdvanceDelayMs?: number;
+  onTtsAdvanceDelayMsChange?(v: number): void;
   hideRevisionMode?: boolean;
 }
 
@@ -117,6 +121,10 @@ export function MarathonSettingsDrawer({
   onTtsVoiceURIChange,
   ttsVoices,
   onTtsTest,
+  ttsAdvanceOnEnd,
+  onTtsAdvanceOnEndChange,
+  ttsAdvanceDelayMs,
+  onTtsAdvanceDelayMsChange,
   hideRevisionMode = false,
 }: MarathonSettingsDrawerProps) {
   const showTts =
@@ -129,6 +137,12 @@ export function MarathonSettingsDrawer({
     showTts && ttsVoices && ttsVoices.length > 0 && onTtsVoiceURIChange !== undefined;
   const showPitch = showTts && ttsPitch !== undefined && onTtsPitchChange !== undefined;
   const showVolume = showTts && ttsVolume !== undefined && onTtsVolumeChange !== undefined;
+  const showAdvance =
+    showTts &&
+    ttsAdvanceOnEnd !== undefined &&
+    onTtsAdvanceOnEndChange !== undefined &&
+    ttsAdvanceDelayMs !== undefined &&
+    onTtsAdvanceDelayMsChange !== undefined;
   const MODE_OPTIONS = (
     [
       { value: "lecture",    label: "Lecture",    description: "Défilement sans évaluation" },
@@ -157,7 +171,7 @@ export function MarathonSettingsDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Réglages du Marathon"
-        className={`fixed top-0 right-0 z-50 h-full w-72 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 z-50 h-full w-72 md:w-85.5 max-w-[90vw] flex flex-col bg-surface shadow-xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
       >
 
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink/8 shrink-0">
@@ -227,6 +241,57 @@ export function MarathonSettingsDrawer({
                     label={ttsAutoplay ? "Désactiver la lecture auto" : "Activer la lecture auto"}
                   />
                 </div>
+
+                {showAdvance && ttsAutoplay && (
+                  <div
+                    className={`flex flex-col gap-3 rounded-button border border-ink/8 bg-ink/3 px-3 py-3 transition-opacity duration-200`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-medium text-ink">Passer après lecture</p>
+                        <p className="text-[11px] text-muted leading-snug">
+                          Avancer quand l&apos;audio se termine
+                        </p>
+                      </div>
+                      <Toggle
+                        checked={ttsAdvanceOnEnd!}
+                        onChange={onTtsAdvanceOnEndChange!}
+                        label={
+                          ttsAdvanceOnEnd
+                            ? "Désactiver l'avance après lecture"
+                            : "Activer l'avance après lecture"
+                        }
+                      />
+                    </div>
+
+                    <div
+                      aria-hidden={!ttsAdvanceOnEnd}
+                      className={`flex flex-col gap-1 transition-opacity duration-200 ${
+                        ttsAdvanceOnEnd ? "opacity-100" : "opacity-40 pointer-events-none"
+                      }`}
+                    >
+                      <p className="text-[11px] font-medium text-muted">Pause</p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] text-muted w-8 shrink-0">0s</span>
+                        <input
+                          type="range"
+                          min={0}
+                          max={4000}
+                          step={250}
+                          value={ttsAdvanceDelayMs!}
+                          onChange={(e) => onTtsAdvanceDelayMsChange!(Number(e.target.value))}
+                          disabled={!ttsAdvanceOnEnd}
+                          aria-label="Pause après la lecture"
+                          className="flex-1 accent-brand h-1"
+                        />
+                        <span className="text-[11px] text-muted w-8 shrink-0">4s</span>
+                        <span className="text-[11px] font-semibold text-ink w-10 text-right shrink-0 tabular-nums">
+                          {(ttsAdvanceDelayMs! / 1000).toFixed(2)}s
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {showVoiceSelector && (
                   <div className="flex items-center justify-between gap-3">

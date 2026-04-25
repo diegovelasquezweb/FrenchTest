@@ -111,7 +111,7 @@ export function useTts({
   resolvedRef.current = resolved;
 
   const speak = useCallback(
-    (text: string) => {
+    (text: string, opts?: { onEnd?: () => void; onError?: () => void }) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
       const synth = window.speechSynthesis;
       synth.cancel();
@@ -129,8 +129,14 @@ export function useTts({
       utterance.volume = volume;
 
       utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        opts?.onEnd?.();
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        opts?.onError?.();
+      };
 
       synth.speak(utterance);
     },

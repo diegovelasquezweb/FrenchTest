@@ -60,6 +60,8 @@ interface FlashcardViewProps {
   ttsPitch?: number;
   ttsVolume?: number;
   ttsVoiceURI?: string | null;
+  ttsAdvanceOnEnd?: boolean;
+  ttsAdvanceDelayMs?: number;
 }
 
 export function FlashcardView({
@@ -81,6 +83,8 @@ export function FlashcardView({
   ttsPitch = 1,
   ttsVolume = 1,
   ttsVoiceURI = null,
+  ttsAdvanceOnEnd = false,
+  ttsAdvanceDelayMs = 1500,
 }: FlashcardViewProps) {
   const focusTrapRef = useRef<HTMLInputElement>(null);
   const [flash, setFlash] = useState<FlashColor>(null);
@@ -106,12 +110,6 @@ export function FlashcardView({
     focusTrapRef.current?.focus({ preventScroll: true });
   }, [index]);
 
-  useEffect(() => {
-    if (!ttsAutoplay || !ttsSupported) return;
-    const id = window.setTimeout(() => speak(card.front), 120);
-    return () => window.clearTimeout(id);
-  }, [card.id, card.front, ttsAutoplay, ttsSupported, speak]);
-
   const triggerRate = useCallback(
     (r: FlashcardRating) => {
       if (pending.current) return;
@@ -127,6 +125,36 @@ export function FlashcardView({
     pending.current = true;
     window.setTimeout(onSkip, 80);
   }, [onSkip]);
+
+  useEffect(() => {
+    if (!ttsAutoplay || !ttsSupported) return;
+    const advanceAfterAudio = ttsAdvanceOnEnd && mode === "lecture";
+    let advanceTimeoutId: number | undefined;
+    const startId = window.setTimeout(() => {
+      speak(card.front, {
+        onEnd: () => {
+          if (!advanceAfterAudio) return;
+          advanceTimeoutId = window.setTimeout(() => {
+            triggerSkip();
+          }, ttsAdvanceDelayMs);
+        },
+      });
+    }, 120);
+    return () => {
+      window.clearTimeout(startId);
+      if (advanceTimeoutId !== undefined) window.clearTimeout(advanceTimeoutId);
+    };
+  }, [
+    card.id,
+    card.front,
+    ttsAutoplay,
+    ttsSupported,
+    speak,
+    ttsAdvanceOnEnd,
+    ttsAdvanceDelayMs,
+    mode,
+    triggerSkip,
+  ]);
 
   const advanceRep = useCallback(() => {
     setRepStep((s) => {
@@ -214,6 +242,9 @@ export function FlashcardView({
 
   useEffect(() => {
     if (!autoAdvanceEnabled || autoAdvanceMs <= 0) return;
+    const audioOwnsAdvance =
+      ttsAutoplay && ttsSupported && ttsAdvanceOnEnd && mode === "lecture";
+    if (audioOwnsAdvance) return;
     const id = window.setTimeout(() => {
       if (mode === "répétition" && repStep < 2) advanceRep();
       else triggerSkip();
@@ -227,6 +258,9 @@ export function FlashcardView({
     triggerSkip,
     advanceRep,
     mode,
+    ttsAutoplay,
+    ttsSupported,
+    ttsAdvanceOnEnd,
   ]);
 
   const inRepPhase = mode === "répétition" && repStep < 2;

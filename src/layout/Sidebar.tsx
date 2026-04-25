@@ -92,7 +92,7 @@ export function Sidebar({ onOpenAiChat }: SidebarProps) {
   const initial = login[0]?.toUpperCase() ?? "?";
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-ink/8 bg-surface">
+    <aside className="hidden md:flex w-70 shrink-0 flex-col border-r border-ink/8 bg-surface">
       <div className="px-5 py-5 border-b border-ink/8">
         <Link
           href="/"

@@ -71,6 +71,8 @@ export function FlashcardCategoryTemplate({
           ttsPitch={settings.ttsPitch}
           ttsVolume={settings.ttsVolume}
           ttsVoiceURI={settings.ttsVoiceURI}
+          ttsAdvanceOnEnd={settings.ttsAdvanceOnEnd}
+          ttsAdvanceDelayMs={settings.ttsAdvanceDelayMs}
         />
       )}
       {deck.state.phase === "complete" && (
@@ -107,6 +109,10 @@ export function FlashcardCategoryTemplate({
         onTtsVoiceURIChange={settings.setTtsVoiceURI}
         ttsVoices={tts.voices}
         onTtsTest={() => tts.speak(TEST_PHRASE)}
+        ttsAdvanceOnEnd={settings.ttsAdvanceOnEnd}
+        onTtsAdvanceOnEndChange={settings.setTtsAdvanceOnEnd}
+        ttsAdvanceDelayMs={settings.ttsAdvanceDelayMs}
+        onTtsAdvanceDelayMsChange={settings.setTtsAdvanceDelayMs}
         hideRevisionMode
       />
     </AuthGate>
