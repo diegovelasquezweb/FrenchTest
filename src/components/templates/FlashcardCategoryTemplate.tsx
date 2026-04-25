@@ -20,6 +20,7 @@ interface FlashcardCategoryTemplateProps {
   storageKey: string;
   isFavoriteCard: (id: string) => boolean;
   toggleFavoriteCard: (id: string) => void;
+  enableTts?: boolean;
 }
 
 export function FlashcardCategoryTemplate({
@@ -28,6 +29,7 @@ export function FlashcardCategoryTemplate({
   storageKey,
   isFavoriteCard,
   toggleFavoriteCard,
+  enableTts = false,
 }: FlashcardCategoryTemplateProps) {
   const router = useRouter();
   const settings = useFlashcardSettings(storageKey);
@@ -63,6 +65,7 @@ export function FlashcardCategoryTemplate({
           autoAdvanceMs={settings.autoSeconds * 1000}
           mode={settings.mode}
           repetitionStyle={settings.repetitionStyle}
+          enableTts={enableTts}
           ttsAutoplay={settings.ttsAutoplay}
           ttsRate={settings.ttsRate}
           ttsPitch={settings.ttsPitch}
@@ -91,6 +94,7 @@ export function FlashcardCategoryTemplate({
         onModeChange={settings.setMode}
         repetitionStyle={settings.repetitionStyle}
         onRepetitionStyleChange={settings.setRepetitionStyle}
+        enableTts={enableTts}
         ttsAutoplay={settings.ttsAutoplay}
         onTtsAutoplayChange={settings.setTtsAutoplay}
         ttsRate={settings.ttsRate}

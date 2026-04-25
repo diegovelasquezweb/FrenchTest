@@ -54,6 +54,7 @@ interface FlashcardViewProps {
   autoAdvanceMs?: number;
   mode?: MarathonMode;
   repetitionStyle?: RepetitionStyle;
+  enableTts?: boolean;
   ttsAutoplay?: boolean;
   ttsRate?: number;
   ttsPitch?: number;
@@ -74,6 +75,7 @@ export function FlashcardView({
   autoAdvanceMs = 20000,
   mode = "lecture",
   repetitionStyle = "intensity",
+  enableTts = false,
   ttsAutoplay = false,
   ttsRate = 0.95,
   ttsPitch = 1,
@@ -85,12 +87,13 @@ export function FlashcardView({
   const [repStep, setRepStep] = useState(0);
   const [prevCardId, setPrevCardId] = useState(card.id);
   const pending = useRef(false);
-  const { speak, isSpeaking, isSupported: ttsSupported } = useTts({
+  const { speak, isSpeaking, isSupported: ttsApiSupported } = useTts({
     rate: ttsRate,
     pitch: ttsPitch,
     volume: ttsVolume,
     voiceURI: ttsVoiceURI,
   });
+  const ttsSupported = enableTts && ttsApiSupported;
 
   if (prevCardId !== card.id) {
     setPrevCardId(card.id);

@@ -18,6 +18,7 @@ interface MarathonSettingsDrawerProps {
   onModeChange(v: MarathonMode): void;
   repetitionStyle: RepetitionStyle;
   onRepetitionStyleChange(v: RepetitionStyle): void;
+  enableTts?: boolean;
   ttsAutoplay?: boolean;
   onTtsAutoplayChange?(v: boolean): void;
   ttsRate?: number;
@@ -103,6 +104,7 @@ export function MarathonSettingsDrawer({
   onModeChange,
   repetitionStyle: _repetitionStyle,
   onRepetitionStyleChange: _onRepetitionStyleChange,
+  enableTts = false,
   ttsAutoplay,
   onTtsAutoplayChange,
   ttsRate,
@@ -118,6 +120,7 @@ export function MarathonSettingsDrawer({
   hideRevisionMode = false,
 }: MarathonSettingsDrawerProps) {
   const showTts =
+    enableTts &&
     ttsAutoplay !== undefined &&
     onTtsAutoplayChange !== undefined &&
     ttsRate !== undefined &&

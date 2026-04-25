@@ -56,6 +56,7 @@ export default function ParcoursCategoryPage({
   if (!VALID.has(category)) notFound();
 
   const source = SOURCES[category as ParcoursCategory];
+  const enableTts = category === "oral-interaction" || category === "oral-monologue";
 
   return (
     <FlashcardCategoryTemplate
@@ -64,6 +65,7 @@ export default function ParcoursCategoryPage({
       storageKey={source.storageKey}
       isFavoriteCard={isFavoriteCard}
       toggleFavoriteCard={toggleFavoriteCard}
+      enableTts={enableTts}
     />
   );
 }
