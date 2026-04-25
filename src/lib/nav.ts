@@ -76,6 +76,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Futur simple",            href: "/quiz/futur" },
       { label: "Conditionnel",            href: "/quiz/conditionnel" },
       { label: "Pronominales",            href: "/quiz/pronominales" },
+      { label: "Discriminer les temps",   href: "/quiz/discriminer-temps", icon: FlaskConical },
       { label: "Test grammaire",          href: "/quiz/grammaire",    icon: FlaskConical },
     ],
   },
