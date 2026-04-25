@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
-import { FlashcardResults } from "@/src/components/flashcard/FlashcardResults";
+import { SessionDone } from "@/src/components/flashcard/SessionDone";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import { useFavoriteCards } from "@/src/hooks/useFavoriteCards";
 import { FLASHCARDS } from "@/src/data/flashcards";
@@ -38,14 +38,7 @@ export default function ParcoursEtreAvoirPage() {
         />
       )}
       {deck.state.phase === "complete" && (
-        <FlashcardResults
-          sessionResults={deck.state.sessionResults}
-          masteredCount={deck.masteredCount}
-          totalCards={deck.totalCards}
-          cards={deck.state.deck}
-          onRestart={deck.restart}
-          onHome={() => router.push("/")}
-        />
+        <SessionDone onRestart={deck.restart} onHome={() => router.push("/")} />
       )}
     </AuthGate>
   );

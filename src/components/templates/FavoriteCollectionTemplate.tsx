@@ -5,7 +5,7 @@ import { Bookmark } from "lucide-react";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { useFlashcards } from "@/src/hooks/useFlashcards";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
-import { FlashcardResults } from "@/src/components/flashcard/FlashcardResults";
+import { SessionDone } from "@/src/components/flashcard/SessionDone";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import type { Flashcard } from "@/src/types";
 import type { FavoriteCollectionCopy } from "./types";
@@ -112,14 +112,7 @@ export function FavoriteCollectionTemplate({
         />
       )}
       {deck.state.phase === "complete" && (
-        <FlashcardResults
-          sessionResults={deck.state.sessionResults}
-          masteredCount={deck.masteredCount}
-          totalCards={deck.totalCards}
-          cards={deck.state.deck}
-          onRestart={deck.restart}
-          onHome={deck.goHome}
-        />
+        <SessionDone onRestart={deck.restart} onHome={deck.goHome} />
       )}
     </AuthGate>
   );

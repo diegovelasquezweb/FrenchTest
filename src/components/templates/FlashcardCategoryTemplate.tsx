@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AuthGate } from "@/src/layout/AuthGate";
 import { FlashcardView } from "@/src/components/flashcard/FlashcardView";
-import { FlashcardResults } from "@/src/components/flashcard/FlashcardResults";
+import { SessionDone } from "@/src/components/flashcard/SessionDone";
 import { useSetFlashcardHeader } from "@/src/lib/header-context";
 import type { FlashcardDeckLike } from "./types";
 
@@ -44,14 +44,7 @@ export function FlashcardCategoryTemplate({
         />
       )}
       {deck.state.phase === "complete" && (
-        <FlashcardResults
-          sessionResults={deck.state.sessionResults}
-          masteredCount={deck.masteredCount}
-          totalCards={deck.totalCards}
-          cards={deck.state.deck}
-          onRestart={deck.restart}
-          onHome={() => router.push("/")}
-        />
+        <SessionDone onRestart={deck.restart} onHome={() => router.push("/")} />
       )}
     </AuthGate>
   );
